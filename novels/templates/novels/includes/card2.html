@@ -1,0 +1,15 @@
+{% load i18n %}
+<div class="card2-container">
+  <div class="card2-image-wrapper">
+    <img src="{{ card.image_url }}" alt="Thumbnail" class="card2-image" />
+
+    <div class="card2-overlay">
+      <div class="card2-chap">{{ card.chap }}</div>
+      <div class="card2-vol">{{ card.vol }}</div>
+    </div>
+  </div>
+  <div class="card2-title">
+    {{ card.title }}
+  </div>
+</div>
+

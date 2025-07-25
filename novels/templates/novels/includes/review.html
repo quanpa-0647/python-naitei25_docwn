@@ -1,0 +1,27 @@
+{% load static %}
+{% load i18n %}
+<div class="discussion-box">
+  <div class="discussion-header">
+    <span class="highlight">{% trans "Thảo" %}</span>
+    <span class="underline">{% trans "LUẬN" %}</span>
+  </div>
+  <ul class="discussion-list">
+    {% for item in discussion_data %}
+    <li class="discussion-item">
+      <div class="left-part">
+        <span
+          class="dot"
+          style="background-color:
+            {% if item.color == 'green' %}#00db4d
+            {% elif item.color == 'red' %}#ff005c
+            {% elif item.color == 'blue' %}#1d40ff
+            {% else %}#ccc{% endif %}
+          ;"
+        ></span>
+        <span class="title-text">{{ item.title }}</span>
+      </div>
+      <span class="time">{{ item.time }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+</div>

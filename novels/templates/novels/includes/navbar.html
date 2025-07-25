@@ -1,0 +1,112 @@
+{% load i18n %}
+<nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#"> {% trans "DOCWN" %}</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#"
+            >{% trans "Trang chủ" %}</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="#">Xuất bản</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#"
+            >{% trans "Thảo luận" %}</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#"
+            >{% trans "Danh sách" %}</a
+          >
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            {% trans "Hướng dẫn" %}
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">{% trans "Action" %}</a></li>
+            <li>
+              <a class="dropdown-item" href="#">{% trans "Another action" %}</a>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item" href="#"
+                >{% trans "Something else here" %}</a
+              >
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <div class="navbar__last">
+        <form class="d-flex custom-gap" role="search">
+          <input
+            class="form-control me-2"
+            type="search"
+            placeholder="Tìm kiếm..."
+            aria-label="Search"
+          />
+          <button class="btn btn-outline-success btn-small-text" type="submit">
+            <i class="bxr bx-search-big"></i>
+          </button>
+        </form>
+        <div class="dropdown">
+          <p
+            class="account"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            style="text-decoration: none; cursor: pointer"
+          >
+            {% trans "Tài khoản?" %}
+          </p>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a class="dropdown-item" href="#">{% trans "Đăng nhập" %}</a>
+            </li>
+            <li><a class="dropdown-item" href="#">{% trans "Đăng ký" %}</a></li>
+          </ul>
+        </div>
+        <div class="dropdown">
+          <i
+            class="bxr bx-dots-vertical"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          ></i>
+
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <div class="dropdown-item mode" id="toggleThemeBtn">
+                <i class="bx bx-moon-star"></i>
+                <p>{% trans "Dark" %}</p>
+              </div>
+            </li>
+
+            <li><a class="dropdown-item" href="#">Ch nghĩ ra để tạm</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,474 @@
+.main__container{
+  display: flex;
+  justify-content: space-between;
+}
+#slideshow-banner{
+  height: 200px; object-fit: cover
+}
+.trend_novels {
+  display: flex;
+  gap: 20px;
+  width: 60vw;
+  justify-content: space-between;
+}
+.custom-btn {
+  width: 60vw;
+  padding: 12px 24px;
+  border: 1px solid currentColor;
+  border-radius: 50px;
+  background-color: transparent;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  transition: background-color 0.3s, color 0.3s;
+}
+html.light .custom-btn {
+  color: #000;
+}
+html.light .custom-btn:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+html.dark .custom-btn {
+  color: #fff;
+}
+html.dark .custom-btn:hover {
+  background-color: #fff;
+  color: #000;
+}.card1 {
+  width: 180px !important;
+  height: 250px !important;
+  position: relative !important;
+  cursor: pointer !important;
+}
+
+.card-custom1 {
+  width: 180px !important;
+  height: 250px !important;
+  position: relative !important;
+}
+
+.card-overlay1 {
+  position: absolute !important;
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+  bottom: 0 !important;
+  width: 180px !important;
+  background-color: rgba(25, 25, 112, 0.5) !important;
+}
+.card-text1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #fff;
+  font-weight: bold;
+}
+.card2-container {
+  width: 130px;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.card2-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.card2-image {
+  width: 130px;
+  height: 195px;
+  display: block;
+  cursor: pointer;
+}
+
+.card2-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(25, 25, 112, 0.5);
+  padding: 10px;
+  cursor: pointer;
+}
+
+.card2-chap {
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card2-vol {
+  color: #a6e7f7;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card2-title {
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 1.3;
+  cursor: pointer;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card3 {
+  display: flex;
+  align-items: flex-start;
+  border-radius: 8px;
+  padding-top: 20px;
+  width: 29vw;
+  font-family: 'Segoe UI', sans-serif;
+  padding-right: 0;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card3-img-wrapper {
+  flex-shrink: 0;
+}
+
+.card3-img {
+  width: 130px;
+  height: 195px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.card3-text {
+  margin-left: 20px;
+}
+
+.card3-title {
+  font-size: 19px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card3-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.comment-box {
+  width: 360px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.comment-header {
+  display: flex;
+  border-bottom: 2px solid #eee;
+}
+
+.comment-title {
+  padding: 12px 16px;
+  font-weight: bold;
+  background: #333;
+  color: #fff;
+}
+
+.comment-subtitle {
+  padding: 12px 16px;
+  font-weight: bold;
+  border-bottom: 3px solid black;
+}
+
+.comment-list {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.comment-item {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.comment-item-title {
+  font-weight: bold;
+}
+
+.comment-item-body {
+  margin-top: 6px;
+}
+
+.comment-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  align-items: center;
+}
+
+.comment-user {
+  display: flex;
+  align-items: center;
+}
+
+.comment-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.comment-username {
+  font-weight: bold;
+}
+
+.comment-time {
+  font-size: 0.85em;
+}
+.discussion-box {
+  width: 320px;
+  font-family: Arial, sans-serif;
+}
+
+.discussion-header {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.discussion-header .highlight {
+  background-color: #333;
+  color: white;
+  padding: 4px 8px;
+  margin-right: 4px;
+}
+
+.discussion-header .underline {
+  border-bottom: 2px solid black;
+  padding-bottom: 2px;
+}
+
+.discussion-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.discussion-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.left-part {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  max-width: 70%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.left-part .dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.title-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.time {
+  color: #999;
+  font-size: 14px;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.trend__novel__text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background-color: #3a3a3a;
+  color: white;
+  width: 100px;
+  height: 34px;
+  text-align: center;
+  font-size: 17px;
+}
+.cup__image {
+  width: 25px;
+  height: 25px;
+}
+.trend__novel__type {
+  display: flex;
+  gap: 10px;
+  text-align: center;
+  height: 34px;
+  margin-bottom: 15px;
+  width: 60vw;
+}
+.trend__novel__type a {
+  text-decoration: none;
+  margin-top: 5px;
+  font-size: 17px;
+  color: #6e6e6e;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+.trend__novel__type a:hover {
+  color: #126e0f;
+}
+.finish_novels {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.finish__novel__text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color: #3a3a3a;
+  color: white;
+  width: 100px;
+  height: 34px;
+  text-align: center;
+  font-size: 17px;
+}
+.finish__novel__type {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  height: 34px;
+  gap: 15px;
+}
+.finish__text {
+  border-bottom: 2px solid #b7adad;
+  padding-bottom: 3px;
+  font-size: 20px;
+}
+.container__finish{
+  width: 100wh;
+
+}
+
+.new_novels {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  width: 60vw;
+  flex-wrap: wrap;
+  justify-content: start;
+}
+.new__novel__text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color: #3a3a3a;
+  color: white;
+  width: 100px;
+  height: 34px;
+  text-align: center;
+  font-size: 17px;
+}
+.new__novel__type {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  height: 34px;
+  gap: 15px;
+}
+.new__text {
+  border-bottom: 2px solid #b7adad;
+  padding-bottom: 3px;
+  font-size: 20px;
+}
+
+.more__card {
+  position: relative;
+  width: 130px;
+  height: 215px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.more__card-image {
+  width: 140px;
+  height: 220px;
+  object-fit: cover;
+}
+
+.more__card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  border: 2px solid white;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+.more__card-icon {
+  font-size: 40px;
+  transition: color 0.3s;
+}
+
+.more__card-text {
+  font-size: 18px;
+  margin-top: 10px;
+  transition: color 0.3s;
+}
+
+.more__card:hover .more__card-icon {
+  color: #00cc66;
+}
+.more__card:hover .more__card-text {
+  color: #00cc66;
+}

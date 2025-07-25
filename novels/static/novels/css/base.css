@@ -1,0 +1,82 @@
+body{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    position: relative;
+}
+main {
+    flex: 1; 
+  }
+.bx-search-big{
+    font-size: 20px;
+}
+.btn-small-text{
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 35px;
+}
+.me-2{
+    height: 35px;
+}
+.d-flex{
+    display: flex;
+    gap: 0px;
+}
+.dropdown-menu {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+input.form-control:focus {
+    outline: none;
+    box-shadow: none;
+}
+.navbar__last{
+    display: flex;
+}
+#toggleThemeBtn{
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  }
+.btn-small-text{
+    margin-left: -10px;
+}
+.navbar{
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.navbar__last{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.account {
+    height: 40px;                  
+    display: flex;                
+    align-items: center;           
+    margin: 0;
+    cursor: pointer;
+  }
+.mode{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 7px;
+}
+.bx-dots-vertical{
+    font-size: 27px;
+    margin-top: 5px;
+    margin-left: -5px;
+}
+.dropmode {
+    display: flex;
+}
+
+.footer{
+    background-color: #388eff;
+    color: aliceblue;
+}
+.footer__child{
+    background-color: #8e959e;
+}
