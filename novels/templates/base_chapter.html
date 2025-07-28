@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    {% load i18n %}
+    <title>{% block title %}{% trans "DocWN" %}{% endblock %}</title>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% block content %}{% endblock %}
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

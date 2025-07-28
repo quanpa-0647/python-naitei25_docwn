@@ -1,0 +1,19 @@
+{% load i18n %}
+
+<div class="controls-panel">
+    <a href="{% url 'home' %}" class="control-btn" id="homeBtn" title="{% trans 'Trang chủ' %}">
+        <i class="fas fa-home"></i>
+    </a>
+    <button class="control-btn" id="bookmarkBtn" title="{% trans 'Bookmark' %}">
+        <i class="fas fa-bookmark"></i>
+    </button>
+    <button class="control-btn" id="fontSizeBtn" title="{% trans 'Cỡ chữ' %}">
+        <i class="fas fa-text-height"></i>
+    </button>
+    <button class="control-btn" id="darkModeBtn" title="{% trans 'Chế độ tối' %}">
+        <i class="fas fa-moon"></i>
+    </button>
+    <button class="control-btn" id="fullscreenBtn" title="{% trans 'Toàn màn hình' %}">
+        <i class="fas fa-expand"></i>
+    </button>
+</div>

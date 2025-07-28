@@ -146,7 +146,7 @@ class UserProfile(models.Model):
             return self.avatar.url
         else:
             return '/static/images/default-avatar.png'
-
+    
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

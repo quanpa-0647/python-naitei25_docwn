@@ -1,0 +1,55 @@
+{% extends "base_chapter.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ chapter.title }} - {{ novel.name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'chapters/css/styles.css' %}">
+<link rel="stylesheet" href="{% static 'chapters/css/fontawesome.all.min.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="progress-bar" id="progressBar"></div>
+
+<button class="sidebar-toggle" id="sidebarToggle" title="{% trans 'Danh sách chương' %}">
+    <i class="fas fa-bars"></i>
+</button>
+
+<div class="reading-container">
+    <!-- Sidebar Navigation -->
+    {% include "chapters/components/sidebar.html" %}
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Header -->
+        {% include "chapters/components/chapter_header.html" %}
+
+        <!-- Reading Content -->
+        {% include "chapters/components/chapter_content.html" %}
+    </div>
+</div>
+
+<!-- Controls Panel -->
+{% include "chapters/components/controls_panel.html" %}
+
+<!-- Navigation -->
+{% include "chapters/components/chapter_navigation.html" %}
+
+<!-- Reading Stats -->
+{% include "chapters/components/reading_stats.html" %}
+
+{% block extra_js %}
+<script>
+    window.chapterData = {
+        chapterId: {{ chapter.id }},
+        totalChunks: {{ total_chunks }},
+        loadedChunks: {{ loaded_chunks }},
+        isAuthenticated: {{ request.user.is_authenticated|yesno:"true,false" }}
+    };
+</script>
+<script src="{% static 'chapters/js/chapter_reader.js' %}"></script>
+{% endblock %}
+
+{% csrf_token %}
+{% endblock %}

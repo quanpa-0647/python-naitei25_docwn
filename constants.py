@@ -42,8 +42,9 @@ class ApprovalStatus(Enum):
     def choices(cls):
         return [(i.value, i.name) for i in cls]
 
-COUNT_DEFAULT = 0
+START_POSITION_DEFAULT = 1
 PROGRESS_DEFAULT = 0.0
+COUNT_DEFAULT = 0
 
 # Constants for max_length
 MAX_USERNAME_LENGTH = 255
@@ -61,6 +62,7 @@ MAX_ROLE_LENGTH = 2
 MAX_SESSION_REMEMBER = 1209600
 MAX_RATE = 5
 MAX_TOKEN_LENGTH = 255
+MAX_LIMIT_CHUNKS = 5
 
 # Constants for min_length
 MIN_RATE = 0
@@ -76,3 +78,4 @@ DATE_FORMAT_DMY = "d/m/Y"
 
 # Chapter
 MAX_CHAPTER_LIST = 4
+MAX_CHAPTER_LIST_PLUS = 5
