@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 from accounts.models import User
 from constants import (
     MAX_NAME_LENGTH,
@@ -11,6 +11,10 @@ from constants import (
     Gender,
     ProgressStatus,
     ApprovalStatus,
+    MIN_RATE,
+    MAX_RATE,
+    COUNT_DEFAULT,
+    PROGRESS_DEFAULT
 )
 
 
@@ -38,89 +42,204 @@ class PersonBase(models.Model):
     class Meta:
         abstract = True
 
-
 class Author(PersonBase):
-    pass
-
+    class Meta:
+        indexes = [
+            models.Index(fields=['name']),
+        ]
 
 class Artist(PersonBase):
-    pass
+    class Meta:
+        indexes = [
+            models.Index(fields=['name']),
+        ]
 
 
 class Tag(models.Model):
     name = models.CharField(max_length=MAX_TAG_LENGTH, unique=True)
+    slug = models.SlugField(max_length=MAX_TAG_LENGTH, unique=True)
+    description = models.TextField(null=True, blank=True)
+    
+    def __str__(self):
+        return self.name
 
 
 class Novel(models.Model):
     name = models.CharField(max_length=MAX_NAME_LENGTH)
+    slug = models.SlugField(max_length=MAX_NAME_LENGTH, unique=True)
     summary = models.TextField()
     author = models.ForeignKey(
-        Author, on_delete=models.SET_NULL, null=True, blank=True
+        Author, on_delete=models.SET_NULL, null=True, blank=True, related_name='novels'
     )
     artist = models.ForeignKey(
-        Artist, on_delete=models.SET_NULL, null=True, blank=True
+        Artist, on_delete=models.SET_NULL, null=True, blank=True, related_name='novels'
     )
+    tags = models.ManyToManyField(Tag, through='NovelTag', related_name='novels')
     image_url = models.TextField(null=True, blank=True)
-    progess_status = models.CharField(
+    progress_status = models.CharField(
         max_length=MAX_STATUS_LENGTH,
         choices=ProgressStatus.choices(),
         default=ProgressStatus.ONGOING.value,
+        db_index=True,
     )
     approval_status = models.CharField(
         max_length=MAX_STATUS_LENGTH,
         choices=ApprovalStatus.choices(),
         default=ApprovalStatus.DRAFT.value,
+        db_index=True,
     )
     other_names = models.TextField(null=True, blank=True)
-    word_count = models.IntegerField(default=0)
-    view_count = models.IntegerField(default=0)
-    favorite_count = models.IntegerField(default=0)
-    rating_avg = models.FloatField(default=0)
+    word_count = models.IntegerField(default=COUNT_DEFAULT)
+    view_count = models.IntegerField(default=COUNT_DEFAULT)
+    favorite_count = models.IntegerField(default=COUNT_DEFAULT)
+    rating_avg = models.FloatField(
+        default=COUNT_DEFAULT,
+        validators=[MinValueValidator(MIN_RATE), MaxValueValidator(MAX_RATE)]
+    )
+    
     created_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_novels'
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     rejected_reason = models.TextField(null=True, blank=True)
+    deleted_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['-created_at']),
+            models.Index(fields=['-view_count']),
+            models.Index(fields=['-rating_avg']),
+            models.Index(fields=['approval_status', '-created_at']),
+            models.Index(fields=['progress_status']),
+            models.Index(fields=['deleted_at'])
+        ]
+        
+    def __str__(self):
+        return self.name
 
 
 class NovelTag(models.Model):
-    novel = models.ForeignKey(Novel, on_delete=models.CASCADE)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    novel = models.ForeignKey(Novel, on_delete=models.RESTRICT)
+    tag = models.ForeignKey(Tag, on_delete=models.RESTRICT)
 
     class Meta:
         unique_together = ("novel", "tag")
+        indexes = [
+            models.Index(fields=['novel', 'tag']),
+        ]
 
 
 class Volume(models.Model):
-    novel = models.ForeignKey(Novel, on_delete=models.CASCADE)
+    novel = models.ForeignKey(Novel, on_delete=models.RESTRICT, related_name='volumes')
     name = models.CharField(max_length=MAX_NAME_LENGTH)
     position = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('novel', 'position')
+        ordering = ['position']
+        indexes = [
+            models.Index(fields=['novel', 'position']),
+        ]
+        
+    def __str__(self):
+        return f"{self.novel.name} - {self.name}"
 
 
 class Chapter(models.Model):
-    volume = models.ForeignKey(Volume, on_delete=models.CASCADE)
+    volume = models.ForeignKey(Volume, on_delete=models.RESTRICT, related_name='chapters')
     title = models.CharField(max_length=MAX_TITLE_LENGTH)
-    length = models.IntegerField()
+    slug = models.SlugField(max_length=MAX_TITLE_LENGTH)
+    position = models.IntegerField()
+    word_count = models.IntegerField(default=COUNT_DEFAULT)
+    view_count = models.IntegerField(default=COUNT_DEFAULT)
+    approved = models.BooleanField(default=False, db_index=True)
+    rejected_reason = models.TextField(null=True, blank=True)
+    is_hidden = models.BooleanField(default=False, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    approved = models.BooleanField(default=False)
-    rejected_reason = models.TextField(null=True, blank=True)
-    is_hidden = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('volume', 'position')
+        ordering = ['volume', 'position']
+        indexes = [
+            models.Index(fields=['volume', 'position']),
+            models.Index(fields=['approved', 'is_hidden']),
+        ]
+        
+    def __str__(self):
+        return f"{self.volume.novel.name} - {self.title}"
+    
+    @property
+    def novel(self):
+        return self.volume.novel
+    
+    def get_content(self):
+        chunks = self.chunks.all().order_by('position')
+        return '\n'.join([chunk.content for chunk in chunks])
+    
+    def get_next_chapter(self):
+        return Chapter.objects.filter(
+            volume__novel=self.volume.novel,
+            volume__position__gte=self.volume.position,
+            position__gt=self.position,
+            approved=True,
+            is_hidden=False
+        ).order_by('volume__position', 'position').first()
+    
+    def get_previous_chapter(self):
+        return Chapter.objects.filter(
+            volume__novel=self.volume.novel,
+            volume__position__lte=self.volume.position,
+            position__lt=self.position,
+            approved=True,
+            is_hidden=False
+        ).order_by('-volume__position', '-position').first()
 
 
 class Chunk(models.Model):
-    chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE)
+    chapter = models.ForeignKey(Chapter, on_delete=models.RESTRICT, related_name='chunks')
     position = models.IntegerField()
     content = models.TextField()
+    word_count = models.IntegerField(default=COUNT_DEFAULT)
+    
+    class Meta:
+        unique_together = ('chapter', 'position')
+        ordering = ['position']
+        indexes = [
+            models.Index(fields=['chapter', 'position']),
+        ]
+        
+    def __str__(self):
+        return f"{self.chapter.title} - Chunk {self.position}"
 
 
 class ReadingHistory(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name='reading_history')
+    chapter = models.ForeignKey(Chapter, on_delete=models.RESTRICT, related_name='reading_history')
+    novel = models.ForeignKey(Novel, on_delete=models.RESTRICT, related_name='reading_history')
     read_at = models.DateTimeField(auto_now_add=True)
+    reading_progress = models.FloatField(default=PROGRESS_DEFAULT)
+
+    class Meta:
+        unique_together = ('user', 'chapter')
+        indexes = [
+            models.Index(fields=['user', '-read_at']),
+            models.Index(fields=['user', 'novel', '-read_at']),
+            models.Index(fields=['chapter']),
+        ]
 
 
 class Favorite(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    novel = models.ForeignKey(Novel, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name='favorites')
+    novel = models.ForeignKey(Novel, on_delete=models.RESTRICT, related_name='favorites')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'novel')
+        indexes = [
+            models.Index(fields=['user', '-created_at']),
+            models.Index(fields=['novel']),
+        ]

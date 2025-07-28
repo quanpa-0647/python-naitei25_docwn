@@ -1,0 +1,6 @@
+django
+mysqlclient
+dotenv
+Pillow
+social-auth-app-django
+django-recaptcha
