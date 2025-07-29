@@ -1,0 +1,8 @@
+{% load i18n %}
+
+<div class="meta-row section">
+  <span><strong>{% trans "Lần cuối:" %}</strong> {{ novel.updated_at|timesince }} {% trans "trước" %}</span>
+  <span><strong>{% trans "Số từ:" %}</strong> {{ novel.word_count }}</span>
+  <span><strong>{% trans "Đánh giá" %}</strong> {{ novel.rating_avg }} / 0</span>
+  <span><strong>{% trans "Lượt xem:" %}</strong> {{ novel.view_count }}</span>
+</div>

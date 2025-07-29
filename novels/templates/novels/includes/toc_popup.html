@@ -1,0 +1,13 @@
+{% load i18n %}
+
+<div id="tocOverlay" class="toc-overlay">
+  <div class="toc-box">
+    <button id="closeTOC" class="toc-close">✖</button>
+    <h3>{% trans "Mục lục" %}</h3>
+    <ul class="toc-list">
+      {% for volume in volumes %}
+        <li><a href="#volume{{ forloop.counter }}">{{ forloop.counter|stringformat:"02d" }}. {{ volume.name }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>

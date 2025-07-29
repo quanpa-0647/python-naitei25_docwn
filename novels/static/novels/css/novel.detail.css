@@ -1,0 +1,452 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 18px;
+}
+
+.main-card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  max-width: 100%;
+  margin: auto;
+}
+
+.left {
+  width: 180px;
+  text-align: center;
+  position: relative;
+}
+
+.left img {
+  width: 100%;
+  border-radius: 4px;
+}
+
+.btn-trans {
+  margin-top: 10px;
+  background-color: #36a189;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.right {
+  flex: 1;
+}
+
+.sub {
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.tags span {
+  display: inline-block;
+  background-color: #eeeeee;
+  border-radius: 9px;
+  padding: 4px 10px;
+  margin: 8px;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 14px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  font-size: 14px;
+}
+
+.meta-row {
+  display: flex;
+  gap: 30px;
+  font-size: 14px;
+  flex-wrap: wrap;
+  color: #444;
+}
+
+.meta-row span {
+  white-space: nowrap;
+}
+
+.translator-box {
+  position: absolute;
+  top: 20px;
+  right: -220px;
+  width: 200px;
+  background-color: #fafafa;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.group {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.notes button {
+  margin-right: 5px;
+  padding: 4px 6px;
+  font-size: 12px;
+}
+
+.discussion {
+  margin-top: 10px;
+  background-color: #00bcd4;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 4px;
+}
+
+.content-box {
+  display: flex;
+  gap: 20px;
+}
+
+.right h1 {
+  font-size: 27px;
+  margin-bottom: 5px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 20px 0;
+}
+
+.summary {
+  line-height: 1.5;
+  position: relative;
+  transition: max-height 0.3s ease;
+}
+
+.summary.short {
+  max-height: 3.9em;
+  overflow: hidden;
+}
+
+.summary.short::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1.5em;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), white 100%);
+  pointer-events: none;
+}
+
+.toggle-link {
+  color: black;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.toggle-link:hover {
+  color: #36a189;
+}
+.section {
+  margin-bottom: 20px;
+}
+
+.section a {
+  text-decoration: none;
+  color: #333; 
+}
+
+.info-layout-wrapper {
+  display: flex;
+  max-width: 100%;
+  width: 100%;
+  gap: 30px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Hộp thông tin truyện */
+.main-info-box {
+  flex: 3.2;
+}
+
+/* Cột bên phải */
+.side-info-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Hộp nhóm dịch */
+.group-box {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-bottom: 5px solid #c0392b;
+  border-radius: 6px;
+  overflow: hidden;
+  font-family: sans-serif;
+}
+
+.group-header {
+  background-color: #36a189;
+  color: white;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.group-header img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.group-user {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.group-body {
+  padding: 15px;
+}
+
+.group-label {
+  color: gray;
+  margin: 0;
+}
+
+.group-name {
+  font-weight: bold;
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+/* Hộp chú thích */
+.custom-box {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 15px;
+  font-family: sans-serif;
+}
+
+.box-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.note-links {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.note-links li {
+  margin-bottom: 5px;
+}
+
+.note-links a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.post-btn {
+  background-color: #00bcd4;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.volume-box {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 20px;
+  margin-top: 30px;
+  font-family: sans-serif;
+}
+
+.volume-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.volume-content {
+  display: flex;
+  gap: 20px;
+}
+
+.volume-cover img {
+  width: 120px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.chapter-list {
+  flex: 1;
+}
+
+.chapter-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+  color: #333;
+}
+
+.chapter-item.hidden {
+  display: none;
+}
+
+.chapter-item:last-child {
+  border-bottom: none;
+}
+
+.chapter-date {
+  color: #999;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.chapter-item.disabled {
+  color: #ccc;
+  font-style: italic;
+}
+
+.see-more {
+  margin-top: 10px;
+}
+
+.see-more a {
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+}
+
+.see-more a:hover {
+  font-weight: bold;
+  color: #36a189;
+  text-decoration: none;
+}
+
+.chapter-extra {
+  margin-top: 5px;
+}
+
+.chapter-extra.hidden {
+  display: none;
+}
+
+.toc-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 20%;
+  height: 85%;
+  background: white;
+  border-left: 1px solid #ccc;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 999;
+  overflow-y: auto;
+  padding: 20px;
+  border-radius: 15px;
+  margin-right: 20px;
+  margin-top: 50px;
+  display: none;
+}
+
+.toc-overlay.show {
+  transform: translateX(0);
+  right: 0;
+  display: block;
+}
+
+.toc-box h3 {
+  margin-top: 0;
+}
+
+.toc-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  font-size: 16px;
+  padding: 4px 8px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.toc-list li {
+  margin-bottom: 10px;
+}
+
+.toc-list a {
+  text-decoration: none;
+  color: #333;
+}
+
+.toc-list a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb a {
+  text-decoration: none;
+  color: #333;
+}
+
+.page-wrapper {
+  max-width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  background-color: #f8f8f8;
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: sans-serif;
+  color: #333;
+  gap: 6px;
+  margin: 20px 0 10px 0;
+  width: fit-content;
+}
+
+.breadcrumb i {
+  font-size: 16px;
+}
+
+

@@ -1,0 +1,17 @@
+{% load i18n %}
+
+<div class="content-box section">
+  <div class="left">
+    <img src="{{ novel.image_url }}" alt="{{ novel.name }}">
+  </div>
+  <div class="right">
+    <h1>{{ novel.name }}</h1>
+    <div class="tags">
+      {% for tag in tags %}<span>{{ tag.name }} </span>{% endfor %}
+    </div>
+
+    <p><strong>{% trans "Tác giả:" %}</strong> {{ novel.author }}</p>
+    <p><strong>{% trans "Họa sĩ:" %}</strong> {{ novel.artist }}</p>
+    <p><strong>{% trans "Tình trạng:" %}</strong> {{ novel.get_progress_status_display }}</p>
+  </div>
+</div>

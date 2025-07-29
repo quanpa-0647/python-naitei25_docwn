@@ -1,0 +1,40 @@
+<!-- novels/templates/novels/novel_detail.html -->
+{% extends "base__home.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'novels/css/novel.detail.css' %}">
+<link rel="stylesheet" href="{% static 'novels/css/fontawesome.all.min.css' %}">
+<script src="{% static 'novels/js/jquery.min.js' %}"></script>
+<script src="{% static 'novels/js/summary-toggle.js' %}" defer></script>
+<script src="{% static 'novels/js/chapter-toggle.js' %}" defer></script>
+<script src="{% static 'novels/js/toc-popup.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+  <div class="page-wrapper">
+    {% include "novels/includes/breadcrumb.html" %}
+
+    <div class="info-layout-wrapper">
+      <div class="main-info-box">
+        <div class="main-card">
+
+          {% include "novels/includes/main_info.html" %}
+          <hr>
+          {% include "novels/includes/stats.html" %}
+          <hr>
+          {% include "novels/includes/meta.html" %}
+          <hr>
+          {% include "novels/includes/summary.html" %}
+        </div>
+
+        {% include "novels/includes/volume_list.html" %}
+      </div>
+
+      {% include "novels/includes/sidebar.html" %}
+    </div>
+  </div>
+
+  {% include "novels/includes/toc_popup.html" %}
+{% endblock %}
