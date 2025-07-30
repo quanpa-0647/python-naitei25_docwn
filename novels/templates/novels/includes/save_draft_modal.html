@@ -1,0 +1,21 @@
+{% load i18n %}
+
+<!-- Save Draft Confirmation Modal (Hidden by default) -->
+<div id="saveDraftModal" class="save-draft-modal hidden">
+    <div class="save-draft-modal-content">
+        <div class="save-draft-modal-header">
+            <h3 class="save-draft-modal-title">{% trans "Thay đổi chưa lưu" %}</h3>
+        </div>
+        <div class="save-draft-modal-body">
+            {% trans "Bạn có thay đổi chưa lưu, sẽ bị mất nếu rời khỏi trang này. Bạn có muốn lưu lại bản nháp trước khi tiếp tục không?" %}
+        </div>
+        <div class="save-draft-modal-footer">
+            <button type="button" id="discardBtn" class="discard-btn">
+            {% trans "Không lưu" %}
+            </button>
+            <button type="button" id="saveDraftBtn" class="save-draft-btn">
+            {% trans "Lưu bản nháp" %}
+            </button>
+        </div>
+    </div>
+</div>
