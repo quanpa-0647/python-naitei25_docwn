@@ -1,0 +1,15 @@
+{% load i18n %}
+<a href="#" class="card3">
+  <div class="card3-img-wrapper">
+    <img
+      src="{{ card.image_url }}"
+      alt="Card Image"
+      class="card3-img"
+    />
+  </div>
+  <div class="card3-text">
+    <div class="card3-title">{{ card.title }}</div>
+    <p class="card3-desc">{{ card.description }}</p>
+  </div>
+</a>
+

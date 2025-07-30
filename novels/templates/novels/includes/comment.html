@@ -1,0 +1,24 @@
+{% load i18n %}
+<div class="comment-box">
+  <div class="comment-header">
+    <div class="comment-title">{% trans "Bình luận" %}</div>
+    <div class="comment-subtitle">{% trans "GẦN ĐÂY" %}</div>
+  </div>
+
+  <div class="comment-list">
+    {% for c in comments %}
+    <div class="comment-item">
+      <div class="comment-item-title">{{ c.title|truncatechars:35 }}</div>
+      <div class="comment-item-body">{{ c.comment }}</div>
+      <div class="comment-footer">
+        <div class="comment-user">
+          <img src="{{ c.avatar }}" class="comment-avatar">
+          <span class="comment-username">{{ c.username }}</span>
+        </div>
+        <span class="comment-time">{{ c.time }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+

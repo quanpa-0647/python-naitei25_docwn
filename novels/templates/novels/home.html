@@ -1,0 +1,134 @@
+{% extends "base.html" %} {% load static %} 
+{% load i18n %}
+{% block title %}{% trans "Trang chủ" %}{%endblock %} 
+{% block head %}
+<link rel="stylesheet" href="{% static 'novels/css/home.css' %}" />
+{% endblock %}
+{% block content %}
+<div class="container my-4">
+  <img
+    id="slideshow-banner"
+    src="{% static 'novels/images/banner1.jpg' %}"
+    class="img-fluid w-100 rounded"
+    alt="Banner"
+  />
+</div>
+
+{% block main %}
+<div class="main__container">
+  <div class="left__container">
+
+    <!-- Nổi bật -->
+    <div class="container">
+      <div class="trend__novel__type">
+        <div class="trend__novel__text">
+          <img src="{% static 'novels/images/cup.png' %}" class="cup__image" />
+          <p class="mt-3">{% trans "Nổi bật" %}</p>
+        </div>
+        <a href="#">{% trans "Top tháng" %}</a>
+        <a href="#">{% trans "Toàn t/gian" %}</a>
+      </div>
+      <div class="trend_novels">
+        {% for card in card_list|slice:":4" %}
+          {% include 'novels/includes/card1.html' %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Sáng tác -->
+    <div class="container">
+      <div class="new__novel__type">
+        <div class="new__novel__text">
+          <div>{% trans "Sáng tác" %}</div>
+        </div>
+        <div href="#" class="new__text">{% trans "MỚI NHẤT" %}</div>
+      </div>
+      <div class="new_novels">
+        {% for card in card_list|slice:":11" %}
+          {% include 'novels/includes/card2.html' %}
+        {% endfor %}
+        <a class="more__card" href="#">
+          <img src="{% static 'novels/images/more.png' %}" alt="Book Cover" class="more__card-image">
+          <div class="more__card-overlay">
+            <i class='bxr bx-arrow-right-circle more__card-icon'></i>
+            <p class="more__card-text">{% trans "Xem thêm" %}</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Truyện dịch -->
+    <div class="container">
+      <div class="new__novel__type">
+        <div class="new__novel__text">
+          <div>{% trans "Truyện dịch" %}</div>
+        </div>
+        <div href="#" class="new__text">{% trans "MỚI NHẤT" %}</div>
+      </div>
+      <div class="new_novels">
+        {% for card in card_list|slice:":11" %}
+          {% include 'novels/includes/card2.html' %}
+        {% endfor %}
+        <a class="more__card" href="#">
+          <img src="{% static 'novels/images/more.png' %}" alt="Book Cover" class="more__card-image">
+          <div class="more__card-overlay">
+            <i class='bxr bx-arrow-right-circle more__card-icon'></i>
+            <p class="more__card-text">{% trans "Xem thêm" %}</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Truyện vừa đăng -->
+    <div class="container">
+      <div class="new__novel__type">
+        <div class="new__novel__text">
+          <div>{% trans "Truyện" %}</div>
+        </div>
+        <div class="new__text">{% trans "VỪA ĐĂNG" %}</div>
+      </div>
+      <div class="new_novels">
+        {% for card in card_list|slice:":6" %}
+          {% include 'novels/includes/card3.html' %}
+        {% endfor %}
+        <a href="#" class="custom-btn">
+          <i class='bxr bx-arrow-right-stroke-circle'></i>
+          <strong>{% trans "Xem thêm" %}</strong>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="right__container">
+    {% include 'novels/includes/review.html' with discussion_data=discussion_data %}
+    <br></br>
+    {% include 'novels/includes/comment.html' with comments=comments %}
+
+  </div>
+</div>
+
+<br></br>
+<div class="container__finish">
+  <div class="finish__novel__type">
+    <div class="finish__novel__text">
+      <div>{% trans "TRUYỆN" %}</div>
+    </div>
+    <div href="#" class ="finish__text">{% trans "ĐÃ HOÀN THÀNH" %}</div>
+  </div>
+  <div class="finish_novels">
+    {% for card in card_list|slice:":7" %} 
+    {% include 'novels/includes/card2.html' %} {% endfor %}
+
+  </div>
+</div>
+{% endblock %}
+
+<script>
+  const images = [
+    "{% static 'novels/images/banner1.jpg' %}",
+    "{% static 'novels/images/banner2.png' %}",
+    "{% static 'novels/images/banner3.png' %}",
+  ];
+</script>
+<script src="{% static 'novels/js/banner.js' %}"></script>
+
+{% endblock %}
