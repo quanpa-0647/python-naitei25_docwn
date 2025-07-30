@@ -18,13 +18,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
+from django.conf import settings
 from django.conf.urls.static import static
-from .settings import STATIC_ROOT, STATIC_URL
+from .settings import STATIC_ROOT, STATIC_URL, MEDIA_URL, MEDIA_ROOT
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("accounts.urls")),
     path("novels/", include("novels.urls")),
     path("interactions/", include("interactions.urls")),
-    path("", RedirectView.as_view(url="novels/")),
+    path("", RedirectView.as_view(url="novels/"), name='home'),
+    path('oauth/', include('social_django.urls', namespace='social')),
 ] + static(STATIC_URL, document_root=STATIC_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT)

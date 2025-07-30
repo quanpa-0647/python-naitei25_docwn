@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/styles.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <a href="{% url 'home' %}" class="logo">{% trans "Bảng điều khiển" %}</a>
+    <div class="nav-links">
+        <a href="{% url 'accounts:login' %}">{% trans "Đăng nhập" %}</a>
+        <a href="{% url 'accounts:register' %}">{% trans "Đăng ký" %}</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="login-form">
+        <div class="form-title">{% trans "Đăng nhập" %}</div>
+        
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+            </div>
+
+            <div class="form-group">
+                {{ form.password.label_tag }}
+                {{ form.password }}
+            </div>
+
+            <div>
+                {{ form.captcha }}
+            </div>
+
+            <div class="remember-me">
+                {{ form.remember_me }}
+                {{ form.remember_me.label_tag }}
+            </div>
+
+            <button type="submit" class="login-button">{% trans "Đăng nhập" %}</button>
+        </form>
+
+        <div class="alternative-login">
+            <div class="forgot-password">
+                <a href="{% url 'accounts:forgot_password' %}">{% trans "Quên mật khẩu?" %}</a>
+            </div>
+
+            <a href="{% url 'social:begin' 'google-oauth2' %}" class="google-login">
+                <div class="google-icon">G</div>
+                {% trans "Đăng nhập với Google" %}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
