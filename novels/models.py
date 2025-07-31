@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.text import slugify
+from django.utils.crypto import get_random_string
 from accounts.models import User
 from constants import (
     MAX_NAME_LENGTH,
@@ -117,6 +119,35 @@ class Novel(models.Model):
         
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            # Generate slug from name
+            if self.name and self.name.strip():
+                base_slug = slugify(self.name.strip())
+            else:
+                base_slug = 'untitled-novel'
+                
+            if not base_slug:  # If slugify returns empty string (e.g., non-Latin characters)
+                base_slug = 'novel'
+            
+            # Ensure uniqueness
+            slug = base_slug
+            counter = 1
+            while Novel.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            
+            self.slug = slug
+            
+        # Ensure required fields have values
+        if not self.name or not self.name.strip():
+            self.name = "Untitled Novel"
+            
+        if not self.summary or not self.summary.strip():
+            self.summary = "No summary available"
+        
+        super().save(*args, **kwargs)
 
 
 class NovelTag(models.Model):

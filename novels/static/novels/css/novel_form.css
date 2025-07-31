@@ -1,0 +1,739 @@
+/* novel_form.css */
+
+/* Apply styles only within novel form page - scoped reset */
+.novel-form-page * {
+    box-sizing: border-box;
+}
+
+/* Apply styles only within novel form page */
+.novel-form-page {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+}
+
+/* Ensure form doesn't interfere with footer positioning */
+.novel-form-page .main__container {
+    min-height: auto;
+    margin-bottom: 2rem;
+}
+
+.novel-form-page .container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.novel-form-page .header {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    padding: 32px;
+    border-bottom: 1px solid #e0e0e0;
+    position: relative;
+    overflow: hidden;
+}
+
+.novel-form-page .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(25, 118, 210, 0.1) 0%, transparent 70%);
+    animation: headerGlow 8s ease-in-out infinite;
+}
+
+@keyframes headerGlow {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.1); }
+}
+
+.novel-form-page .series-info {
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.novel-form-page .series-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1976d2;
+    margin-bottom: 16px;
+    text-shadow: 0 2px 4px rgba(25, 118, 210, 0.1);
+    position: relative;
+}
+
+.novel-form-page .series-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #1976d2, #42a5f5);
+    border-radius: 2px;
+}
+
+.novel-form-page .series-rules {
+    font-size: 15px;
+    color: #546e7a;
+    line-height: 1.6;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 16px;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+
+.novel-form-page .series-rules div {
+    margin-bottom: 8px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.novel-form-page .series-rules div::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: #1976d2;
+    font-weight: bold;
+}
+
+.novel-form-page .guide-link {
+    color: #1976d2;
+    text-decoration: none;
+    font-weight: 600;
+    position: relative;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: rgba(25, 118, 210, 0.1);
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.novel-form-page .guide-link:hover {
+    text-decoration: none;
+    background: rgba(25, 118, 210, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(25, 118, 210, 0.2);
+}
+
+.novel-form-page .guide-link::after {
+    content: ' →';
+    transition: transform 0.3s ease;
+}
+
+.novel-form-page .guide-link:hover::after {
+    transform: translateX(4px);
+}
+
+.novel-form-page .update-date {
+    font-size: 13px;
+    color: #78909c;
+    margin-top: 16px;
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.novel-form-page .form-container {
+    padding: 30px;
+}
+
+.novel-form-page .form-group {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+}
+
+.novel-form-page .form-label {
+    width: 140px;
+    padding-top: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.novel-form-page .required {
+    color: #e74c3c;
+    font-weight: bold;
+    margin-left: 4px;
+    font-size: 16px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+.novel-form-page .form-input {
+    flex: 1;
+    margin-left: 24px;
+    position: relative;
+}
+
+/* Override Django form styles - scoped to novel form */
+.novel-form-page .form-input input[type="text"], 
+.novel-form-page .form-input textarea,
+.novel-form-page .form-input select,
+.novel-form-page .form-input input[type="file"] {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e8f0fe;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    background: #fafbfc;
+    position: relative;
+}
+
+.novel-form-page .form-input input[type="text"]:focus, 
+.novel-form-page .form-input textarea:focus,
+.novel-form-page .form-input select:focus {
+    outline: none;
+    border-color: #1976d2;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.08);
+    transform: translateY(-1px);
+}
+
+.novel-form-page .form-input input[type="text"]:hover, 
+.novel-form-page .form-input textarea:hover,
+.novel-form-page .form-input select:hover {
+    border-color: #bbdefb;
+    background: #fff;
+}
+
+.novel-form-page .form-input textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+/* Select2 custom styles */
+.select2-container {
+    width: 100% !important;
+}
+
+.select2-container .select2-selection--single {
+    height: 42px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+}
+
+.select2-container .select2-selection--multiple {
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+    min-height: 42px !important;
+}
+
+.select2-container .select2-selection__rendered {
+    line-height: 40px !important;
+    padding-left: 12px !important;
+    color: #333 !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 40px !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #1976d2 !important;
+    border: 1px solid #1976d2 !important;
+    color: white !important;
+    border-radius: 3px !important;
+    padding: 2px 8px !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: white !important;
+    margin-right: 5px !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    color: #ffcdd2 !important;
+}
+
+/* Focus styles for Select2 */
+.select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #1976d2 !important;
+    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1) !important;
+}
+
+/* Help text styles */
+.novel-form-page .helptext {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 8px;
+    display: block;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border-left: 3px solid #94a3b8;
+    border-radius: 0 4px 4px 0;
+    font-style: italic;
+}
+
+/* Character counter styles */
+.novel-form-page .char-counter {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 8px;
+    text-align: right;
+    padding: 4px 8px;
+    background: #f1f5f9;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+    font-weight: 500;
+}
+
+.novel-form-page .char-counter.error {
+    color: #dc2626;
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+/* Error styles */
+.novel-form-page .errorlist {
+    list-style: none;
+    color: #dc2626;
+    font-size: 13px;
+    margin-top: 8px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    border-left: 4px solid #dc2626;
+}
+
+.novel-form-page .errorlist li {
+    margin-bottom: 4px;
+}
+
+.novel-form-page .errorlist li:last-child {
+    margin-bottom: 0;
+}
+
+.novel-form-page .error-item {
+    color: #dc2626;
+    font-size: 13px;
+    margin-bottom: 4px;
+    display: block;
+    position: relative;
+    padding-left: 20px;
+}
+
+.novel-form-page .error-item::before {
+    content: '⚠';
+    position: absolute;
+    left: 0;
+    color: #f59e0b;
+    font-weight: bold;
+}
+
+/* Input error state */
+.novel-form-page .form-input input.error,
+.novel-form-page .form-input textarea.error,
+.novel-form-page .form-input select.error {
+    border-color: #dc2626;
+    background: #fef2f2;
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.08);
+}
+
+.novel-form-page .form-group.has-error {
+    border-left: 3px solid #dc3545;
+}
+
+/* File input wrapper */
+.novel-form-page .file-input-wrapper {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.novel-form-page .file-input-wrapper input[type="file"] {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border: 2px dashed #c8e6c9;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #f8fffe 0%, #f1f8e9 100%);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.novel-form-page .file-input-display {
+    display: none;
+}
+
+.novel-form-page .file-input-display::before {
+    content: '📎';
+    font-size: 20px;
+    margin-right: 8px;
+}
+
+.novel-form-page .file-input-display:hover {
+    border-color: #4caf50;
+    background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+}
+
+.novel-form-page .file-input-display.has-file {
+    color: #1976d2;
+    border-color: #2196f3;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+}
+
+.novel-form-page .file-input-display.has-file::before {
+    content: '✓';
+    color: #4caf50;
+}
+
+.novel-form-page .file-input-wrapper.drag-over .file-input-display {
+    border-color: #ff9800;
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    color: #ff9800;
+}
+
+/* Image preview styling */
+.novel-form-page .image-preview {
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fafafa;
+    text-align: center;
+}
+
+.novel-form-page .image-preview img {
+    display: block;
+    margin: 0 auto 10px auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.novel-form-page .image-preview div {
+    font-size: 12px;
+    color: #666;
+    text-align: left;
+}
+
+/* Submit button */
+.novel-form-page .submit-btn {
+    background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+    color: white;
+    padding: 16px 40px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 32px;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 16px rgba(25, 118, 210, 0.3);
+}
+
+.novel-form-page .submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.novel-form-page .submit-btn:hover {
+    background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(25, 118, 210, 0.4);
+}
+
+.novel-form-page .submit-btn:hover::before {
+    left: 100%;
+}
+
+.novel-form-page .submit-btn:active {
+    background: linear-gradient(135deg, #0d47a1 0%, #0277bd 100%);
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+}
+
+.novel-form-page .submit-btn:disabled {
+    background: #9e9e9e;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Alert styles */
+.alert {
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+}
+
+.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+/* Success and error message styles */
+.success-message, .error-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 16px;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 1000;
+    max-width: 300px;
+    word-wrap: break-word;
+}
+
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Right container help section */
+.novel-form-page .right__container {
+    flex: 0 0 300px;
+    margin-left: 30px;
+}
+
+.form-help-section {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.form-help-section h5 {
+    color: #1976d2;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.form-help-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.form-help-section li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    color: #555;
+    font-size: 14px;
+}
+
+.form-help-section li:last-child {
+    border-bottom: none;
+}
+
+.form-help-section li:before {
+    content: "✓";
+    color: #4caf50;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+/* Main container layout */
+.novel-form-page .main__container {
+    display: flex;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.novel-form-page .left__container {
+    flex: 1;
+}
+
+.submit-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Hide Django's default p tags */
+.django-form p {
+    margin: 0;
+    padding: 0;
+}
+
+/* Form validation error styles */
+.form-input input.error,
+.form-input textarea.error,
+.form-input select.error {
+    border-color: #d32f2f;
+    box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.1);
+}
+
+/* Loading state */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading .submit-btn::after {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .novel-form-page .form-group {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 20px;
+    }
+
+    .novel-form-page .form-label {
+        width: 100%;
+        margin-bottom: 8px;
+        padding-top: 0;
+    }
+
+    .novel-form-page .form-label::before {
+        display: none;
+    }
+
+    .novel-form-page .form-input {
+        margin-left: 0;
+    }
+
+    .novel-form-page .container {
+        margin: 0;
+    }
+
+    .novel-form-page .form-container {
+        padding: 24px;
+    }
+
+    .novel-form-page .header {
+        padding: 24px;
+    }
+
+    .novel-form-page .series-title {
+        font-size: 24px;
+    }
+
+    .novel-form-page .series-rules {
+        font-size: 14px;
+    }
+
+    /* Mobile layout adjustments */
+    .novel-form-page .main__container {
+        flex-direction: column;
+    }
+
+    .novel-form-page .right__container {
+        flex: none;
+        margin-left: 0;
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .novel-form-page .form-container {
+        padding: 15px;
+    }
+
+    .novel-form-page .submit-btn {
+        width: 100%;
+        padding: 15px;
+    }
+}
+
+/* Image Preview Styles */
+.novel-form-page .image-preview {
+    margin-top: 10px;
+}
+
+.novel-form-page .image-preview .preview-image {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+    display: block;
+}
+
+.novel-form-page .image-preview .preview-info {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #666;
+}
+
+.novel-form-page .image-preview .preview-info strong {
+    font-weight: 600;
+}
+
+/* Hidden elements - moved from inline styles */
+.novel-form-page #imagePreviewTemplate.hidden {
+    display: none !important;
+}
+
+.novel-form-page .image-preview.hidden {
+    display: none;
+}
+
+/* Show image preview when not hidden */
+.novel-form-page .image-preview:not(.hidden) {
+    display: block;
+}
+

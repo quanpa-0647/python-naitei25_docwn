@@ -1,0 +1,16 @@
+{% load i18n %}
+
+<!-- Novel Form Header Section -->
+<div class="container my-4">
+    <div class="header">
+        <div class="series-info">
+            <div class="series-title">{% trans "Đăng truyện" %}</div>
+            <div class="series-rules">
+                <div>{% blocktrans %}Quy định chung khi đăng truyện <strong>tại đây</strong>{% endblocktrans %}</div>
+                <div>{% blocktrans %}Quy định về Truyện sáng tác <strong>tại đây</strong>{% endblocktrans %}</div>
+                <div><a href="#" class="guide-link">{% trans "Cần đọc Hướng dẫn đăng truyện" %}</a></div>
+            </div>
+            <div class="update-date">{% trans "Cập nhật ngày" %} {% now "d/m/Y" %}.</div>
+        </div>
+    </div>
+</div>

@@ -1,38 +1,55 @@
+import json
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.utils.translation import gettext as _
-from .models import Chapter, ReadingHistory, Novel, Tag, Volume
-import json
 from common.decorators import require_active_novel
-from .fake_data import card_list, discussion_data, comments
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.mixins import (
+    PermissionRequiredMixin,
+    LoginRequiredMixin,
+    )
+from django.views.generic.edit import CreateView
+from django.utils.translation import gettext_lazy as _
+from django.urls import reverse_lazy
+from .models import Novel, Tag, NovelTag, Author, Artist, Volume, Chapter, ReadingHistory
+from .forms import NovelForm
 from constants import (
     MAX_LIMIT_CHUNKS,
     START_POSITION_DEFAULT,
     PROGRESS_DEFAULT,
     DATE_FORMAT_DMY,
     MAX_CHAPTER_LIST,
-    MAX_CHAPTER_LIST_PLUS
+    MAX_CHAPTER_LIST_PLUS, 
+    DATE_FORMAT_DMY, 
+    MAX_CHAPTER_LIST,
+    ApprovalStatus
 )
+from .fake_data import card_list, discussion_data, comments
+
+# Create your views here.
+
 
 def Home(request):
     context = {
-        'card_list': card_list,
-        'discussion_data': discussion_data,
-        'comments': comments
+        "card_list": card_list,
+        "discussion_data": discussion_data,
+        "comments": comments,
     }
-    return render(request, 'novels/home.html', context)
+    return render(request, "novels/home.html", context)
+
 
 def novel_detail(request, novel_slug):
     novel = get_object_or_404(Novel, slug=novel_slug)
     tags = Tag.objects.filter(noveltag__novel=novel)
-    volumes = Volume.objects.filter(
-        novel=novel).prefetch_related('chapters')
-    
+    volumes = Volume.objects.filter(novel=novel).prefetch_related("chapters")
+
     for volume in volumes:
         volume.chapter_list = list(volume.chapters.all())
-        volume.remaining_chapters = max(len(volume.chapter_list) - MAX_CHAPTER_LIST, 0)
+        volume.remaining_chapters = max(
+            len(volume.chapter_list) - MAX_CHAPTER_LIST, 0
+        )
 
     context = {
         'novel': novel,
@@ -42,7 +59,7 @@ def novel_detail(request, novel_slug):
         'MAX_CHAPTER_LIST': MAX_CHAPTER_LIST,
         'MAX_CHAPTER_LIST_PLUS': MAX_CHAPTER_LIST_PLUS
     }
-    return render(request, 'novels/novel_detail.html', context)
+    return render(request, "novels/novel_detail.html", context)
 
 @require_active_novel
 def chapter_detail_view(request, novel_slug, chapter_slug):
@@ -175,3 +192,58 @@ def chapter_list_view(request, novel_slug):
         'chapters': chapters,
     }
     return render(request, 'chapters/chapter_list.html', context)
+
+class NovelCreateView(LoginRequiredMixin, CreateView):
+    model = Novel
+    form_class = NovelForm
+    template_name = "novels/novel_form.html"
+    success_url = reverse_lazy("novels:home")
+    login_url = reverse_lazy("accounts:login")
+
+    # Lazy text for error messages
+    permission_denied_message = _("Bạn cần đăng nhập để tạo tiểu thuyết mới.")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page_title"] = _("Tạo tiểu thuyết mới")
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        kwargs["request"] = self.request
+        return kwargs
+
+    def form_valid(self, form):
+        # Check if this is a draft save
+        save_as_draft = self.request.POST.get("save_as_draft", False)
+
+        if save_as_draft:
+            form.instance.approval_status = ApprovalStatus.DRAFT.value
+        else:
+            form.instance.approval_status = ApprovalStatus.PENDING.value
+
+        # Handle anonymous upload
+        upload_anonymously = form.cleaned_data.get("upload_anonymously", False)
+        if upload_anonymously:
+            # If uploading anonymously, set created_by to null
+            form.instance.created_by = None
+        else:
+            # Set created_by to current user
+            form.instance.created_by = (
+                self.request.user
+                if self.request.user.is_authenticated
+                else None
+            )
+
+        response = super().form_valid(form)
+
+        tags = form.cleaned_data.get("tags")
+        if tags:
+            for tag in tags:
+                NovelTag.objects.create(novel=self.object, tag=tag)
+
+        return response
+
+    def form_invalid(self, form):
+        return super().form_invalid(form)

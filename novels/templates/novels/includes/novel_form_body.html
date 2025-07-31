@@ -1,0 +1,191 @@
+{% load i18n %}
+{% load static %}
+
+<!-- Novel Form Body Section -->
+<div class="container">
+    <div class="form-container">
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <form method="post" enctype="multipart/form-data" id="novelForm">
+            {% csrf_token %}
+            
+            <!-- Novel Name -->
+            <div class="form-group">
+                <label class="form-label" for="{{ form.name.id_for_label }}">
+                    {{ form.name.label }} <span class="required">*</span>
+                </label>
+                <div class="form-input">
+                    {{ form.name }}
+                    {% if form.name.help_text %}
+                        <div class="helptext">{{ form.name.help_text }}</div>
+                    {% endif %}
+                    {% if form.name.errors %}
+                        <div class="errorlist">
+                            {% for error in form.name.errors %}
+                                <div class="error-item">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Other Names -->
+            <div class="form-group">
+                <label class="form-label" for="{{ form.other_names.id_for_label }}">
+                    {{ form.other_names.label }}
+                </label>
+                <div class="form-input">
+                    {{ form.other_names }}
+                    {% if form.other_names.help_text %}
+                        <div class="helptext">{{ form.other_names.help_text }}</div>
+                    {% endif %}
+                    {{ form.other_names.errors }}
+                </div>
+            </div>
+
+            <!-- Author -->
+            <div class="form-group">
+                <label class="form-label" for="{{ form.author.id_for_label }}">
+                    {{ form.author.label }}
+                </label>
+                <div class="form-input">
+                    {{ form.author }}
+                    {% if form.author.help_text %}
+                        <div class="helptext">{{ form.author.help_text }}</div>
+                    {% endif %}
+                    {{ form.author.errors }}
+                </div>
+            </div>
+
+            <!-- Artist -->
+            <div class="form-group">
+                <label class="form-label" for="{{ form.artist.id_for_label }}">
+                    {{ form.artist.label }}
+                </label>
+                <div class="form-input">
+                    {{ form.artist }}
+                    {% if form.artist.help_text %}
+                        <div class="helptext">{{ form.artist.help_text }}</div>
+                    {% endif %}
+                    {{ form.artist.errors }}
+                </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="form-group">
+                <label class="form-label" for="{{ form.tags.id_for_label }}">
+                    {{ form.tags.label }}
+                </label>
+                <div class="form-input">
+                    {{ form.tags }}
+                    {% if form.tags.help_text %}
+                        <div class="helptext">{{ form.tags.help_text }}</div>
+                    {% endif %}
+                    {{ form.tags.errors }}
+                </div>
+            </div>
+
+            <!-- Cover Image -->
+            <div class="form-group">
+                <label class="form-label" for="{{ form.image_file.id_for_label }}">
+                    {{ form.image_file.label }}
+                </label>
+                <div class="form-input">
+                    <div class="file-input-wrapper">
+                        {{ form.image_file }}
+                        <div class="file-input-display" id="file-display" 
+                             data-default-text="{% trans 'Choose cover image file...' %}"
+                             data-error-type="{% trans 'Please select a valid image file (JPEG, PNG, GIF, WebP)' %}"
+                             data-error-size="{% trans 'File size must be less than 5MB' %}">
+                            {% trans "Choose cover image file..." %}
+                        </div>
+                    </div>
+                    {% if form.image_file.help_text %}
+                        <div class="helptext">{{ form.image_file.help_text }}</div>
+                    {% endif %}
+                    {{ form.image_file.errors }}
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="form-group">
+                <label class="form-label" for="{{ form.summary.id_for_label }}">
+                    {{ form.summary.label }} <span class="required">*</span>
+                </label>
+                <div class="form-input">
+                    {{ form.summary }}
+                    {% if form.summary.help_text %}
+                        <div class="helptext">{{ form.summary.help_text }}</div>
+                    {% endif %}
+                    {% if form.summary.errors %}
+                        <div class="errorlist">
+                            {% for error in form.summary.errors %}
+                                <div class="error-item">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Progress Status -->
+            <div class="form-group">
+                <label class="form-label" for="{{ form.progress_status.id_for_label }}">
+                    {{ form.progress_status.label }} <span class="required">*</span>
+                </label>
+                <div class="form-input">
+                    {{ form.progress_status }}
+                    {% if form.progress_status.help_text %}
+                        <div class="helptext">{{ form.progress_status.help_text }}</div>
+                    {% endif %}
+                    {% if form.progress_status.errors %}
+                        <div class="errorlist">
+                            {% for error in form.progress_status.errors %}
+                                <div class="error-item">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Anonymous Upload -->
+            <div class="form-group">
+                <div class="anonymous-upload">
+                    {{ form.upload_anonymously }}
+                    <label class="form-label" for="{{ form.upload_anonymously.id_for_label }}">
+                        {{ form.upload_anonymously.label }}
+                    </label>
+                    {% if form.upload_anonymously.help_text %}
+                        <div class="helptext">{{ form.upload_anonymously.help_text }}</div>
+                    {% endif %}
+                    {% if form.upload_anonymously.errors %}
+                        <div class="errorlist">
+                            {% for error in form.upload_anonymously.errors %}
+                                <div class="error-item">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" 
+                    data-loading-text="{% trans 'Đang tạo tiểu thuyết...' %}"
+                    data-default-text="{% trans 'Tạo tiểu thuyết' %}">
+                {% trans "Đăng tiểu thuyết" %}
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Initialize the form functionality
+    if (typeof initializeForm === 'function') {
+        initializeForm();
+    }
+});
+</script>
+<script src="{% static 'novels/js/novel_form.js' %}"></script>

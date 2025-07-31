@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<!-- Image Preview Template (Hidden by default) -->
+<div id="imagePreviewTemplate" class="image-preview hidden">
+    <img class="preview-image" src="" alt="{% trans 'Image preview' %}">
+    <div class="preview-info">
+        <strong>{% trans "File:" %}</strong> <span class="preview-file-name"></span><br>
+        <strong>{% trans "Size:" %}</strong> <span class="preview-file-size"></span> MB
+    </div>
+</div>

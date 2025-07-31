@@ -1,0 +1,26 @@
+{% extends "base_home.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+    {{ form.media }}
+    <link rel="stylesheet" href="{% static 'novels/css/theme.css' %}" />
+    <link rel="stylesheet" href="{% static 'novels/css/novel_form.css' %}" />
+    <link rel="stylesheet" href="{% static 'novels/css/modal.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="novel-form-page">
+    <!-- Include Header Section -->
+    {% include "novels/includes/novel_form_header.html" %}
+    
+    <!-- Include Form Body Section -->
+    {% include "novels/includes/novel_form_body.html" %}
+    
+    <!-- Include Image Preview Template -->
+    {% include "novels/includes/image_preview_template.html" %}
+    
+    <!-- Include Save Draft Modal -->
+    {% include "novels/includes/save_draft_modal.html" %}
+</div>
+{% endblock %}
