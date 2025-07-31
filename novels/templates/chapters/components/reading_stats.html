@@ -1,0 +1,12 @@
+{% load i18n %}
+
+<div class="reading-stats" id="readingStats">
+    <div class="stat-item">
+        <span>{% trans "Tiến độ" %}:</span>
+        <span id="readingProgress">0%</span>
+    </div>
+    <div class="stat-item">
+        <span>{% trans "Chunk" %}:</span>
+        <span><span id="currentChunk">1</span>/<span id="totalChunks">{{ total_chunks }}</span></span>
+    </div>
+</div>

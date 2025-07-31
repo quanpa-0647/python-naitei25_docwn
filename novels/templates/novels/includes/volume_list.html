@@ -17,7 +17,7 @@
                 <span>{{ chapter.title }}</span>
                 <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
               </div>
-            {% elif forloop.counter == (MAX_CHAPTER_LIST + 1) %}
+            {% elif forloop.counter == MAX_CHAPTER_LIST_PLUS %}
               <div id="extraChapters{{ volume.id }}" class="chapter-extra hidden">
                 <div class="chapter-item">
                   <span>{{ chapter.title }}</span>

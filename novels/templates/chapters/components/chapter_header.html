@@ -1,0 +1,12 @@
+{% load i18n %}
+
+<div class="chapter-header">
+    <div class="header-content">
+        <div class="inside-content">
+            <div class="chapter-title">{{ chapter.title }}</div>
+            <div class="chapter-meta">
+                {{ volume.name }} • {{ chapter.word_count }} {% trans "từ" %} • {% trans "Cập nhật" %}: {{ chapter.updated_at|date:DATE_FORMAT_DMY }}
+            </div>
+        </div>
+    </div>
+</div>

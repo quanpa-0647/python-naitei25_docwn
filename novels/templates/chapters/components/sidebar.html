@@ -1,0 +1,16 @@
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="novel-title">{{ novel.name }}</div>
+        <div class="author-name">{{ novel.author.name }}</div>
+    </div>
+    <ul class="chapter-list">
+        {% for ch in all_chapters %}
+        <li class="chapter-item">
+            <a href="{% url 'novels:chapter_detail' novel.slug ch.slug %}" 
+                class="chapter-link {% if ch.id == chapter.id %}current{% endif %}">
+                {{ ch.volume.name }} - {{ ch.title }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>

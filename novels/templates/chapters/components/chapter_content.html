@@ -1,0 +1,16 @@
+{% load i18n %}
+
+<div class="reading-content">
+    <div id="chunksContainer">
+        {% for chunk in chunks %}
+        <div class="chunk" data-position="{{ chunk.position }}">
+            {{ chunk.content|linebreaksbr }}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="loading-indicator" id="loadingIndicator">
+        <div class="loading-spinner"></div>
+        <div>{% trans "Đang tải nội dung..." %}</div>
+    </div>
+</div>
