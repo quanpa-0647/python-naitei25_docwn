@@ -1,0 +1,40 @@
+{% load i18n %}
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>{% trans "Tên" %}</th>
+            <th>{% trans "Slug" %}</th>
+            <th>{% trans "Mô tả" %}</th>
+            <th>{% trans "Thao tác" %}</th>
+        </tr>
+    </thead>
+    <tbody id="tagTableBody">
+        {% for tag in tags %}
+        <tr data-id="{{ tag.id }}" data-slug="{{ tag.slug }}">
+            <td class="tag-name">{{ tag.name }}</td>
+            <td class="tag-slug">{{ tag.slug }}</td>
+            <td class="tag-desc">{{ tag.description }}</td>
+            <td>
+                <button class="btn btn-sm btn-warning edit-btn" data-bs-toggle="modal" data-bs-target="#tagModal" data-action="edit">
+                    {% trans "Sửa" %}
+                </button>
+                <button class="btn btn-sm btn-danger delete-btn">
+                    {% trans "Xóa" %}
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if tags.has_other_pages %}
+<nav>
+    <ul class="pagination">
+        {% for page_num in tags.paginator.page_range %}
+            <li class="page-item {% if tags.number == page_num %}active{% endif %}">
+                <a class="page-link" href="?q={{ query }}&page={{ page_num }}">{{ page_num }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</nav>
+{% endif %}

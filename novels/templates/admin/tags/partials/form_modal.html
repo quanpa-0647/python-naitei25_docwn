@@ -1,0 +1,36 @@
+{% load i18n %}
+
+<div class="modal fade" id="tagModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="tagForm" method="post" data-action="create" data-slug="">
+      {% csrf_token %}
+
+      <input type="hidden" name="tag_slug" />
+
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{% trans "Thêm / Sửa Tag" %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Đóng' %}"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="id_name" class="form-label">{% trans "Tên tag" %}</label>
+            <input type="text" name="name" id="id_name" class="form-control" required>
+            <div class="invalid-feedback name-error"></div>
+          </div>
+
+          <div class="mb-3">
+            <label for="id_description" class="form-label">{% trans "Mô tả" %}</label>
+            <textarea name="description" id="id_description" class="form-control"></textarea>
+            <div class="invalid-feedback description-error"></div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">{% trans "Lưu" %}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

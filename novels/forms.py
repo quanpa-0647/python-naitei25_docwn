@@ -17,6 +17,7 @@ from constants import (
     MAX_NOVEL_IMAGE_SIZE,
 )
 from accounts.models import User
+from django.utils.text import slugify
 
 
 class NovelForm(forms.ModelForm):
@@ -388,3 +389,28 @@ class NovelForm(forms.ModelForm):
             novel.save()
             self.save_m2m()
         return novel
+
+class TagForm(forms.ModelForm):
+    class Meta:
+        model = Tag
+        fields = ['name', 'description']
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        slug = slugify(name)
+
+        # Nếu đang chỉnh sửa (tức là self.instance đã có id)
+        if Tag.objects.exclude(id=self.instance.id).filter(slug=slug).exists():
+            raise forms.ValidationError("Tag với tên này đã tồn tại.")
+
+        return name
+
+
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.slug = slugify(instance.name)
+        if commit:
+            instance.save()
+        return instance
+
