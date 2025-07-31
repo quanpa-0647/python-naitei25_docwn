@@ -1,0 +1,50 @@
+{% load i18n %}
+
+{% for volume in volumes %}
+  <div id="volume{{ forloop.counter }}" class="volume-box">
+    <h3 class="volume-title">{{ volume.name }}</h3>
+
+    <div class="volume-content">
+      <div class="volume-cover">
+        <img src="{{ novel.image_url }}" alt="{{ volume.name }}">
+      </div>
+
+      <div class="chapter-list">
+        {% with chapter_list=volume.chapter_list %}
+          {% for chapter in chapter_list %}
+            {% if forloop.counter <= MAX_CHAPTER_LIST %}
+              <div class="chapter-item">
+                <span>{{ chapter.title }}</span>
+                <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
+              </div>
+            {% elif forloop.counter == (MAX_CHAPTER_LIST + 1) %}
+              <div id="extraChapters{{ volume.id }}" class="chapter-extra hidden">
+                <div class="chapter-item">
+                  <span>{{ chapter.title }}</span>
+                  <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
+                </div>
+            {% else %}
+                <div class="chapter-item">
+                  <span>{{ chapter.title }}</span>
+                  <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
+                </div>
+            {% endif %}
+          {% endfor %}
+
+          {% if chapter_list|length > MAX_CHAPTER_LIST %}
+            </div>
+            <div class="see-more">
+              <a href="javascript:void(0)" class="toggleChapters"
+                data-target="extraChapters{{ volume.id }}"
+                data-text-show="{% trans 'Xem tiếp' %}"
+                data-text-hide="{% trans 'Ẩn bớt' %}"
+                data-unit="{% trans 'chương' %}">
+                {% trans "Xem tiếp:" %} ({{ volume.remaining_chapters }} {% trans "chương" %})
+              </a>
+            </div>
+          {% endif %}
+        {% endwith %}
+      </div>
+    </div>
+  </div>
+{% endfor %}

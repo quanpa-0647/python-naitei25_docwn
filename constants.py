@@ -70,3 +70,9 @@ MIN_SESSION_REMEMBER = 0
 
 # Session
 SESSION_COOKIE_AGE_SECONDS = 86400  # 24 hours
+
+# Date
+DATE_FORMAT_DMY = "d/m/Y"
+
+# Chapter
+MAX_CHAPTER_LIST = 4

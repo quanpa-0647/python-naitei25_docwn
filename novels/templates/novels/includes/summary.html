@@ -1,0 +1,19 @@
+{% load i18n %}
+
+<div class="section">
+  <p><strong>{% trans "Tên khác:" %}</strong></p>
+  <p>{{ novel.other_names }}</p>
+</div>
+
+<hr>
+
+<div class="section">
+  <p><strong>{% trans "Tóm tắt:" %}</strong></p>
+  <p id="summary" class="summary short">{{ novel.summary }}</p>
+  <span id="toggleSummary" 
+        class="toggle-link"
+        data-text-show="{% trans 'Xem thêm' %}"
+        data-text-hide="{% trans 'Ẩn đi' %}">
+    {% trans "Xem thêm" %}
+  </span>
+</div>
