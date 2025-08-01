@@ -60,8 +60,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "accounts.middleware.UserBlockMiddleware",
-    "accounts.middleware.LoginRequiredMiddleware",
     "social_django.middleware.SocialAuthExceptionMiddleware"
 ]
 
@@ -166,15 +164,6 @@ AUTHENTICATION_BACKENDS = [
     'accounts.utils.AuthBackend',
     'django.contrib.auth.backends.ModelBackend',
     'social_core.backends.google.GoogleOAuth2',
-]
-
-LOGIN_EXEMPT_URLS = [
-    '/accounts/login/',
-    '/accounts/register/',
-    '/accounts/forgot-password/',
-    '/admin/',
-    '/static/',
-    '/media/',
 ]
 
 # Login/Logout URLs
