@@ -1,26 +1,22 @@
 import json
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods
-from django.utils.translation import gettext_lazy as _
-from common.decorators import require_active_novel
-from .fake_data import card_list, discussion_data, comments, getNewNovels,top_novels_this_month, new_novels,authors,novels, users,comments,novel_uploads,chapter_uploads,volume_uploads
-from django.shortcuts import render
-from datetime import date, timedelta
 import random
-from django.shortcuts import get_object_or_404
+from datetime import date, timedelta
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin,
     LoginRequiredMixin,
-    )
+)
+from django.http import JsonResponse, Http404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import CreateView
 from django.views.generic import ListView
-from django.urls import reverse_lazy
-from .models import (
-    Novel, Tag, NovelTag, Author, Artist, Volume, Chapter, ReadingHistory
-)
-from .forms import NovelForm
+
+from common.decorators import require_active_novel
 from constants import (
     MAX_LIMIT_CHUNKS,
     START_POSITION_DEFAULT,
@@ -28,12 +24,24 @@ from constants import (
     DATE_FORMAT_DMY,
     DATE_FORMAT_DMYHI,
     MAX_CHAPTER_LIST,
-    MAX_CHAPTER_LIST_PLUS, 
+    MAX_CHAPTER_LIST_PLUS,
     MAX_TRUNCATED_REJECTED_REASON_LENGTH,
     NOVEL_PER_PAGE,
     PAGINATION_PAGE_RANGE,
-    ApprovalStatus
+    ApprovalStatus,
+    WORDS_PER_MINUTE
 )
+from .fake_data import (
+    card_list, discussion_data, comments, getNewNovels, top_novels_this_month,
+    new_novels, authors, novels, users, novel_uploads, chapter_uploads,
+    volume_uploads
+)
+from .forms import NovelForm, ChapterForm
+from .models import (
+    Novel, Tag, NovelTag, Author, Artist, Volume, Chapter, ReadingHistory
+)
+from .utils import ChunkManager, SimpleChunker
+
 
 def Home(request):
     context = {
@@ -42,8 +50,12 @@ def Home(request):
         "comments": comments,
     }
     return render(request, 'novels/home.html', context)
+
+
 def Admin(request):
-    return render(request,'admin/home_admin.html')
+    return render(request, 'admin/home_admin.html')
+
+
 def Dashboard(request):
     labels, data = getNewNovels()
     return render(request, 'admin/dashboard_admin.html', {
@@ -53,12 +65,17 @@ def Dashboard(request):
         'new_novels': new_novels,
         'top_authors': authors,
     })
+
+
 def Users(request):
-    return render(request,'admin/users_admin.html',{
-        'users' : users
+    return render(request, 'admin/users_admin.html', {
+        'users': users
     })
+
+
 def Novels(request):
     return render(request, 'admin/novels_admin.html', {'novels': novels})
+
 
 def Requests(request):
     context = {
@@ -66,25 +83,45 @@ def Requests(request):
         "volume_uploads": volume_uploads,
         "chapter_uploads": chapter_uploads,
     }
-    return render(request,'admin/requests_admin.html',context)
+    return render(request, 'admin/requests_admin.html', context)
+
+
 def Comments(request):
-    return render(request,'admin/comments_admin.html',{'comments' : comments})
+    return render(request, 'admin/comments_admin.html', {'comments': comments})
+
 
 def novel_detail(request, novel_slug):
     novel = get_object_or_404(Novel, slug=novel_slug)
     tags = Tag.objects.filter(noveltag__novel=novel)
     volumes = Volume.objects.filter(novel=novel).prefetch_related("chapters")
 
+    # Check if user is the owner of the novel
+    is_owner = request.user.is_authenticated and novel.created_by == request.user
+
     for volume in volumes:
-        volume.chapter_list = list(volume.chapters.all())
+        if is_owner:
+            # Owner can see all chapters (including drafts/unapproved)
+            volume.chapter_list = list(volume.chapters.all())
+        else:
+            # Public view - only approved and visible chapters
+            volume.chapter_list = list(volume.chapters.filter(approved=True, is_hidden=False))
+        
         volume.remaining_chapters = max(
             len(volume.chapter_list) - MAX_CHAPTER_LIST, 0
         )
+
+    # Check if user can add chapters (is owner and novel is approved)
+    can_add_chapter = (
+        request.user.is_authenticated and
+        novel.created_by == request.user and
+        novel.approval_status == ApprovalStatus.APPROVED.value
+    )
 
     context = {
         'novel': novel,
         'tags': tags,
         'volumes': volumes,
+        'can_add_chapter': can_add_chapter,
         'DATE_FORMAT_DMY': DATE_FORMAT_DMY,
         'MAX_CHAPTER_LIST': MAX_CHAPTER_LIST,
         'MAX_CHAPTER_LIST_PLUS': MAX_CHAPTER_LIST_PLUS
@@ -94,13 +131,26 @@ def novel_detail(request, novel_slug):
 @require_active_novel
 def chapter_detail_view(request, novel_slug, chapter_slug):
     """Hiển thị chapter với lazy loading"""
-    chapter = get_object_or_404(
-        Chapter.objects.select_related('volume__novel'),
-        slug=chapter_slug,
-        volume__novel__slug=novel_slug,
-        is_hidden=False, 
-        approved=True
-    )
+    # First try to get the chapter with normal public filters
+    try:
+        chapter = Chapter.objects.select_related('volume__novel').get(
+            slug=chapter_slug,
+            volume__novel__slug=novel_slug,
+            is_hidden=False,
+            approved=True
+        )
+    except Chapter.DoesNotExist:
+        # If not found and user is authenticated, check if they own the chapter
+        if request.user.is_authenticated:
+            chapter = get_object_or_404(
+                Chapter.objects.select_related('volume__novel'),
+                slug=chapter_slug,
+                volume__novel__slug=novel_slug,
+                volume__novel__created_by=request.user
+            )
+        else:
+            # If user is not authenticated, show 404
+            raise Http404("No Chapter matches the given query.")
     
     initial_chunks = chapter.chunks.filter(
         position__lte=MAX_LIMIT_CHUNKS
@@ -123,11 +173,28 @@ def chapter_detail_view(request, novel_slug, chapter_slug):
         )
     
     # Lấy danh sách chapters trong novel để sidebar
-    all_chapters = Chapter.objects.filter(
-        volume__novel=chapter.volume.novel,
-        approved=True,
-        is_hidden=False
-    ).select_related('volume').order_by('volume__position', 'position')
+    if request.user.is_authenticated and chapter.volume.novel.created_by == request.user:
+        # User can see all their own chapters (including drafts/unapproved)
+        all_chapters = Chapter.objects.filter(
+            volume__novel=chapter.volume.novel
+        ).select_related('volume').order_by('volume__position', 'position')
+    else:
+        # Public view - only approved and visible chapters
+        all_chapters = Chapter.objects.filter(
+            volume__novel=chapter.volume.novel,
+            approved=True,
+            is_hidden=False
+        ).select_related('volume').order_by('volume__position', 'position')
+    
+    # Chunking information
+    all_chunks = chapter.chunks.all()
+    total_chunks = all_chunks.count()
+    
+    # Calculate chunking statistics
+    chunk_word_counts = [chunk.word_count for chunk in all_chunks]
+    avg_chunk_size = sum(chunk_word_counts) / len(chunk_word_counts) if chunk_word_counts else 0
+    max_chunk_words = max(chunk_word_counts) if chunk_word_counts else 0
+    estimated_reading_time = chapter.word_count / WORDS_PER_MINUTE  # Use constant for reading speed
     
     context = {
         "chapter": chapter,
@@ -138,8 +205,13 @@ def chapter_detail_view(request, novel_slug, chapter_slug):
         "prev_chapter": prev_chapter,
         "reading_history": reading_history,
         "all_chapters": all_chapters,
-        "total_chunks": chapter.chunks.count(),
+        "total_chunks": total_chunks,
         "loaded_chunks": initial_chunks.count(),
+        # Chunking information
+        "all_chunks_for_stats": all_chunks,
+        "avg_chunk_size": avg_chunk_size,
+        "max_chunk_words": max_chunk_words,
+        "estimated_reading_time": estimated_reading_time,
         "DATE_FORMAT_DMY": DATE_FORMAT_DMY
     }
     return render(request, "chapters/chapter_details.html", context)
@@ -257,7 +329,7 @@ class NovelCreateView(LoginRequiredMixin, CreateView):
         # Handle anonymous upload
         upload_anonymously = form.cleaned_data.get("upload_anonymously", False)
         form.instance.is_anonymous = upload_anonymously
-        
+
         # Always set created_by to current user for tracking purposes
         form.instance.created_by = (
             self.request.user
@@ -366,3 +438,35 @@ class MyNovelsView(LoginRequiredMixin, ListView):
                 )
         
         return context
+
+
+@login_required
+def chapter_add_view(request, novel_slug):
+    """View for adding new chapters to a novel"""
+    novel = get_object_or_404(Novel, slug=novel_slug)
+    
+    # Check if user can add chapters (is owner and novel is approved)
+    if (novel.created_by != request.user or
+            novel.approval_status != ApprovalStatus.APPROVED.value):
+        messages.error(request, _("Bạn không có quyền thêm chapter cho truyện này."))
+        return redirect('novels:novel_detail', novel_slug=novel.slug)
+    
+    if request.method == 'POST':
+        form = ChapterForm(novel=novel, data=request.POST)
+        if form.is_valid():
+            chapter = form.save()
+            messages.success(request, _("Chapter đã được thêm thành công!"))
+            return redirect('novels:novel_detail', novel_slug=novel.slug)
+    else:
+        form = ChapterForm(novel=novel)
+    
+    context = {
+        'novel': novel,
+        'form': form,
+    }
+    return render(request, 'chapters/chapter_form.html', context)
+
+
+def chapter_upload_rules(request):
+    """Static page showing chapter upload rules"""
+    return render(request, 'chapters/chapter_upload_rules.html')

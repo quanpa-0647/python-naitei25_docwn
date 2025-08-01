@@ -1,0 +1,14 @@
+{% load i18n %}
+
+<div class="header">
+    <div class="series-info">
+        <h1 class="series-title">{% trans "Thêm Chapter cho:" %} {{ novel.name }}</h1>
+        <div class="series-rules">
+            <div class="guidelines-link">
+                <a href="{% url 'novels:chapter_upload_rules' %}" target="_blank" class="rules-link">
+                    📋 {% trans "Xem quy định đăng chapter" %} →
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -15,10 +15,12 @@ urlpatterns = [
     path("admin/requests/", views.Requests, name="requests"),
     path("admin/comments/", views.Comments, name="comments"),
     path("my-novels/", views.MyNovelsView.as_view(), name="my_novels"),
-    path('<slug:novel_slug>/', views.novel_detail, name='novel_detail'),
-    path('novel/<slug:novel_slug>/chapter/<slug:chapter_slug>/', 
-         views.chapter_detail_view, 
-         name='chapter_detail'),
+    
+    # Specific routes must come before generic slug patterns
+    path('chapter-upload-rules/', 
+         views.chapter_upload_rules, 
+         name='chapter_upload_rules'),
+    
     path('ajax/load-chunks/<int:chapter_id>/', 
          views.load_more_chunks, 
          name='load_more_chunks'),
@@ -27,25 +29,30 @@ urlpatterns = [
          views.save_reading_progress, 
          name='save_reading_progress'),
     
-    # Chapter list for a novel
+    # Chapter and novel routes with specific prefixes
+    path('novel/<slug:novel_slug>/chapter/<slug:chapter_slug>/', 
+         views.chapter_detail_view, 
+         name='chapter_detail'),
+    
     path('novel/<slug:novel_slug>/chapters/', 
          views.chapter_list_view, 
          name='chapter_list'),
+    
+    # Admin routes
+    path('admin/', 
+         views_admin.admin_dashboard, name='admin_dashboard'),
 
-     path('admin/', 
-          views_admin.admin_dashboard, name='admin_dashboard'),
-
-     path('admin/tags/', 
+    path('admin/tags/', 
          views_admin.admin_tag_list, 
          name='admin_tag_list'),
 
-     path('admin/tags/create/', 
-          views_admin.admin_tag_create, 
-          name='admin_tag_create'),
+    path('admin/tags/create/', 
+         views_admin.admin_tag_create, 
+         name='admin_tag_create'),
 
-     path('admin/tags/<slug:tag_slug>/edit/', 
-          views_admin.admin_tag_update, 
-          name='admin_tag_update'),
+    path('admin/tags/<slug:tag_slug>/edit/', 
+         views_admin.admin_tag_update, 
+         name='admin_tag_update'),
 
      path('admin/tags/<slug:tag_slug>/delete/', 
           views_admin.admin_tag_delete, 
@@ -66,4 +73,8 @@ urlpatterns = [
      path("admin/requests/<slug:slug>/reject/", 
           views_admin.admin_reject_novel, 
           name="admin_reject_novel"),
+    
+    # Generic novel slug patterns - must come last
+    path('<slug:novel_slug>/', views.novel_detail, name='novel_detail'),
+    path('<slug:novel_slug>/add-chapter/', views.chapter_add_view, name='chapter_add'),
 ]

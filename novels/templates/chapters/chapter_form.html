@@ -1,0 +1,32 @@
+{% extends "base_home.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'novels/css/novel.detail.css' %}">
+<link rel="stylesheet" href="{% static 'novels/css/novel_form.css' %}">
+<link rel="stylesheet" href="{% static 'chapters/css/styles.css' %}">
+<script src="{% static 'novels/js/jquery.min.js' %}"></script>
+<script src="{% static 'chapters/js/chapter_form.js' %}"></script>
+{{ form.media }}
+{% endblock %}
+
+{% block content %}
+<div class="novel-form-page">
+    <div class="container">
+        {% include "chapters/components/chapter_form_header.html" %}
+
+        <div class="form-container">
+            <form method="post" id="chapter-form">
+                {% csrf_token %}
+                
+                {% include "chapters/components/chapter_form_fields.html" %}
+                
+                {% include "chapters/components/form_errors.html" %}
+
+                {% include "chapters/components/chapter_form_actions.html" %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
