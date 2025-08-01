@@ -39,7 +39,6 @@ def Home(request):
     }
     return render(request, "novels/home.html", context)
 
-
 def novel_detail(request, novel_slug):
     novel = get_object_or_404(Novel, slug=novel_slug)
     tags = Tag.objects.filter(noveltag__novel=novel)
