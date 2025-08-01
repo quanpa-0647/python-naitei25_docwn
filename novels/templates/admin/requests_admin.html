@@ -1,0 +1,10 @@
+{% extends "base_admin.html" %}
+{% block content %}
+{% load static %}
+<div class="container mt-5">
+  {% include 'admin/includes/upnovelTable.html' %}
+  {% include 'admin/includes/upchapterTable.html' %}
+  {% include 'admin/includes/upvolumeTable.html' %}
+</div>
+<script src="{% static 'novels/js/request_admin.js' %}"></script>
+{% endblock %}

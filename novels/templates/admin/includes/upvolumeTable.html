@@ -1,0 +1,34 @@
+{% load i18n %}
+<h4 class="mb-3">{% trans "Yêu cầu Up Tập Mới" %}</h4>
+<input class="form-control mb-3" id="searchVol" type="text" placeholder="{% trans 'Lọc theo tên tiểu thuyết...' %}">
+<div class="table-responsive mb-5">
+  <table class="table table-bordered table-striped align-middle" id="tableVol">
+    <thead class="table-light">
+      <tr>
+        <th class="text-center align-middle">{% trans "STT" %}</th>
+        <th class="text-center align-middle">{% trans "Tên tiểu thuyết" %}</th>
+        <th class="text-center align-middle">{% trans "Chương" %}</th>
+        <th class="text-center align-middle">{% trans "Tập số" %}</th>
+        <th class="text-center align-middle">{% trans "Người gửi" %}</th>
+        <th class="text-center align-middle">{% trans "Ngày gửi" %}</th>
+        <th class="text-center align-middle">{% trans "Trạng thái" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for vol in volume_uploads %}
+      <tr>
+        <td class="text-center align-middle">{{ forloop.counter }}</td>
+        <td class="text-center align-middle">{{ vol.title }}</td>
+        <td class="text-center align-middle">{{ vol.chapter_number }}</td>
+        <td class="text-center align-middle">{{ vol.episode_number }}</td>
+        <td class="text-center align-middle">{{ vol.user }}</td>
+        <td class="text-center align-middle">{{ vol.upload_date }}</td>
+        <td class="text-center align-middle">
+          <a href="#">{% trans "Xem chi tiết" %}</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <ul class="pagination justify-content-center" id="paginationVol"></ul>
+</div>

@@ -1,0 +1,35 @@
+{% load i18n %}
+<h4 class="mb-3">{% trans "Yêu cầu Up Chương Mới" %}</h4>
+<input class="form-control mb-3" id="searchChap" type="text" placeholder="{% trans 'Lọc theo tên tiểu thuyết hoặc số chương...' %}">
+
+<div class="table-responsive mb-5">
+  <table class="table table-bordered table-striped align-middle" id="tableChap">
+    <thead class="table-light">
+      <tr>
+        <th class="text-center align-middle">{% trans "STT" %}</th>
+        <th class="text-center align-middle">{% trans "Tên tiểu thuyết" %}</th>
+        <th class="text-center align-middle">{% trans "Chương số" %}</th>
+        <th class="text-center align-middle">{% trans "Tên chương" %}</th>
+        <th class="text-center align-middle">{% trans "Người đăng" %}</th>
+        <th class="text-center align-middle">{% trans "Ngày gửi" %}</th>
+        <th class="text-center align-middle">{% trans "Thao tác" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for chap in chapter_uploads %}
+      <tr>
+        <td class="text-center align-middle">{{ forloop.counter }}</td>
+        <td class="text-center align-middle">{{ chap.title }}</td>
+        <td class="text-center align-middle">{{ chap.chapter_number }}</td>
+        <td class="text-center align-middle">{{ chap.title }}</td>
+        <td class="text-center align-middle">{{ chap.user }}</td>
+        <td class="text-center align-middle">{{ chap.upload_date }}</td>
+        <td class="text-center align-middle">
+          <a href="#">{% trans "Xem chi tiết" %}</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <ul class="pagination justify-content-center" id="paginationChap"></ul>
+</div>

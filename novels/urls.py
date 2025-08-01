@@ -5,8 +5,14 @@ from . import views
 app_name = 'novels'
 
 urlpatterns = [
-    path("", views.Home, name="home"),
+    path("", views.Home, name = "home"),
+    path("admin/", views.Admin, name="admin"),
     path("create/", views.NovelCreateView.as_view(), name="novel_create"),
+    path("admin/dashboard/", views.Dashboard, name="dashboard"),
+    path("admin/users/", views.Users, name="users"),
+    path("admin/novels/", views.Novels, name="novels"),
+    path("admin/requests/", views.Requests, name="requests"),
+    path("admin/comments/", views.Comments, name="comments"),
     path('<slug:novel_slug>/', views.novel_detail, name='novel_detail'),
     path('novel/<slug:novel_slug>/chapter/<slug:chapter_slug>/', 
          views.chapter_detail_view, 

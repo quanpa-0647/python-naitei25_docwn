@@ -1,0 +1,34 @@
+{%load i18n %}
+<div class="row g-4 accordion-flush position-relative">
+  <div class="col-lg-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header">
+        <strong>{% trans "Thống kê người dùng mới trong tháng" %}</strong>
+      </div>
+      <div class="card-body">
+        <div class="userchart">
+          <canvas
+            id="userChart"
+            height="120"
+            data-labels="{{ labels|safe }}"
+            data-data="{{ data|safe }}"
+          ></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Biểu đồ tiểu thuyết -->
+  <div class="col-lg-6 position-relative">
+    <div class="card shadow-sm h-100">
+      <div class="card-header">
+        <strong>{% trans "Thống kê tiểu thuyết mới trong tháng" %}</strong>
+      </div>
+      <div class="card-body">
+        <div class="novelchart">
+          <canvas id="novelChart" height="120"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

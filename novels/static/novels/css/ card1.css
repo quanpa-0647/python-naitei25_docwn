@@ -1,0 +1,21 @@
+.card-custom {
+    position: relative;
+    width: 100px;
+    margin: 0.5rem;
+  }
+  
+  .card-custom{
+    height: 250px;
+    object-fit: cover;
+    width: 200px;
+  }
+  
+  .card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+  }
