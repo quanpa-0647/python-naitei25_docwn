@@ -1,0 +1,79 @@
+{% load static %}
+{% load i18n %}
+<div id="sidebar" class="d-flex flex-column p-3 bg-dark text-white">
+  <a
+    href="{% url 'novels:admin' %}"
+    class="d-flex align-items-center justify-content-center mb-1 text-white text-decoration-none"
+  >
+    <span class="fs-4">{% trans "DOCWN ADMIN" %}</span>
+  </a>
+  <hr />
+  <ul class="nav nav-pills flex-column mb-auto">
+    <li>
+      <a
+        href="{% url 'novels:dashboard' %}"
+        class="nav-link d-flex align-items-center gap-2"
+      >
+        <i class="bxr bx-dashboard fs-4"></i> <span>{% trans "Dashboard" %}</span>
+      </a>
+    </li>
+    <li>
+      <a
+        href="{% url 'novels:novels' %}"
+        class="nav-link d-flex align-items-center gap-2"
+      >
+        <i class="bxr bx-book-open fs-4"></i> <span>{% trans "Novels" %}</span>
+      </a>
+    </li>
+    <li>
+      <a
+        href="{% url 'novels:comments' %}"
+        class="nav-link d-flex align-items-center gap-2"
+      >
+        <i class="bxr bx-message-dots fs-4"></i> <span>{% trans "Comments" %}</span>
+      </a>
+    </li>
+    <li>
+      <a
+        href="{% url 'novels:users' %}"
+        class="nav-link d-flex align-items-center gap-2"
+      >
+        <i class="bxr bx-user-check fs-4"></i> <span>{% trans "Users" %}</span>
+      </a>
+    </li>
+    <li>
+      <a
+        href="{% url 'novels:requests' %}"
+        class="nav-link d-flex align-items-center gap-2"
+      >
+        <i class="bxr bx-message-question-mark fs-4"></i>
+        <span>{% trans "Requests" %}</span>
+      </a>
+    </li>
+  </ul>
+
+  <div class="dropdown mt-auto cursor-pointer">
+    <div
+      class="dropdown-toggle"
+      id="dropdownMenuButton"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+      role="button"
+    >
+      <img
+        src="{% static 'novels/images/avatar.png' %}"
+        alt=""
+        width="32"
+        height="32"
+        class="rounded-circle me-2"
+      />
+      <strong>{% trans "Admin" %}</strong>
+    </div>
+
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <li><a class="dropdown-item" href="#">{% trans "Profile" %}</a></li>
+      <li><hr class="dropdown-divider" /></li>
+      <li><a class="dropdown-item" href="#">{% trans "Sign out" %}</a></li>
+    </ul>
+  </div>
+</div>

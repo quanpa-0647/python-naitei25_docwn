@@ -1,0 +1,39 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% trans "Admin Website" %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="{% static 'novels/css/bootstrap.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'novels/css/style.css' %}" rel="stylesheet" />
+    <link
+      href="{% static 'novels/css/owl.carousel.min.css' %}"
+      rel="stylesheet"
+    />
+    <link href="{% static 'novels/css/base__admin.css' %}" rel="stylesheet" />
+    <link
+      href="https://cdn.boxicons.com/fonts/basic/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <script src="{% static 'novels/js/jquery.min.js' %}"></script>
+    <script src="{% static 'novels/js/popper.min.js' %}"></script>
+    <script src="{% static 'novels/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'novels/js/base__admin.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'novels/css/theme.css' %}" />
+    {% block head %}{% endblock %}
+  </head>
+
+  <body class="d-flex">
+    {% include 'admin/includes/admin_sidebar.html' %}
+    <div class="flex-grow-1 p-4 main__container">
+      {% include 'admin/includes/navbar.html' %}
+      <div class="content__container my-5">
+        {% block content %} {% endblock %}
+      </div>
+    </div>
+    <script src="{% static 'novels/js/theme-toggle.js' %}"></script>
+    <script src="{% static 'novels/js/search.js' %}"></script>
+  </body>
+</html>

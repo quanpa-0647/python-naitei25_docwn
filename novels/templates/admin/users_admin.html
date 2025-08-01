@@ -1,0 +1,53 @@
+{% extends "base_admin.html" %} {% block content %}
+{% load i18n %}
+{% load static %}
+<div class="container mt-5">
+  <h4 class="mb-3">{% trans "Danh sách tất cả người dùng" %}</h4>
+  <input
+    class="form-control mb-3"
+    id="novelSearch"
+    type="text"
+    placeholder="Lọc theo tên, giới tính..."
+  />
+  <div class="table-responsive">
+    <table
+      class="table table-bordered table-striped align-middle"
+      id="userTable"
+    >
+      <thead class="table-light">
+        <tr>
+          <th class="text-center align-middle">{% trans "STT" %}</th>
+          <th class="text-center align-middle">{% trans "Tên" %}</th>
+          <th class="text-center align-middle">{% trans "Giới tính" %}</th>
+          <th class="text-center align-middle">{% trans "Email" %}</th>
+          <th class="text-center align-middle">{% trans "SĐT" %}</th>
+          <th class="text-center align-middle">{% trans "Trạng thái" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td class="text-center align-middle">{{ forloop.counter }}</td>
+          <td class="text-center align-middle">{{ user.name }}</td>
+          <td class="text-center align-middle">{{ user.gender }}</td>
+          <td class="text-center align-middle">{{ user.email }}</td>
+          <td class="text-center align-middle">{{ user.phone }}</td>
+          <td class="text-center align-middle">
+            {% if user.status == "active" %}
+            <span class="badge bg-success">{% trans "Hoạt động" %}</span>
+            {% else %}
+            <span class="badge bg-danger">{% trans "Đã chặn" %}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <nav>
+    <ul class="pagination justify-content-center mt-3" id="pagination"></ul>
+  </nav>
+</div>
+<script src= {% static "novels/js/user_admin.js" %}></script>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base_admin.html" %} {% load static %} {% block head %}
+{% load i18n %}
+<script src="{% static 'novels/js/chart.js' %}"></script>
+<script src="{% static 'novels/js/dashboard.js' %}"></script>
+{% endblock %} {% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">{% trans "Dashboard Admin" %}</h2>
+  {% include 'admin/includes/chart.html' %}
+  {% include 'admin/includes/dashboardTable.html' %}
+  </div>
+  <script>
+    window.chartLabels = {{ labels|safe }};
+    window.chartData = {{ data|safe }};
+  </script>
+  <script src="{% static 'novels/js/dashboard.js' %}"></script>
+{% endblock %}
+</div>

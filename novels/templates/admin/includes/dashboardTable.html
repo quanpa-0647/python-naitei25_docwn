@@ -1,0 +1,79 @@
+{% load i18n %}
+<div class="container mt-5">
+  <div class="row">
+    <!-- Bảng top đọc nhiều -->
+    <div class="col-md-6">
+      <h4 class="mb-3">
+        {% trans "Top tiểu thuyết được đọc nhiều nhất trong tháng" %}
+      </h4>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>{% trans "STT" %}</th>
+              <th>{% trans "Tên tiểu thuyết" %}</th>
+              <th>{% trans "Lượt đọc" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for novel in top_novels %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ novel.title }}</td>
+              <td>{{ novel.views }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Bảng truyện mới -->
+    <div class="col-md-6">
+      <h4 class="mb-3">{% trans "Truyện mới được thêm" %}</h4>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>{% trans "STT" %}</th>
+              <th>{% trans "Tên tiểu thuyết"%}</th>
+              <th>{% trans "Ngày đăng"%}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for novel in new_novels %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ novel.title }}</td>
+              <td>{{ novel.date }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container mt-5">
+  <h4 class="mb-3">{% trans "Top tác giả nổi bật"%}</h4>
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>{% trans "STT" %}</th>
+        <th>{% trans "Tên tác giả" %}</th>
+        <th>{% trans "Số truyện" %}</th>
+        <th>{% trans "Lượt đọc" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for author in top_authors %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ author.name }}</td>
+        <td>{{ author.total_novels }}</td>
+        <td>{{ author.total_views }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

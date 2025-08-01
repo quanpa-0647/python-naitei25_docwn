@@ -1,0 +1,41 @@
+{% load i18n %}
+<h4 class="mb-3">{% trans "Yêu cầu Up Tiểu Thuyết Mới" %}</h4>
+<input class="form-control mb-3" id="searchNovel" type="text" placeholder="{% trans 'Lọc theo tên, thể loại...' %}">
+
+<div class="table-responsive mb-5">
+  <table class="table table-bordered table-striped align-middle" id="tableNovel">
+    <thead class="table-light">
+      <tr>
+        <th class="text-center align-middle">{% trans "STT" %}</th>
+        <th class="text-center align-middle">{% trans "Tên tiểu thuyết" %}</th>
+        <th class="text-center align-middle">{% trans "Thể loại" %}</th>
+        <th class="text-center align-middle">{% trans "Người gửi" %}</th>
+        <th class="text-center align-middle">{% trans "Ngày gửi" %}</th>
+        <th class="text-center align-middle">{% trans "Thao tác" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for novel in novel_uploads %}
+      <tr>
+        <td class="text-center align-middle">{{ forloop.counter }}</td>
+        <td class="text-center align-middle">{{ novel.title }}</td>
+        <td class="text-center align-middle">
+          {% if novel.tags %}
+            {% for tag in novel.tags %}
+              <span class="badge bg-secondary">{{ tag }}</span>
+            {% endfor %}
+          {% else %}
+            <span>{% trans "Không có tag" %}</span>
+          {% endif %}
+        </td>
+        <td class="text-center align-middle">{{ novel.user }}</td>
+        <td class="text-center align-middle">{{ novel.upload_date }}</td>
+        <td class="text-center align-middle">
+          <a href="#">{% trans "Xem chi tiết" %}</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <ul class="pagination justify-content-center" id="paginationNovel"></ul>
+</div>

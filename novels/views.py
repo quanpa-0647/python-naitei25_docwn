@@ -5,6 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.utils.translation import gettext as _
 from common.decorators import require_active_novel
+from .fake_data import card_list, discussion_data, comments, getNewNovels,top_novels_this_month, new_novels,authors,novels, users,comments,novel_uploads,chapter_uploads,volume_uploads
+from django.shortcuts import render
+from datetime import date, timedelta
+import random
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin,
@@ -26,10 +30,6 @@ from constants import (
     MAX_CHAPTER_LIST,
     ApprovalStatus
 )
-from .fake_data import card_list, discussion_data, comments
-
-# Create your views here.
-
 
 def Home(request):
     context = {
@@ -37,8 +37,34 @@ def Home(request):
         "discussion_data": discussion_data,
         "comments": comments,
     }
-    return render(request, "novels/home.html", context)
+    return render(request, 'novels/home.html', context)
+def Admin(request):
+    return render(request,'admin/home_admin.html')
+def Dashboard(request):
+    labels, data = getNewNovels()
+    return render(request, 'admin/dashboard_admin.html', {
+        'labels': labels,
+        'data': data,
+        'top_novels': top_novels_this_month,
+        'new_novels': new_novels,
+        'top_authors': authors,
+    })
+def Users(request):
+    return render(request,'admin/users_admin.html',{
+        'users' : users
+    })
+def Novels(request):
+    return render(request, 'admin/novels_admin.html', {'novels': novels})
 
+def Requests(request):
+    context = {
+        "novel_uploads": novel_uploads,
+        "volume_uploads": volume_uploads,
+        "chapter_uploads": chapter_uploads,
+    }
+    return render(request,'admin/requests_admin.html',context)
+def Comments(request):
+    return render(request,'admin/comments_admin.html',{'comments' : comments})
 
 def novel_detail(request, novel_slug):
     novel = get_object_or_404(Novel, slug=novel_slug)

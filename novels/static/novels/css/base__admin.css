@@ -1,0 +1,135 @@
+body {
+    display: flex;
+  }
+.bg-body-tertiary {
+    background-color: #212529 !important;
+    color: #fff;
+}
+  #sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #212529;
+    color: white;
+    flex-shrink: 0;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+}
+  #sidebar .nav-link {
+    color: white;
+  }
+  #sidebar .nav-link.active {
+    background-color: #0d6efd;
+    color: white;
+  }
+  #main-content {
+    flex-grow: 1;
+    padding: 20px;
+  }
+  .dropdown-menu {
+    background-color: #343a40;
+    color: white;
+  }
+  .dropdown-menu .dropdown-item {
+    color: white;
+  }
+  .dropdown-menu .dropdown-item:hover {
+    background-color: #495057;
+  }
+.navbar{
+    padding-left: 20px;
+    padding-right: 20px;
+    width: calc(100vw - 250px);
+    top: 0;
+    position: fixed;
+    left: 250px;
+    z-index: 10000;
+}
+#toggleThemeBtn{
+border-radius: 7px;
+border: none;
+cursor: pointer;
+background-color: transparent;
+transition: all ease 0.1s;
+font-size: 18px;
+}
+
+.btn-small-text{
+  margin-left: -10px;
+}
+.main__container{
+  margin-left: 250px; 
+  width: calc(100vw - 250px);
+  padding: 0;
+}
+.navbar__last{
+  display: flex;
+  align-items: center;
+  font-size: 25px;
+  gap: 10px
+}
+.bxs-bell-ring{
+  color:#dab712;
+  cursor: pointer
+}
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.search-icon {
+  font-size: 20px;
+  padding: 8px;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 2;
+  border: 1px solid #000;
+  color: #000;
+}
+
+.search-icon:hover {
+  color: var(--bs-primary);
+  border: 1px solid var(--bs-primary);
+}
+
+.search-input {
+  width: 0;
+  opacity: 0;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  outline: none;
+  background-color: var(--bs-gray-200);
+  color: #000;
+  margin-left: 30px;
+  font-size: 14px;
+  transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+.search-container.active .search-input {
+  width: 200px;
+  opacity: 1;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-top: solid 1px #000;
+border-left: solid 1px #000;
+border-bottom: solid 1px #000;
+border-right: none;
+}
+.search-container.active .search-icon{
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  right: 0;
+}
+

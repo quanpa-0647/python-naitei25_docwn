@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save
@@ -81,6 +83,49 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     def can_login(self):
         return self.is_active and not self.is_blocked
+    
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        old_role = None
+        
+        if not is_new:
+            try:
+                old_instance = User.objects.get(pk=self.pk)
+                old_role = old_instance.role
+            except User.DoesNotExist:
+                pass
+        
+        super().save(*args, **kwargs)
+        
+        # Tự động gán group theo role
+        if is_new or (old_role and old_role != self.role):
+            self.assign_group_by_role()
+            
+    def assign_group_by_role(self):
+        self.groups.clear()
+        
+        if self.role == UserRole.WEBSITE_ADMIN.value:
+            group, created = Group.objects.get_or_create(name='Website Admins')
+            self.groups.add(group)
+        elif self.role == UserRole.USER.value:
+            group, created = Group.objects.get_or_create(name='Regular Users')
+            self.groups.add(group)
+        elif self.role == UserRole.SYSTEM_ADMIN.value:
+            group, created = Group.objects.get_or_create(name='System Admins')
+            self.groups.add(group)
+    
+    def is_in_group(self, group_name):
+        return self.groups.filter(name=group_name).exists()
+    
+    def is_website_admin(self):
+        return (self.role == UserRole.WEBSITE_ADMIN.value or 
+                self.is_in_group('Website Admins'))
+    
+    def is_moderator(self):
+        return self.is_in_group('Moderators')
+    
+    def is_editor(self):
+        return self.is_in_group('Editors')
 
 class UserProfile(models.Model):
     user = models.OneToOneField(
@@ -157,3 +202,8 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     if hasattr(instance, 'profile'):
         instance.profile.save()
+    
+@receiver(post_save, sender=User)
+def ensure_user_group(sender, instance, created, **kwargs):
+    if created:
+        instance.assign_group_by_role()
