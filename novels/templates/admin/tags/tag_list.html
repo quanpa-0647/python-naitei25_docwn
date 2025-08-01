@@ -1,0 +1,37 @@
+{% extends "base_admin.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'admin/css/modal.tag.css' %}">
+<script src="{% static 'admin/js/utils.js' %}" defer></script>
+<script src="{% static 'admin/js/modal.js' %}" defer></script>
+<script src="{% static 'admin/js/form.submit.js' %}" defer></script>
+<script src="{% static 'admin/js/delete.tag.js' %}" defer></script>
+<script src="{% static 'admin/js/search_tag.js' %}" defer></script>
+<script src="{% static 'admin/js/pagination_tag.js' %}" defer></script>
+<script src="{% static 'admin/js/init.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+<input type="hidden" id="csrfToken" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+<div class="container mt-4">
+    <h2>{% trans "Quản lý Thể loại (Tags)" %}</h2>
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#tagModal" data-action="create">
+        + {% trans "Thêm Tag" %}
+    </button>
+    <div class="mb-3">
+        <input type="text" id="searchTag" class="form-control" placeholder="Tìm kiếm theo tên, slug, mô tả..." value="{{ query|default:'' }}">
+    </div>
+
+    <div id="tagTableWrapper" data-current-page="{{ tags.number }}">
+        {% include "admin/tags/partials/list.html" %}
+    </div>
+</div>
+
+<div id="general-error" class="alert alert-danger d-none"></div>
+
+{% include "admin/tags/partials/form_modal.html" %}
+{% include "admin/tags/partials/delete_modal.html" %}
+{% endblock %}
