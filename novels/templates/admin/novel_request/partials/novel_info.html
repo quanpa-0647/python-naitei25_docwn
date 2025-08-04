@@ -1,0 +1,28 @@
+{% load status_novel_request %}
+{% load i18n %}
+
+<div class="row">
+  <!-- Bên trái: Thông tin -->
+  <div class="col-md-8">
+    <h4 class="card-title">{{ novel.name }}</h4>
+    <div class="tags mb-2">
+      {% for tag in tags %}
+        <span class="badge bg-secondary me-1">{{ tag.name }}</span>
+      {% endfor %}
+    </div>
+    <p><strong>{% trans "Tác giả:" %}</strong> {{ novel.author }}</p>
+    <p><strong>{% trans "Họa sĩ:" %}</strong> {{ novel.artist }}</p>
+    <p><strong>{% trans "Ngày gửi yêu cầu:" %}</strong> {{ novel.created_at }}</p>
+    <p><strong>{% trans "Trạng thái hiện tại:" %}</strong>
+      <span class="badge {{ novel.approval_status|approval_class }}">
+        {{ novel.approval_status|approval_label }}
+      </span>
+      </span>
+    </p>
+  </div>
+
+  <!-- Bên phải: Ảnh -->
+  <div class="col-md-4 text-end">
+    <img src="{{ novel.image_url }}" alt="{{ novel.name }}" class="img-fluid rounded novel-thumbnail">
+  </div>
+</div>

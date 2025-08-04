@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from novels.models import Tag
+from novels.models import Tag, Novel
 from .forms import TagForm
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.core.paginator import Paginator
@@ -7,8 +7,11 @@ from django.db.models import Q
 from django.utils.translation import gettext as _
 from constants import (
     PAGINATOR_TAG_LIST, 
-    DEFAULT_PAGE_NUMBER)
+    DEFAULT_PAGE_NUMBER,
+    ApprovalStatus)
 from common.decorators import website_admin_required
+from django.views.decorators.http import require_POST
+from django.contrib import messages
 
 @website_admin_required
 def admin_dashboard(request):
@@ -66,4 +69,27 @@ def admin_tag_delete(request, tag_slug):
         tag.delete()
         return JsonResponse({'success': True})
     return HttpResponseBadRequest(_("Không thể xóa"))
+
+@website_admin_required
+def novel_request_detail(request, slug):
+    try:
+        novel = Novel.objects.get(slug=slug, approval_status=ApprovalStatus.PENDING.value)
+    except Novel.DoesNotExist:
+        messages.warning(request, _("Yêu cầu này không còn hiệu lực."))
+        return redirect('novels:novel_request')
+
+    tags = Tag.objects.filter(noveltag__novel=novel)
+
+    context = {
+        'novel': novel,
+        'tags': tags,
+        'APPROVAL_STATUS': {
+        'DRAFT': ApprovalStatus.DRAFT.value,
+        'PENDING': ApprovalStatus.PENDING.value,
+        'APPROVED': ApprovalStatus.APPROVED.value,
+        'REJECTED': ApprovalStatus.REJECTED.value,
+        },
+    }
+    return render(request, 'admin/novel_request/novel_request_detail.html', context)
+
 
