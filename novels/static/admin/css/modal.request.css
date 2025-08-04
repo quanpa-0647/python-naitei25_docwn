@@ -1,0 +1,11 @@
+.modal-dialog.custom-top {
+  margin-top: 80px;
+}
+
+.modal-content textarea {
+  resize: vertical;
+}
+
+.novel-thumbnail {
+  max-height: 250px;
+}

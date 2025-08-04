@@ -50,4 +50,13 @@ urlpatterns = [
      path('admin/tags/<slug:tag_slug>/delete/', 
           views_admin.admin_tag_delete, 
           name='admin_tag_delete'),
+
+     path("admin/requests/", 
+          views_admin.novel_request_detail, 
+          name="novel_request"),
+     
+     path("admin/requests/<slug:slug>/", 
+          views_admin.novel_request_detail, 
+          name="novel_request_detail"),
+
 ]
