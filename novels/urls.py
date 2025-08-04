@@ -59,4 +59,11 @@ urlpatterns = [
           views_admin.novel_request_detail, 
           name="novel_request_detail"),
 
+     path("admin/requests/<slug:slug>/approve/", 
+          views_admin.admin_approve_novel, 
+          name="admin_approve_novel"),
+     
+     path("admin/requests/<slug:slug>/reject/", 
+          views_admin.admin_reject_novel, 
+          name="admin_reject_novel"),
 ]

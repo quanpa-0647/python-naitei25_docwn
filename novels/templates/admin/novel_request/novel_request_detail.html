@@ -20,6 +20,8 @@
         </div>
     </div>
     
+    {% include "admin/novel_request/partials/approval_actions.html" %}
+    
     <a href="{% url 'novels:novel_request' %}" class="btn btn-secondary mt-3">
       <i class="fas fa-arrow-left me-1"></i> {% trans "Quay lại danh sách" %}
     </a>
