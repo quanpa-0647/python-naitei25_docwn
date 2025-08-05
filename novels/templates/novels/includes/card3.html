@@ -1,5 +1,5 @@
 {% load i18n %}
-<a href="#" class="card3">
+<a href="/novels/{{ card.slug }}" class="card3">
   <div class="card3-img-wrapper">
     <img
       src="{{ card.image_url }}"
@@ -8,8 +8,7 @@
     />
   </div>
   <div class="card3-text">
-    <div class="card3-title">{{ card.title }}</div>
-    <p class="card3-desc">{{ card.description }}</p>
+    <div class="card3-title">{{ card.name }}</div>
+    <p class="card3-desc">{{ card.summary }}</p>
   </div>
 </a>
-

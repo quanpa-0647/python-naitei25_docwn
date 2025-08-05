@@ -1,12 +1,12 @@
 {% load i18n %}
-<div class="card1">
+<a class="card1" href="/novels/{{ card.slug }}">
   <img
     class="card-custom1"
     src="{{ card.image_url }}"
-    alt="{{ card.title }}"
+    alt="{{ card.name}}"
   />
 
   <div class="card-overlay1">
-    <p class="card-text1">{{ card.title }}</p>
+    <p class="card-text1">{{ card.name}}</p>
   </div>
-</div>
+</a>

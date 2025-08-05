@@ -3,7 +3,20 @@ import random
 from datetime import date, timedelta
 
 from django.contrib import messages
+from django.db.models import Prefetch
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
+from django.utils.translation import gettext_lazy as _
+from common.decorators import require_active_novel
+from .fake_data import card_list, discussion_data, comments, getNewNovels,top_novels_this_month, new_novels,authors,novels, users,comments,novel_uploads,chapter_uploads,volume_uploads
+from django.shortcuts import render
+from datetime import date, timedelta
+import random
+from django.db.models import Max, OuterRef, Subquery
+from django.db import models
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin,
     LoginRequiredMixin,
@@ -28,28 +41,65 @@ from constants import (
     MAX_TRUNCATED_REJECTED_REASON_LENGTH,
     NOVEL_PER_PAGE,
     PAGINATION_PAGE_RANGE,
+    MAX_LIKE_NOVELS,
+    MAX_TREND_NOVELS,
+    MAX_MOST_READ_NOVELS,
+    MAX_NEW_NOVELS,
+    MAX_FINISH_NOVELS,
+    MAX_NEWUPDATE_NOVELS,
+    MAX_LATEST_CHAPTER,
+    MIN_LATEST_CHAPTER,
     ApprovalStatus,
+    ProgressStatus,
     WORDS_PER_MINUTE
 )
-from .fake_data import (
-    card_list, discussion_data, comments, getNewNovels, top_novels_this_month,
-    new_novels, authors, novels, users, novel_uploads, chapter_uploads,
-    volume_uploads
-)
-from .forms import NovelForm, ChapterForm
 from .models import (
     Novel, Tag, NovelTag, Author, Artist, Volume, Chapter, ReadingHistory
 )
-from .utils import ChunkManager, SimpleChunker
-
+from .forms import NovelForm, ChapterForm
+from django.shortcuts import render
 
 def Home(request):
+    trend_novels = Novel.objects.order_by('-view_count')[:MAX_TREND_NOVELS]
+    new_novels = Novel.objects.order_by('-created_at') 
+    like_novels = Novel.objects.order_by('-favorite_count') [:MAX_LIKE_NOVELS]
+    finish_novels = Novel.objects.filter(
+        progress_status=ProgressStatus.COMPLETED.value
+    ).order_by('-updated_at')
+    novel_ids = list(Novel.objects.filter(
+    progress_status='c').order_by('-updated_at').values_list('id', flat=True)[:MAX_FINISH_NOVELS])
+    all_volumes = Volume.objects.filter(novel_id__in=novel_ids).order_by('-updated_at')
+    all_chapters = Chapter.objects.filter(volume__novel_id__in=novel_ids).order_by('-updated_at')
+    recent_volume_dict = {}
+    for volume in all_volumes:
+        if volume.novel_id not in recent_volume_dict:
+            recent_volume_dict[volume.novel_id] = volume
+    recent_chapter_dict = {}
+    for chapter in all_chapters:
+        vol_id = chapter.volume_id
+        if vol_id in recent_volume_dict.values():
+            if vol_id not in recent_chapter_dict:
+                recent_chapter_dict[vol_id] = chapter
+    for novel in finish_novels:
+        recent_volume = recent_volume_dict.get(novel.id)
+        novel.recent_volume = recent_volume
+        if recent_volume:
+            recent_chapter = Chapter.objects.filter(volume=recent_volume).order_by('-updated_at').first()
+            novel.recent_chapter = recent_chapter
+    newupdate_novels = get_recent_volumes_for_cards(limit=MAX_NEWUPDATE_NOVELS)
     context = {
-        "card_list": card_list,
+        "finish_novels": finish_novels,
+        "trend_novels": trend_novels,
+        "new_novels":new_novels,
         "discussion_data": discussion_data,
         "comments": comments,
+        "newupdate_novels" : newupdate_novels,
+        "card_list" : card_list,
+        "like_novels" : like_novels,
     }
+
     return render(request, 'novels/home.html', context)
+
 
 
 def Admin(request):
@@ -127,7 +177,48 @@ def novel_detail(request, novel_slug):
         'MAX_CHAPTER_LIST_PLUS': MAX_CHAPTER_LIST_PLUS
     }
     return render(request, "novels/novel_detail.html", context)
+def most_read_novels(request):
+    novels = Novel.objects.order_by('-view_count')[:MAX_MOST_READ_NOVELS]
 
+    context = {
+        'novels': novels,
+    }
+    return render(request, 'novels/most_read_novels.html', context)
+def new_novels(request):
+    new_novels = Novel.objects.order_by('-created_at')[:MAX_NEW_NOVELS]
+    context = {
+        'new_novels': new_novels,
+    }
+    return render(request, 'novels/new_novels.html', context)
+
+def finish_novels(request):
+    finish_novels = Novel.objects.filter(
+        progress_status=ProgressStatus.COMPLETED.value
+    ).order_by('-updated_at')
+    novel_ids = finish_novels.values_list('id', flat=True)
+    all_volumes = Volume.objects.filter(novel_id__in=novel_ids).order_by('-updated_at')
+    all_chapters = Chapter.objects.filter(volume__novel_id__in=novel_ids).order_by('-updated_at')
+    recent_volume_dict = {}
+    for volume in all_volumes:
+        if volume.novel_id not in recent_volume_dict:
+            recent_volume_dict[volume.novel_id] = volume
+    recent_chapter_dict = {}
+    for chapter in all_chapters:
+        vol_id = chapter.volume_id
+        if vol_id in recent_volume_dict.values():
+            if vol_id not in recent_chapter_dict:
+                recent_chapter_dict[vol_id] = chapter
+    for novel in finish_novels:
+        recent_volume = recent_volume_dict.get(novel.id)
+        novel.recent_volume = recent_volume
+        if recent_volume:
+            recent_chapter = Chapter.objects.filter(volume=recent_volume).order_by('-updated_at').first()
+            novel.recent_chapter = recent_chapter
+    context = {
+        'finish_novels': finish_novels,
+    }
+
+    return render(request, 'novels/finish_novels.html', context)
 @require_active_novel
 def chapter_detail_view(request, novel_slug, chapter_slug):
     """Hiển thị chapter với lazy loading"""
@@ -247,6 +338,35 @@ def load_more_chunks(request, chapter_id):
         'next_start': start_position + limit
     })
 
+def get_recent_volumes_for_cards(limit=MAX_LATEST_CHAPTER):
+    latest_chapter = Chapter.objects.filter(
+        volume_id=OuterRef('pk')
+    ).order_by('-updated_at').values('title')[:MIN_LATEST_CHAPTER]
+
+    volumes = Volume.objects.select_related('novel').annotate(
+        novel_name=Subquery(
+            Novel.objects.filter(pk=OuterRef('novel_id')).values('name')[:MIN_LATEST_CHAPTER]
+        ),
+        novel_slug=Subquery(
+            Novel.objects.filter(pk=OuterRef('novel_id')).values('slug')[:MIN_LATEST_CHAPTER ]
+        ),
+        image_url=Subquery(
+            Novel.objects.filter(pk=OuterRef('novel_id')).values('image_url')[:MIN_LATEST_CHAPTER ]
+        ),
+        recent_chapter_title=Subquery(latest_chapter)
+    ).order_by('-updated_at')[:limit]
+
+    return [{
+        'name': vol.novel_name,  
+        'slug': vol.novel_slug,  
+        'image_url': vol.image_url,
+        'recent_volume': {
+            'name': vol.name
+        },
+        'recent_chapter': {
+            'title': vol.recent_chapter_title
+        } if vol.recent_chapter_title else None
+    } for vol in volumes]
 
 @login_required
 @require_http_methods(["POST"])

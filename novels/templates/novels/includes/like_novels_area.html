@@ -1,0 +1,26 @@
+{% load i18n %} {% load static %}
+<div class="container">
+    <div class="new__novel__type">
+      <div class="new__novel__text">
+        <div>{% trans "Truyện" %}</div>
+      </div>
+      <div class="new__text">{% trans "ĐƯỢC YÊU THÍCH" %}</div>
+    </div>
+  
+    <div class="like_novels">
+      {% for card in like_novels %}
+        <div class="like_novel_card {% if forloop.counter > 6 %}hidden{% endif %}">
+          {% include 'novels/includes/card3.html' %}
+        </div>
+      {% endfor %}
+  
+      <div id="loadMoreBtn" class="custom-btn">
+        <i class='bxr bx-arrow-right-stroke-circle'></i>
+        <strong>{% trans "Xem thêm" %}</strong>
+      </div>
+      <div id="collapseBtn" class="custom-btn">
+        <i class='bx bx-chevron-up-circle'></i>
+        <strong>{% trans "Thu gọn" %}</strong>
+      </div>
+    </div>
+  </div>

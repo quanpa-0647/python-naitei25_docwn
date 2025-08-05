@@ -1,0 +1,27 @@
+{% load i18n %} {% load static %}
+<div class="container__finish">
+  <div class="finish__novel__type">
+    <div class="finish__novel__text">
+      <div>{% trans "TRUYỆN" %}</div>
+    </div>
+    <div href="#" class="finish__text">{% trans "ĐÃ HOÀN THÀNH" %}</div>
+  </div>
+  <div class="finish_novels">
+    {% for card in finish_novels %} {% include 'novels/includes/card2.html' %}
+    {% endfor %}
+    <a class="more__card" href="/novels/finish-novels">
+      <img
+        src="{% static 'novels/images/more.png' %}"
+        alt="Book Cover"
+        class="more__card-image"
+      />
+      <div class="more__card-overlay">
+        <i class="bxr bx-arrow-right-circle more__card-icon"></i>
+        <p class="more__card-text">{% trans "Xem thêm" %}</p>
+      </div>
+    </a>
+  </div>
+  <div id="pagination" class="pagination"></div>
+</div>
+
+<script src="{% static 'novels/js/container_finish.js' %}"></script>

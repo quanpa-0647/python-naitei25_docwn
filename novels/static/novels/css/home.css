@@ -5,6 +5,12 @@
 #slideshow-banner{
   height: 200px; object-fit: cover
 }
+.card1 {
+  width: 180px !important;
+  height: 250px !important;
+  position: relative !important;
+  cursor: pointer !important;
+}
 .trend_novels {
   display: flex;
   gap: 20px;
@@ -17,6 +23,7 @@
   border: 1px solid currentColor;
   border-radius: 50px;
   background-color: transparent;
+  cursor: pointer;
   font-size: 18px;
   font-weight: 600;
   display: flex;
@@ -25,6 +32,18 @@
   gap: 8px;
   text-decoration: none;
   transition: background-color 0.3s, color 0.3s;
+}
+.custom-btn:hover{
+  border: solid 1px #007bff;
+  color: #007bff;
+  }
+.finish_novels {
+  margin-top: 20px;
+  display: flex;
+  gap: 4%;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: flex-start !important;
 }
 html.light .custom-btn {
   color: #000;
@@ -40,13 +59,7 @@ html.dark .custom-btn {
 html.dark .custom-btn:hover {
   background-color: #fff;
   color: #000;
-}.card1 {
-  width: 180px !important;
-  height: 250px !important;
-  position: relative !important;
-  cursor: pointer !important;
 }
-
 .card-custom1 {
   width: 180px !important;
   height: 250px !important;
@@ -187,7 +200,9 @@ html.dark .custom-btn:hover {
   display: flex;
   border-bottom: 2px solid #eee;
 }
-
+.left__container{
+  display: block;
+}
 .comment-title {
   padding: 12px 16px;
   font-weight: bold;
@@ -322,7 +337,7 @@ html.dark .custom-btn:hover {
   align-items: center;
   gap: 5px;
   background-color: #3a3a3a;
-  color: white;
+  color: white !important;
   width: 100px;
   height: 34px;
   text-align: center;
@@ -337,28 +352,45 @@ html.dark .custom-btn:hover {
   gap: 10px;
   text-align: center;
   height: 34px;
-  margin-bottom: 15px;
+  margin-bottom: 25px;
   width: 60vw;
+  align-items: center;
 }
-.trend__novel__type a {
+.trend__novel__type__a {
   text-decoration: none;
-  margin-top: 5px;
   font-size: 17px;
   color: #6e6e6e;
   font-weight: bold;
   transition: color 0.3s ease;
 }
-.trend__novel__type a:hover {
+.trend__novel__type__a:hover {
   color: #126e0f;
 }
-.finish_novels {
-  margin-top: 20px;
-  display: flex;
-  gap: 15px;
-  width: 100%;
-  flex-wrap: wrap;
-  justify-content: space-between;
+.trend_novels_page {
+  display: none;
 }
+
+.trend_novels_page.active {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-around;
+}
+
+.dot {
+  height: 12px;
+  width: 12px;
+  margin: 0 5px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.dot.active {
+  background-color: #555;
+}
+
 .finish__novel__text {
   display: flex;
   justify-content: center;
@@ -389,6 +421,14 @@ html.dark .custom-btn:hover {
 }
 
 .new_novels {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  width: 60vw;
+  flex-wrap: wrap;
+  justify-content: start;
+}
+.like_novels {
   margin-top: 20px;
   display: flex;
   gap: 15px;
@@ -471,4 +511,28 @@ html.dark .custom-btn:hover {
 }
 .more__card:hover .more__card-text {
   color: #00cc66;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 5px;
+}
+
+.pagination button {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+.hidden {
+  display: none;
+}
+#collapseBtn{
+  display: none;
 }
