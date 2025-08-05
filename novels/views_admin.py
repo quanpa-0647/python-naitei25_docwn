@@ -92,4 +92,21 @@ def novel_request_detail(request, slug):
     }
     return render(request, 'admin/novel_request/novel_request_detail.html', context)
 
+@require_POST
+@website_admin_required
+def admin_approve_novel(request, slug):
+    novel = get_object_or_404(Novel, slug=slug, approval_status=ApprovalStatus.PENDING.value)
+    novel.approval_status = ApprovalStatus.APPROVED.value
+    novel.save()
+    return redirect('novels:novel_request')
+
+@require_POST
+@website_admin_required
+def admin_reject_novel(request, slug):
+    novel = get_object_or_404(Novel, slug=slug, approval_status=ApprovalStatus.PENDING.value)
+    novel.approval_status = ApprovalStatus.REJECTED.value
+    novel.rejected_reason = request.POST.get('reason')
+    novel.save()
+    return redirect('novels:novel_request')
+
 
