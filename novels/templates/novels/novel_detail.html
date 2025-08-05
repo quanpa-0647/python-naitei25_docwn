@@ -10,6 +10,9 @@
 <script src="{% static 'novels/js/summary-toggle.js' %}" defer></script>
 <script src="{% static 'novels/js/chapter-toggle.js' %}" defer></script>
 <script src="{% static 'novels/js/toc-popup.js' %}" defer></script>
+{% if is_owner %}
+<script src="{% static 'novels/js/chapter-delete.js' %}" defer></script>
+{% endif %}
 {% endblock %}
 
 {% block content %}

@@ -59,15 +59,20 @@ class VolumeAdmin(admin.ModelAdmin):
 
 @admin.register(Chapter)
 class ChapterAdmin(admin.ModelAdmin):
-    list_display = ("title", "volume", "position", "word_count", "chunk_count", "approved", "created_at")
+    list_display = ("title", "volume", "position", "word_count", "chunk_count", "approved", "is_deleted", "created_at")
     search_fields = ("title", "volume__name", "volume__novel__name")
-    list_filter = ("approved", "is_hidden", "volume__novel")
+    list_filter = ("approved", "is_hidden", "volume__novel", "deleted_at")
     ordering = ("volume__novel", "volume__position", "position")
-    actions = ["rechunk_chapters"]
+    actions = ["rechunk_chapters", "soft_delete_chapters", "restore_chapters"]
     
     def chunk_count(self, obj):
         return obj.chunks.count()
     chunk_count.short_description = "Chunks"
+    
+    def is_deleted(self, obj):
+        return obj.deleted_at is not None
+    is_deleted.boolean = True
+    is_deleted.short_description = "Deleted"
     
     def rechunk_chapters(self, request, queryset):
         """Action to re-chunk selected chapters using normal chunking."""
@@ -97,6 +102,19 @@ class ChapterAdmin(admin.ModelAdmin):
             )
     
     rechunk_chapters.short_description = "Re-chunk selected chapters normally"
+    
+    def soft_delete_chapters(self, request, queryset):
+        """Action to soft delete selected chapters."""
+        from django.utils import timezone
+        updated = queryset.filter(deleted_at__isnull=True).update(deleted_at=timezone.now())
+        messages.success(request, f"Successfully soft deleted {updated} chapters.")
+    soft_delete_chapters.short_description = "Soft delete selected chapters"
+    
+    def restore_chapters(self, request, queryset):
+        """Action to restore soft deleted chapters."""
+        updated = queryset.filter(deleted_at__isnull=False).update(deleted_at=None)
+        messages.success(request, f"Successfully restored {updated} chapters.")
+    restore_chapters.short_description = "Restore selected chapters"
 
 
 @admin.register(Chunk)

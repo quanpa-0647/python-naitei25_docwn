@@ -120,4 +120,5 @@ urlpatterns = [
     # Generic novel slug patterns - must come last
     path('<slug:novel_slug>/', views.novel_detail, name='novel_detail'),
     path('<slug:novel_slug>/add-chapter/', views.chapter_add_view, name='chapter_add'),
+    path('<slug:novel_slug>/chapter/<slug:chapter_slug>/delete/', views.chapter_delete_view, name='chapter_delete'),
 ]

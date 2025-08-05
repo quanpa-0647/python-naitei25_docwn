@@ -425,6 +425,14 @@
     text-align: left;
 }
 
+/* Submit button container */
+.novel-form-page .submit-btn-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+    padding: 20px 0;
+}
+
 /* Submit button */
 .novel-form-page .submit-btn {
     background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
@@ -436,7 +444,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 32px;
+    margin-top: 0;
     position: relative;
     overflow: hidden;
     text-transform: uppercase;
@@ -776,5 +784,46 @@
 .novel-form-page .rules-link:hover {
     color: #0056b3;
     text-decoration: underline;
+}
+
+/* Anonymous Upload Styling */
+.novel-form-page .anonymous-upload {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.novel-form-page .anonymous-upload:hover {
+    background: #f1f3f4;
+    border-color: #d0d7de;
+}
+
+.novel-form-page .anonymous-upload input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: #1976d2;
+}
+
+.novel-form-page .anonymous-upload label {
+    margin: 0;
+    cursor: pointer;
+    color: #333;
+    font-weight: 500;
+    font-size: 14px;
+    flex: 1;
+}
+
+.novel-form-page .anonymous-upload .helptext {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #666;
+    font-style: italic;
 }
 

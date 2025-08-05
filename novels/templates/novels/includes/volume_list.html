@@ -14,19 +14,7 @@
           {% for chapter in chapter_list %}
             {% if forloop.counter <= MAX_CHAPTER_LIST %}
               <div class="chapter-item">
-                <a href="{% url 'novels:chapter_detail' novel_slug=novel.slug chapter_slug=chapter.slug %}">
-                  {{ chapter.title }}
-                  {% if not chapter.approved %}
-                    <span class="badge badge-warning">{% trans "Chờ duyệt" %}</span>
-                  {% elif chapter.is_hidden %}
-                    <span class="badge badge-secondary">{% trans "Ẩn" %}</span>
-                  {% endif %}
-                </a>
-                <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
-              </div>
-            {% elif forloop.counter == MAX_CHAPTER_LIST_PLUS %}
-              <div id="extraChapters{{ volume.id }}" class="chapter-extra hidden">
-                <div class="chapter-item">
+                <div class="chapter-content">
                   <a href="{% url 'novels:chapter_detail' novel_slug=novel.slug chapter_slug=chapter.slug %}">
                     {{ chapter.title }}
                     {% if not chapter.approved %}
@@ -37,17 +25,71 @@
                   </a>
                   <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
                 </div>
+                {% if is_owner %}
+                  <div class="chapter-actions">
+                    <button type="button" 
+                            class="btn-delete-chapter" 
+                            data-chapter-slug="{{ chapter.slug }}"
+                            data-chapter-title="{{ chapter.title }}"
+                            data-novel-slug="{{ novel.slug }}"
+                            title="{% trans 'Xóa chapter' %}">
+                      <i class="bx bx-trash"></i>
+                    </button>
+                  </div>
+                {% endif %}
+              </div>
+            {% elif forloop.counter == MAX_CHAPTER_LIST_PLUS %}
+              <div id="extraChapters{{ volume.id }}" class="chapter-extra hidden">
+                <div class="chapter-item">
+                  <div class="chapter-content">
+                    <a href="{% url 'novels:chapter_detail' novel_slug=novel.slug chapter_slug=chapter.slug %}">
+                      {{ chapter.title }}
+                      {% if not chapter.approved %}
+                        <span class="badge badge-warning">{% trans "Chờ duyệt" %}</span>
+                      {% elif chapter.is_hidden %}
+                        <span class="badge badge-secondary">{% trans "Ẩn" %}</span>
+                      {% endif %}
+                    </a>
+                    <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
+                  </div>
+                  {% if is_owner %}
+                    <div class="chapter-actions">
+                      <button type="button" 
+                              class="btn-delete-chapter" 
+                              data-chapter-slug="{{ chapter.slug }}"
+                              data-chapter-title="{{ chapter.title }}"
+                              data-novel-slug="{{ novel.slug }}"
+                              title="{% trans 'Xóa chapter' %}">
+                        <i class="bx bx-trash"></i>
+                      </button>
+                    </div>
+                  {% endif %}
+                </div>
             {% else %}
                 <div class="chapter-item">
-                  <a href="{% url 'novels:chapter_detail' novel_slug=novel.slug chapter_slug=chapter.slug %}">
-                    {{ chapter.title }}
-                    {% if not chapter.approved %}
-                      <span class="badge badge-warning">{% trans "Chờ duyệt" %}</span>
-                    {% elif chapter.is_hidden %}
-                      <span class="badge badge-secondary">{% trans "Ẩn" %}</span>
-                    {% endif %}
-                  </a>
-                  <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
+                  <div class="chapter-content">
+                    <a href="{% url 'novels:chapter_detail' novel_slug=novel.slug chapter_slug=chapter.slug %}">
+                      {{ chapter.title }}
+                      {% if not chapter.approved %}
+                        <span class="badge badge-warning">{% trans "Chờ duyệt" %}</span>
+                      {% elif chapter.is_hidden %}
+                        <span class="badge badge-secondary">{% trans "Ẩn" %}</span>
+                      {% endif %}
+                    </a>
+                    <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
+                  </div>
+                  {% if is_owner %}
+                    <div class="chapter-actions">
+                      <button type="button" 
+                              class="btn-delete-chapter" 
+                              data-chapter-slug="{{ chapter.slug }}"
+                              data-chapter-title="{{ chapter.title }}"
+                              data-novel-slug="{{ novel.slug }}"
+                              title="{% trans 'Xóa chapter' %}">
+                        <i class="bx bx-trash"></i>
+                      </button>
+                    </div>
+                  {% endif %}
                 </div>
             {% endif %}
           {% endfor %}
@@ -76,4 +118,32 @@
       <i class="fas fa-plus"></i> {% trans "Thêm Chapter" %}
     </a>
   </div>
+{% endif %}
+
+<!-- Chapter Delete Confirmation Modal -->
+{% if is_owner %}
+<div id="deleteChapterModal" class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{% trans "Xác nhận xóa chapter" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Đóng' %}"></button>
+      </div>
+      <div class="modal-body">
+        <p>{% trans "Bạn có chắc chắn muốn xóa chapter" %} "<span id="deleteChapterTitle"></span>" {% trans "không?" %}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          {% trans "Hủy" %}
+        </button>
+        <form id="deleteChapterForm" method="post" style="display: inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">
+            {% trans "Xóa chapter" %}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endif %}
