@@ -21,6 +21,7 @@
       href="https://cdn.boxicons.com/fonts/basic/boxicons.min.css"
       rel="stylesheet"
     />
+    {% block extra_css %}{% endblock %}
     <script src="{% static 'novels/js/jquery.min.js' %}"></script>
     <script src="{% static 'novels/js/popper.min.js' %}"></script>
     <script src="{% static 'novels/js/bootstrap.bundle.min.js' %}"></script>
@@ -39,5 +40,6 @@
     </div>
     <script src="{% static 'novels/js/theme-toggle.js' %}"></script>
     <script src="{% static 'novels/js/search.js' %}"></script>
+    {% block extra_js %}{% endblock %}
   </body>
 </html>

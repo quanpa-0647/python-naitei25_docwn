@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from novels.models import Tag, Novel
+from novels.models import Tag, Chapter, Novel
+from django.contrib import messages
 from .forms import TagForm
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.core.paginator import Paginator
@@ -8,7 +9,9 @@ from django.utils.translation import gettext as _
 from constants import (
     PAGINATOR_TAG_LIST, 
     DEFAULT_PAGE_NUMBER,
-    ApprovalStatus)
+    ApprovalStatus,
+    DATE_FORMAT_DMYHI
+)
 from common.decorators import website_admin_required
 from django.views.decorators.http import require_POST
 from django.contrib import messages
@@ -109,4 +112,43 @@ def admin_reject_novel(request, slug):
     novel.save()
     return redirect('novels:novel_request')
 
-
+@website_admin_required
+def chapter_review(request, chapter_slug):
+    chapter = get_object_or_404(Chapter, slug=chapter_slug)
+    
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == ApprovalStatus.APPROVED.value:
+            chapter.approved = True
+            chapter.rejected_reason = None
+            chapter.save()
+            messages.success(request, _('Chương "%(title)s" đã được duyệt thành công!') % {'title': chapter.title})
+            
+        elif action == ApprovalStatus.REJECTED.value:
+            rejected_reason = request.POST.get('rejected_reason', '').strip()
+            if not rejected_reason:
+                messages.error(request, _('Vui lòng cung cấp lý do từ chối.'))
+                return render(request, 'admin/chapter_review.html', {'chapter': chapter})
+            
+            chapter.approved = False
+            chapter.rejected_reason = rejected_reason
+            chapter.save()
+            messages.success(request, _('Chương "%(title)s" đã bị từ chối.') % {'title': chapter.title})
+        
+        return redirect('novels:chapter_review', chapter_slug=chapter.slug)
+    
+    context = {
+        'chapter': chapter,
+        'novel': chapter.novel,
+        'volume': chapter.volume,
+        'content': chapter.get_content(),
+        'next_chapter': chapter.get_next_chapter(),
+        'previous_chapter': chapter.get_previous_chapter(),
+        'chunks': chapter.chunks.all().order_by('position'),
+        'DATE_FORMAT_DMYHI': DATE_FORMAT_DMYHI,
+        'APPROVED': ApprovalStatus.APPROVED.value,
+        'REJECTED': ApprovalStatus.REJECTED.value,
+    }
+    
+    return render(request, 'admin/chapter_review.html', context)

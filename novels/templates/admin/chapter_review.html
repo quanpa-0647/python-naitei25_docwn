@@ -1,0 +1,65 @@
+{% extends 'base_admin.html' %}
+{% load static %}
+{% load i18n %}
+{% load chapter_extras %}
+{% load message_tags %}
+
+{% block title %}{% trans "Xét duyệt chương" %}: {{ chapter.title }}{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'admin/css/chapter_review.css' %}" rel="stylesheet">
+<link href="admin/css/fontawesome.all.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Chapter Header Card -->
+    {% include "admin/includes/chapter_review_header.html" %}
+
+    {% if messages %}
+        <div class="messages">
+            {% show_messages messages %}
+        </div>
+    {% endif %}
+
+    <!-- Rejection Reason -->
+    {% if chapter.rejected_reason %}
+        <div class="card rejection-card">
+            <div class="rejection-content">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                    <h3 class="rejection-title">{% trans "Lý do từ chối" %}</h3>
+                    <p class="rejection-text">{{ chapter.rejected_reason }}</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
+        <!-- Nội dung chương -->
+        {% include "admin/includes/chapter_review_content.html" %}
+
+        <!-- Sidebar -->
+        {% if not chapter.approved and not chapter.rejected_reason %}
+            {% include "admin/includes/chapter_review_sidebar.html" %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+window.translations = {
+    confirmApprove: "{% trans 'Xác nhận duyệt chương' %}",
+    confirmApproveMessage: "{% trans 'Bạn có chắc chắn muốn duyệt chương này? Hành động này không thể hoàn tác.' %}",
+    confirmReject: "{% trans 'Xác nhận từ chối' %}",
+    confirmRejectMessage: "{% trans 'Bạn có chắc chắn muốn từ chối chương này?' %}",
+    approve: "{% trans 'Duyệt chương' %}",
+    reject: "{% trans 'Từ chối chương' %}",
+    cancel: "{% trans 'Huỷ' %}",
+    processing: "{% trans 'Đang xử lý...' %}",
+    reasonRequired: "{% trans 'Vui lòng nhập lý do từ chối.' %}"
+};
+</script>
+<script src="{% static 'admin/js/chapter_review.js' %}"></script>
+{% endblock %}
