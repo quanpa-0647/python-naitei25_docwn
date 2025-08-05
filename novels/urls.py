@@ -60,20 +60,16 @@ urlpatterns = [
      path('admin/tags/<slug:tag_slug>/delete/', 
           views_admin.admin_tag_delete, 
           name='admin_tag_delete'),
-
-     path("admin/requests/", 
-          views_admin.novel_request_detail, 
-          name="novel_request"),
      
-     path("admin/requests/<slug:slug>/", 
+     path("admin/requests/novel/<slug:slug>/", 
           views_admin.novel_request_detail, 
           name="novel_request_detail"),
 
-     path("admin/requests/<slug:slug>/approve/", 
+     path("admin/requests/novel/<slug:slug>/approve/", 
           views_admin.admin_approve_novel, 
           name="admin_approve_novel"),
      
-     path("admin/requests/<slug:slug>/reject/", 
+     path("admin/requests/novel/<slug:slug>/reject/", 
           views_admin.admin_reject_novel, 
           name="admin_reject_novel"),
     
@@ -84,4 +80,36 @@ urlpatterns = [
      path('admin/requests/chapter/<slug:chapter_slug>/',
           views_admin.chapter_review,
           name='chapter_review'),
+
+     path('admin/authors/', 
+          views_admin.author_list, 
+          name='author_list'),
+
+     path('admin/authors/create/', 
+          views_admin.author_create, 
+          name='author_create'),
+
+     path('admin/authors/<int:pk>/update/', 
+          views_admin.author_update, 
+          name='author_update'),
+
+     path('admin/authors/<int:pk>/delete/', 
+          views_admin.author_delete, 
+          name='author_delete'),
+
+     path('admin/artists/', 
+          views_admin.artist_list, 
+          name='artist_list'),
+
+     path('admin/artists/create/', 
+          views_admin.artist_create, 
+          name='artist_create'),
+
+     path('admin/artists/<int:pk>/update/', 
+          views_admin.artist_update, 
+          name='artist_update'),
+
+     path('admin/artists/<int:pk>/delete/', 
+          views_admin.artist_delete, 
+          name='artist_delete'),
 ]

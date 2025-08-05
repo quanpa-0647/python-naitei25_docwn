@@ -70,6 +70,18 @@
     --transition-fast: 0.15s ease;
     --transition-normal: 0.3s ease;
     --transition-slow: 0.5s ease;
+
+     /* Novel Detail Add */
+    --bs-body-bg: #ffffff;
+    --bs-body-color: #212529;
+    --bs-card-bg: #ffffff;
+    --bs-secondary-bg: #eeeeee;
+    --bs-secondary-color: #6c757d;
+    --bs-border-color: #dee2e6;
+    --bs-white: #ffffff;
+    --bs-primary: #36a189;
+    --bs-info: var(--info-color);
+    --bs-link-color: var(--primary-color);
 }
 
 /* Dark Theme */
@@ -83,6 +95,17 @@
     --border-color: #495057;
     --border-light: #404040;
     --border-dark: #6c757d;
+
+    --bs-body-bg: #121212;
+    --bs-body-color: #f1f1f1;
+    --bs-card-bg: #1e1e1e;
+    --bs-secondary-bg: #2a2a2a;
+    --bs-secondary-color: #adb5bd;
+    --bs-border-color: #444;
+    --bs-white: #ffffff;
+    --bs-primary: #36a189;
+    --bs-info: var(--info-color);
+    --bs-link-color: var(--primary-light);
 }
 
 [data-bs-theme="dark"] body {
