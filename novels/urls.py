@@ -13,6 +13,9 @@ urlpatterns = [
     path("admin/users/", views.Users, name="users"),
     path("admin/novels/", views.Novels, name="novels"),
     path("admin/requests/", views.Requests, name="requests"),
+    path("most-read-novels/", views.most_read_novels, name ="most-read-novels"),
+    path("finish-novels/", views.finish_novels, name ="finish-novels"),
+    path("new-novels/", views.new_novels, name ="new-novels"),
     path("admin/comments/", views.Comments, name="comments"),
     path("my-novels/", views.MyNovelsView.as_view(), name="my_novels"),
     
