@@ -106,3 +106,17 @@ MAX_REJECTTED_REASONS_LENGTH = 1000
 # Constants for pagination
 NOVEL_PER_PAGE = 10
 PAGINATION_PAGE_RANGE = 3  # Number of pages to show before and after current page
+
+# Chunking configuration
+MAX_CHUNK_SIZE = 10000  # Maximum size for a chunk in characters
+
+# Reading constants
+WORDS_PER_MINUTE = 200  # Average reading speed for time estimation
+
+# Draft constants
+DEFAULT_DRAFT_NAME_PREFIX = "Draft"
+DEFAULT_DRAFT_FALLBACK_NAME = "Novel"
+DEFAULT_DRAFT_SUMMARY = "Draft content - to be updated later"
+
+# Volume constants
+MAX_VOLUME_NAME_LENGTH = 255

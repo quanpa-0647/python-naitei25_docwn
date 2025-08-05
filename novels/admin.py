@@ -1,5 +1,11 @@
 from django.contrib import admin
-from .models import Novel, Author, Artist, Tag, NovelTag
+from django.utils.html import format_html
+from django.urls import reverse
+from django.shortcuts import redirect
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+from .models import Novel, Author, Artist, Tag, NovelTag, Chapter, Chunk, Volume
+from .utils import ChunkManager
 
 # Register your models here.
 
@@ -41,3 +47,66 @@ class NovelTagAdmin(admin.ModelAdmin):
     search_fields = ("novel__name", "tag__name")
     ordering = ("novel", "tag")
     list_filter = ("tag",)
+
+
+@admin.register(Volume)
+class VolumeAdmin(admin.ModelAdmin):
+    list_display = ("name", "novel", "position", "created_at")
+    search_fields = ("name", "novel__name")
+    list_filter = ("novel",)
+    ordering = ("novel", "position")
+
+
+@admin.register(Chapter)
+class ChapterAdmin(admin.ModelAdmin):
+    list_display = ("title", "volume", "position", "word_count", "chunk_count", "approved", "created_at")
+    search_fields = ("title", "volume__name", "volume__novel__name")
+    list_filter = ("approved", "is_hidden", "volume__novel")
+    ordering = ("volume__novel", "volume__position", "position")
+    actions = ["rechunk_chapters"]
+    
+    def chunk_count(self, obj):
+        return obj.chunks.count()
+    chunk_count.short_description = "Chunks"
+    
+    def rechunk_chapters(self, request, queryset):
+        """Action to re-chunk selected chapters using normal chunking."""
+        updated_count = 0
+        error_count = 0
+        
+        for chapter in queryset:
+            try:
+                content = chapter.get_content()
+                if content.strip():
+                    ChunkManager.create_normal_chunks_for_chapter(chapter, content)
+                    updated_count += 1
+                else:
+                    error_count += 1
+            except Exception as e:
+                error_count += 1
+                
+        if updated_count > 0:
+            messages.success(
+                request, 
+                f"Successfully re-chunked {updated_count} chapters using normal chunking."
+            )
+        if error_count > 0:
+            messages.warning(
+                request, 
+                f"Failed to re-chunk {error_count} chapters (empty content or errors)."
+            )
+    
+    rechunk_chapters.short_description = "Re-chunk selected chapters normally"
+
+
+@admin.register(Chunk)
+class ChunkAdmin(admin.ModelAdmin):
+    list_display = ("chapter", "position", "word_count", "content_preview")
+    search_fields = ("chapter__title", "chapter__volume__name", "content")
+    list_filter = ("chapter__volume__novel",)
+    ordering = ("chapter__volume__novel", "chapter__volume__position", "chapter__position", "position")
+    readonly_fields = ("word_count",)
+    
+    def content_preview(self, obj):
+        return obj.content[:100] + "..." if len(obj.content) > 100 else obj.content
+    content_preview.short_description = "Content Preview"

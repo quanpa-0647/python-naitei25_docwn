@@ -14,18 +14,39 @@
           {% for chapter in chapter_list %}
             {% if forloop.counter <= MAX_CHAPTER_LIST %}
               <div class="chapter-item">
-                <span>{{ chapter.title }}</span>
+                <a href="{% url 'novels:chapter_detail' novel_slug=novel.slug chapter_slug=chapter.slug %}">
+                  {{ chapter.title }}
+                  {% if not chapter.approved %}
+                    <span class="badge badge-warning">{% trans "Chờ duyệt" %}</span>
+                  {% elif chapter.is_hidden %}
+                    <span class="badge badge-secondary">{% trans "Ẩn" %}</span>
+                  {% endif %}
+                </a>
                 <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
               </div>
             {% elif forloop.counter == MAX_CHAPTER_LIST_PLUS %}
               <div id="extraChapters{{ volume.id }}" class="chapter-extra hidden">
                 <div class="chapter-item">
-                  <span>{{ chapter.title }}</span>
+                  <a href="{% url 'novels:chapter_detail' novel_slug=novel.slug chapter_slug=chapter.slug %}">
+                    {{ chapter.title }}
+                    {% if not chapter.approved %}
+                      <span class="badge badge-warning">{% trans "Chờ duyệt" %}</span>
+                    {% elif chapter.is_hidden %}
+                      <span class="badge badge-secondary">{% trans "Ẩn" %}</span>
+                    {% endif %}
+                  </a>
                   <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
                 </div>
             {% else %}
                 <div class="chapter-item">
-                  <span>{{ chapter.title }}</span>
+                  <a href="{% url 'novels:chapter_detail' novel_slug=novel.slug chapter_slug=chapter.slug %}">
+                    {{ chapter.title }}
+                    {% if not chapter.approved %}
+                      <span class="badge badge-warning">{% trans "Chờ duyệt" %}</span>
+                    {% elif chapter.is_hidden %}
+                      <span class="badge badge-secondary">{% trans "Ẩn" %}</span>
+                    {% endif %}
+                  </a>
                   <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
                 </div>
             {% endif %}
@@ -48,3 +69,11 @@
     </div>
   </div>
 {% endfor %}
+
+{% if can_add_chapter %}
+  <div class="add-chapter-section">
+    <a href="{% url 'novels:chapter_add' novel_slug=novel.slug %}" class="btn btn-primary add-chapter-btn">
+      <i class="fas fa-plus"></i> {% trans "Thêm Chapter" %}
+    </a>
+  </div>
+{% endif %}

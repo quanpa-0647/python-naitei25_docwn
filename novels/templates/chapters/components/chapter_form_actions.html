@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<div class="form-actions">
+    <button type="submit" class="submit-btn">
+        {% trans "Thêm Chapter" %}
+    </button>
+    <a href="{% url 'novels:novel_detail' novel_slug=novel.slug %}" class="cancel-btn">
+        {% trans "Hủy" %}
+    </a>
+</div>
