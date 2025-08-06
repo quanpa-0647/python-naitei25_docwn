@@ -41,15 +41,68 @@
         <i class="bxr bx-user-check fs-4"></i> <span>{% trans "Users" %}</span>
       </a>
     </li>
-    <li>
-      <a
-        href="{% url 'novels:requests' %}"
-        class="nav-link d-flex align-items-center gap-2"
-      >
+    <li class="nav-item">
+      <div  
+     class="nav-link d-flex align-items-center justify-content-between gap-2 {% if request.resolver_match.url_name == 'requests' %}active{% endif %}">
+    <div class="d-flex align-items-center gap-2">
         <i class="bxr bx-message-question-mark fs-4"></i>
         <span>{% trans "Requests" %}</span>
-      </a>
+    </div>
+    <i class="bxr bx-chevron-down fs-5"></i> 
+      </div>
+    
+      <ul class="nav flex-column ms-4">
+        <li class="nav-item">
+          <a href="{% url 'novels:upload_novel_requests' %}" 
+             class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'upload_chapter' %}active{% endif %}">
+             <i class="bxr bx-book-open fs-4"></i>
+            <span>{% trans "Novels" %}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'novels:upload_chapter_requests' %}" 
+             class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'upload_novel' %}active{% endif %}">
+            <i class="bxr bx-book-add fs-4"></i>
+            <span>{% trans "Chapters" %}</span>
+          </a>
+        </li>
+      </ul>
     </li>
+    <li class="nav-item">
+      <div  
+     class="nav-link d-flex align-items-center justify-content-between gap-2 ">
+    <div class="d-flex align-items-center gap-2">
+      <i class='bxr  bx-layers-minus-alt'></i> 
+        <span>{% trans "Manages" %}</span>
+    </div>
+    <i class="bxr bx-chevron-down fs-5"></i> 
+      </div>
+    
+      <ul class="nav flex-column ms-4">
+        <li class="nav-item">
+          <a href="{% url 'novels:admin_tag_list' %}" 
+             class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'upload_chapter' %}active{% endif %}">
+             <i class='bxr  bx-price-tag-alt'></i> 
+            <span>{% trans "Tags" %}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'novels:author_list' %}" 
+             class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'author_list' %}active{% endif %}">
+             <i class='bxr  bx-pen-alt'></i> 
+            <span>{% trans "Authors" %}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'novels:artist_list' %}" 
+             class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'artist_list' %}active{% endif %}">
+             <i class='bxr  bx-stroke-freehand'></i> 
+            <span>{% trans "Artists" %}</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+
   </ul>
 
   <div class="dropdown mt-auto cursor-pointer">
@@ -73,7 +126,7 @@
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
       <li><a class="dropdown-item" href="#">{% trans "Profile" %}</a></li>
       <li><hr class="dropdown-divider" /></li>
-      <li><a class="dropdown-item" href="#">{% trans "Sign out" %}</a></li>
+      <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">{% trans "Sign out" %}</a></li>
     </ul>
   </div>
 </div>

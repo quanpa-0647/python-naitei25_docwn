@@ -28,20 +28,20 @@
         {% for novel in novels %}
         <tr>
           <td class="text-center align-middle">{{ forloop.counter }}</td>
-          <td class="text-center align-middle">{{ novel.title }}</td>
-          <td class="text-center align-middle">{{ novel.views }}</td>
+          <td class="text-center align-middle">{{ novel.name }}</td>
+          <td class="text-center align-middle">{{ novel.view_count }}</td>
           <td class="text-center align-middle">
-            {% if novel.tags %}
-              {% for tag in novel.tags %}
-                <span class="badge bg-secondary">{{ tag }}</span>
-              {% endfor %}
+            {% if novel.tag_list %}  
+            {% for tag in novel.tag_list %}  
+            <span class="badge bg-secondary">{{ tag.name }}</span>
+            {% endfor %}
             {% else %}
               <span>{% trans "Không có tag" %}</span>
             {% endif %}
           </td>
           <td class="text-center align-middle">{{ novel.author }}</td>
-          <td class="text-center align-middle">{{ novel.date }}</td>
-          <td class="text-center align-middle"><a href="#">{% trans "Xem chi tiết" %}</a></td>
+          <td class="text-center align-middle">{{ novel.created_at }}</td>
+          <td class="text-center align-middle"><a href="{% url 'novels:novel_detail' slug=novel.slug%}">{% trans "Xem chi tiết" %}</a></td>
         </tr>
         {% endfor %}
       </tbody>

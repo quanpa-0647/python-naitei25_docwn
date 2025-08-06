@@ -15,10 +15,10 @@
       </tr>
     </thead>
     <tbody>
-      {% for novel in novel_uploads %}
+      {% for novel in up_novels %}
       <tr>
         <td class="text-center align-middle">{{ forloop.counter }}</td>
-        <td class="text-center align-middle">{{ novel.title }}</td>
+        <td class="text-center align-middle">{{ novel.name }}</td>
         <td class="text-center align-middle">
           {% if novel.tags %}
             {% for tag in novel.tags %}
@@ -28,10 +28,10 @@
             <span>{% trans "Không có tag" %}</span>
           {% endif %}
         </td>
-        <td class="text-center align-middle">{{ novel.user }}</td>
-        <td class="text-center align-middle">{{ novel.upload_date }}</td>
+        <td class="text-center align-middle">{{ novel.posted_by}}</td>
+        <td class="text-center align-middle">{{ novel.created_at}}</td>
         <td class="text-center align-middle">
-          <a href="#">{% trans "Xem chi tiết" %}</a>
+          <a href="{% url 'novels:novel_request_detail' slug=novel.slug %}">{% trans "Xem chi tiết" %}</a>
         </td>
       </tr>
       {% endfor %}
