@@ -118,29 +118,6 @@ def admin_reject_novel(request, slug):
 @website_admin_required
 def chapter_review(request, chapter_slug):
     chapter = get_object_or_404(Chapter, slug=chapter_slug)
-    
-    if request.method == 'POST':
-        action = request.POST.get('action')
-        
-        if action == ApprovalStatus.APPROVED.value:
-            chapter.approved = True
-            chapter.rejected_reason = None
-            chapter.save()
-            messages.success(request, _('Chương "%(title)s" đã được duyệt thành công!') % {'title': chapter.title})
-            
-        elif action == ApprovalStatus.REJECTED.value:
-            rejected_reason = request.POST.get('rejected_reason', '').strip()
-            if not rejected_reason:
-                messages.error(request, _('Vui lòng cung cấp lý do từ chối.'))
-                return render(request, 'admin/chapter_review.html', {'chapter': chapter})
-            
-            chapter.approved = False
-            chapter.rejected_reason = rejected_reason
-            chapter.save()
-            messages.success(request, _('Chương "%(title)s" đã bị từ chối.') % {'title': chapter.title})
-        
-        return redirect('novels:chapter_review', chapter_slug=chapter.slug)
-    
     context = {
         'chapter': chapter,
         'novel': chapter.novel,
@@ -153,7 +130,7 @@ def chapter_review(request, chapter_slug):
         'APPROVED': ApprovalStatus.APPROVED.value,
         'REJECTED': ApprovalStatus.REJECTED.value,
     }
-    
+
     return render(request, 'admin/chapter_review.html', context)
 @website_admin_required
 def author_list(request):
@@ -254,3 +231,32 @@ def artist_delete(request, pk):
     artist = get_object_or_404(Artist, pk=pk)
     artist.delete()
     return JsonResponse({'success': True})
+
+@require_POST
+@website_admin_required
+def approve_chapter_view(request, chapter_slug):
+    chapter = get_object_or_404(Chapter, slug=chapter_slug)
+    chapter.approved = True
+    chapter.rejected_reason = None
+    chapter.save()
+
+    messages.success(request, _('Chương "%(title)s" đã được duyệt thành công!') % {'title': chapter.title})
+    return redirect('novels:chapter_review', chapter_slug=chapter.slug)
+
+@require_POST
+@website_admin_required
+def reject_chapter_view(request, chapter_slug):
+    chapter = get_object_or_404(Chapter, slug=chapter_slug)
+    rejected_reason = request.POST.get('rejected_reason', '').strip()
+
+    if not rejected_reason:
+        messages.error(request, _('Vui lòng cung cấp lý do từ chối.'))
+        return redirect('novels:chapter_review', chapter_slug=chapter.slug)
+
+    chapter.approved = False
+    chapter.rejected_reason = rejected_reason
+    chapter.save()
+
+    messages.success(request, _('Chương "%(title)s" đã bị từ chối.') % {'title': chapter.title})
+    return redirect('novels:chapter_review', chapter_slug=chapter.slug)
+

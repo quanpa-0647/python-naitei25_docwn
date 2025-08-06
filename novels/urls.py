@@ -72,10 +72,6 @@ urlpatterns = [
      path("admin/requests/novel/<slug:slug>/reject/", 
           views_admin.admin_reject_novel, 
           name="admin_reject_novel"),
-    
-    # Generic novel slug patterns - must come last
-    path('<slug:novel_slug>/', views.novel_detail, name='novel_detail'),
-    path('<slug:novel_slug>/add-chapter/', views.chapter_add_view, name='chapter_add'),
      
      path('admin/requests/chapter/<slug:chapter_slug>/',
           views_admin.chapter_review,
@@ -112,4 +108,16 @@ urlpatterns = [
      path('admin/artists/<int:pk>/delete/', 
           views_admin.artist_delete, 
           name='artist_delete'),
+     
+     path('admin/requests/chapter/<slug:chapter_slug>/approve/',
+          views_admin.approve_chapter_view,
+          name='approve_chapter'),
+     
+     path('admin/requests/chapter/<slug:chapter_slug>/reject/',
+          views_admin.reject_chapter_view,
+          name='reject_chapter'),
+    
+    # Generic novel slug patterns - must come last
+    path('<slug:novel_slug>/', views.novel_detail, name='novel_detail'),
+    path('<slug:novel_slug>/add-chapter/', views.chapter_add_view, name='chapter_add'),
 ]

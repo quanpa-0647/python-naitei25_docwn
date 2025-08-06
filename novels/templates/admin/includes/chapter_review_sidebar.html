@@ -8,10 +8,11 @@
         </div>
         
         <div class="actions-body">
-            <form method="post">
-                {% csrf_token %}
 
-                {% if not chapter.rejected_reason %}
+            {% if not chapter.rejected_reason %}
+                <!-- Form từ chối chương -->
+                <form method="post" action="{% url 'novels:reject_chapter' chapter.slug %}">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="rejected_reason" class="form-label">
                             <i class="fas fa-comment-dots"></i>
@@ -24,23 +25,28 @@
                                 rows="4"
                                 data-tooltip="{% trans 'Nhập lý do từ chối chi tiết để giúp tác giả hiểu và cải thiện' %}">{{ chapter.rejected_reason|default_if_none:"" }}</textarea>
                         
-                        <button type="submit" name="action" value={{ REJECTED }}
+                        <button type="submit"
                                 class="btn btn-reject">
                             <i class="fas fa-times"></i>
                             {% trans "Từ chối chương" %}
                         </button>
                     </div>
-                {% endif %}
+                </form>
+            {% endif %}
 
-                {% if not chapter.approved %}
-                    <button type="submit" name="action" value={{ APPROVED }}
+            {% if not chapter.approved %}
+                <!-- Form duyệt chương -->
+                <form method="post" action="{% url 'novels:approve_chapter' chapter.slug %}">
+                    {% csrf_token %}
+                    <button type="submit"
                             class="btn btn-approve"
                             data-tooltip="{% trans 'Duyệt chương này và xuất bản cho độc giả' %}">
                         <i class="fas fa-check"></i>
                         {% trans "Duyệt chương" %}
                     </button>
-                {% endif %}
-            </form>
+                </form>
+            {% endif %}
+
         </div>
     </div>
 </div>
