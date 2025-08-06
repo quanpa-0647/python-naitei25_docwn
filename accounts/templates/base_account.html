@@ -3,17 +3,24 @@
 <head>
     <meta charset="UTF-8">
     {% load i18n %}
+    {% load message_tags %}
     <title>{% block title %}{% trans "Tài khoản" %}{% endblock %}</title>
+    {% load static %}
+    <link href="{% static 'novels/css/bootstrap.min.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'accounts/css/styles.css' %}" />
+    <link href="{% static 'boxicons/css/boxicons.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'boxicons/css/transformations.min.css' %}" rel="stylesheet" />
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body class="bg-body text-body">
     {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
+        <div class="container mt-3">
+            {% show_messages messages dismissible=True show_icons=False %}
+        </div>
     {% endif %}
     {% block content %}{% endblock %}
+    
+    <script src="{% static 'novels/js/jquery.min.js' %}"></script>
+    <script src="{% static 'novels/js/bootstrap.bundle.min.js' %}"></script>
 </body>
 </html>

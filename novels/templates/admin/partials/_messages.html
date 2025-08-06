@@ -1,8 +1,13 @@
 {% load message_tags %}
 
 {% for message in messages %}
-    <div class="alert alert-{{ message.tags }}">
-        <i class="{{ message.tags|message_icon }}"></i>
+    <div class="alert alert-{{ message.tags|default:'info' }}{% if dismissible %} alert-dismissible fade show{% endif %}" role="alert">
+        {% if show_icons %}
+            <i class="{{ message.tags|message_icon }}"></i>
+        {% endif %}
         <span>{{ message }}</span>
+        {% if dismissible %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        {% endif %}
     </div>
 {% endfor %}

@@ -19,9 +19,9 @@ $(function () {
 
   function updateButtonText(theme) {
     if (theme === 'dark') {
-      $btn.html("<i class='bxr bx-sun-bright'></i> Light");
+      $btn.html("<i class='bx bx-sun'></i> Light");
     } else {
-      $btn.html("<i class='bxr bx-moon-star'></i> Dark");
+      $btn.html("<i class='bx bx-moon'></i> Dark");
     }
   }
 });

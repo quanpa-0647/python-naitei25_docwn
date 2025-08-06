@@ -1,0 +1,50 @@
+{% load i18n %}
+
+<div class="col-lg-6 col-xl-4 mb-4">
+    <div class="novel-card">
+        <div class="novel-image">
+            <a href="{% url 'novels:novel_detail' novel_slug=novel.slug %}">
+                {% if novel.image_url %}
+                    <img src="{{ novel.image_url }}" alt="{{ novel.name }}" class="img-fluid">
+                {% else %}
+                    <div class="no-image">
+                        <i class="bx bx-book"></i>
+                    </div>
+                {% endif %}
+            </a>
+        </div>
+        <div class="novel-info">
+            <h5 class="novel-title">
+                <a href="{% url 'novels:novel_detail' novel_slug=novel.slug %}">{{ novel.name }}</a>
+            </h5>
+            <div class="novel-meta">
+                {% if novel.author %}
+                    <div class="author">
+                        <i class="bx bx-user"></i>
+                        <span>{{ novel.author.name }}</span>
+                    </div>
+                {% endif %}
+                <div class="stats">
+                    <span class="views">
+                        <i class="bx bx-show"></i>
+                        {{ novel.view_count }}
+                    </span>
+                    <span class="rating">
+                        <i class="bx bx-star"></i>
+                        {{ novel.rating_avg|default:DEFAULT_RATING_AVERAGE }}
+                    </span>
+                </div>
+            </div>
+            <div class="novel-tags">
+                {% for tag in novel.tag_list %}
+                    <span class="tag">{{ tag.name }}</span>
+                {% empty %}
+                    <span class="no-tags">{% trans "Chưa có thẻ" %}</span>
+                {% endfor %}
+            </div>
+            <div class="novel-summary">
+                <p>{{ novel.summary|truncatewords:SUMMARY_TRUNCATE_WORDS }}</p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -41,9 +41,10 @@ function initializeSelect2() {
         });
 
         // Handle Select2 focus events for better UX
-        $('.select2-container').on('focus', function() {
+        $('.select2-container').off('focus.select2Focus blur.select2Focus');
+        $('.select2-container').on('focus.select2Focus', function() {
             $(this).addClass('select2-container--focus');
-        }).on('blur', function() {
+        }).on('blur.select2Focus', function() {
             $(this).removeClass('select2-container--focus');
         });
     }
@@ -126,7 +127,10 @@ function setupTextareaAutoResize() {
  * Setup form validation and submission
  */
 function setupFormValidation() {
-    $('#novelForm').on('submit', function(e) {
+    // Remove any existing submit handlers to prevent duplication
+    $('#novelForm').off('submit.validation');
+    
+    $('#novelForm').on('submit.validation', function(e) {
         // Check if this is a draft save
         const isDraftSave = $(this).find('input[name="save_as_draft"]').length > 0;
         
@@ -256,8 +260,11 @@ function hideLoadingState() {
  * Setup input event listeners
  */
 function setupInputEventListeners() {
+    // Remove existing event handlers to prevent duplication
+    $('input, textarea, select').off('input.validation change.validation');
+    
     // Reset error styles on input
-    $('input, textarea, select').on('input change', function() {
+    $('input, textarea, select').on('input.validation change.validation', function() {
         $(this).removeClass('error');
         
         // Real-time validation feedback
@@ -291,7 +298,9 @@ function setupInputEventListeners() {
             $summaryField.after($charCounter);
         }
         
-        $summaryField.on('input', function() {
+        // Remove existing input handler and add with namespace
+        $summaryField.off('input.charCounter');
+        $summaryField.on('input.charCounter', function() {
             const length = $(this).val().length;
             const maxLength = $(this).data('max-length') || 2000;
             const counterTemplate = $(this).data('counter-template') || '{current}/{max} characters';
@@ -312,7 +321,8 @@ function setupInputEventListeners() {
     }
 
     // Prevent form submission on Enter key in text inputs (except textarea)
-    $('input[type="text"]').on('keydown', function(e) {
+    $('input[type="text"]').off('keydown.enterPrevent');
+    $('input[type="text"]').on('keydown.enterPrevent', function(e) {
         if (e.keyCode === 13) {
             e.preventDefault();
             // Move to next input field
@@ -356,29 +366,35 @@ function setupUnsavedChangesDetection() {
     let isSubmitting = false;
     let initialFormData = new FormData($('#novelForm')[0]);
     
+    // Remove existing event handlers to prevent duplication
+    $('#novelForm').off('input.unsaved change.unsaved submit.unsaved');
+    $('#id_author, #id_artist, #id_tags').off('select2:select.unsaved select2:unselect.unsaved select2:clear.unsaved');
+    $('#id_image_file').off('change.unsaved');
+    $(document).off('click.unsaved');
+    
     // Track form changes
-    $('#novelForm').on('input change', 'input, textarea, select', function() {
+    $('#novelForm').on('input.unsaved change.unsaved', 'input, textarea, select', function() {
         if (!isSubmitting) {
             hasUnsavedChanges = true;
         }
     });
     
     // Handle Select2 changes specifically
-    $('#id_author, #id_artist, #id_tags').on('select2:select select2:unselect select2:clear', function() {
+    $('#id_author, #id_artist, #id_tags').on('select2:select.unsaved select2:unselect.unsaved select2:clear.unsaved', function() {
         if (!isSubmitting) {
             hasUnsavedChanges = true;
         }
     });
     
     // Handle file input changes separately
-    $('#id_image_file').on('change', function() {
+    $('#id_image_file').on('change.unsaved', function() {
         if (!isSubmitting) {
             hasUnsavedChanges = true;
         }
     });
     
     // Reset unsaved changes flag when form is submitted
-    $('#novelForm').on('submit', function() {
+    $('#novelForm').on('submit.unsaved', function() {
         isSubmitting = true;
         hasUnsavedChanges = false;
     });
@@ -403,7 +419,7 @@ function setupUnsavedChangesDetection() {
     }
     
     // Handle navigation within the site
-    $(document).on('click', 'a[href]:not([href^="#"]):not([href^="javascript:"]):not([target="_blank"])', function(e) {
+    $(document).on('click.unsaved', 'a[href]:not([href^="#"]):not([href^="javascript:"]):not([target="_blank"])', function(e) {
         const $this = $(this);
         const href = $this.attr('href');
         
@@ -416,7 +432,7 @@ function setupUnsavedChangesDetection() {
     });
     
     // Also handle button clicks that might navigate
-    $(document).on('click', 'button[data-href], .btn[data-href]', function(e) {
+    $(document).on('click.unsaved', 'button[data-href], .btn[data-href]', function(e) {
         const $this = $(this);
         const href = $this.data('href');
         

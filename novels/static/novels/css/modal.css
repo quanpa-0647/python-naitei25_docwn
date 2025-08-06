@@ -136,3 +136,45 @@
 .save-draft-modal:not(.hidden) {
     display: flex;
 }
+
+/* Dark theme support */
+[data-bs-theme="dark"] .save-draft-modal-content {
+    background: #2d2d2d;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .save-draft-modal-header {
+    background: #404040;
+    border-color: #495057;
+}
+
+[data-bs-theme="dark"] .save-draft-modal-title {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .save-draft-modal-body {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .save-draft-modal-footer {
+    background: #404040;
+    border-color: #495057;
+}
+
+[data-bs-theme="dark"] .discard-btn {
+    background: #6c757d;
+    color: white;
+}
+
+[data-bs-theme="dark"] .discard-btn:hover {
+    background: #5a6268;
+}
+
+[data-bs-theme="dark"] .save-draft-btn {
+    background: #0d6efd;
+    color: white;
+}
+
+[data-bs-theme="dark"] .save-draft-btn:hover {
+    background: #0b5ed7;
+}

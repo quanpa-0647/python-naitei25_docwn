@@ -370,36 +370,71 @@ body.font-large .chunk { font-size: 20px; }
 body.font-xlarge .chunk { font-size: 22px; }
 
 /* Dark mode */
-body.dark-mode {
+[data-bs-theme="dark"] body {
     background-color: #2c3e50;
     color: #ecf0f1;
 }
 
-body.dark-mode .reading-content {
+[data-bs-theme="dark"] .reading-content {
     background: #34495e;
     color: #ecf0f1;
 }
 
-body.dark-mode .chapter-header {
+[data-bs-theme="dark"] .chapter-header {
     background: #34495e;
     border-color: #555;
 }
 
-body.dark-mode .chunk {
+[data-bs-theme="dark"] .chunk {
     color: #ecf0f1;
 }
 
-body.dark-mode .controls-panel {
+[data-bs-theme="dark"] .controls-panel {
     background: rgba(52, 73, 94, 0.95);
     border-color: rgba(255,255,255,0.1);
 }
 
-body.dark-mode .sidebar-toggle {
+[data-bs-theme="dark"] .sidebar {
+    background: #2c3e50;
+}
+
+[data-bs-theme="dark"] .sidebar-header {
+    background: #34495e;
+    border-color: #456;
+}
+
+[data-bs-theme="dark"] .sidebar-toggle {
     background: #34495e;
 }
 
-body.dark-mode .sidebar-toggle.with-sidebar {
+[data-bs-theme="dark"] .sidebar-toggle.with-sidebar {
     background: #e74c3c;
+}
+
+[data-bs-theme="dark"] .chapter-link {
+    color: #ecf0f1;
+}
+
+[data-bs-theme="dark"] .chapter-link:hover {
+    background: #456;
+    color: white;
+}
+
+[data-bs-theme="dark"] .chapter-link.current {
+    background: #3498db;
+    color: white;
+}
+
+[data-bs-theme="dark"] .novel-title {
+    color: #ecf0f1;
+}
+
+[data-bs-theme="dark"] .author-name {
+    color: #bdc3c7;
+}
+
+[data-bs-theme="dark"] .chapter-item {
+    border-color: #456;
 }
 
 /* Form Action Buttons */

@@ -1,0 +1,399 @@
+/* Search Results Page Styles */
+
+.search-page {
+    min-height: 80vh;
+    padding: 20px 0;
+}
+
+.search-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.search-header h2 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.search-header .text-muted {
+    font-size: 1.1em;
+}
+
+.search-form-section {
+    background: #f8f9fa;
+    padding: 30px 20px;
+    border-radius: 10px;
+    margin-bottom: 40px;
+}
+
+.search-input {
+    border: 2px solid #e9ecef;
+    border-radius: 50px 0 0 50px;
+    padding: 12px 20px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.search-input:focus {
+    border-color: #007bff;
+    box-shadow: none;
+}
+
+.search-btn {
+    border-radius: 0 50px 50px 0;
+    padding: 12px 25px;
+    font-weight: 500;
+    border: 2px solid #007bff;
+    background: #007bff;
+    transition: all 0.3s;
+}
+
+.search-btn:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+}
+
+.search-btn i {
+    margin-right: 8px;
+}
+
+/* Novel Cards */
+.novel-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 100%;
+}
+
+.novel-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+}
+
+.novel-image {
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+.novel-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.novel-card:hover .novel-image img {
+    transform: scale(1.05);
+}
+
+.no-image {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 3rem;
+}
+
+.novel-info {
+    padding: 20px;
+}
+
+.novel-title {
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.novel-title a {
+    color: #2c3e50;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.novel-title a:hover {
+    color: #007bff;
+}
+
+.novel-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+.novel-meta .author {
+    display: flex;
+    align-items: center;
+}
+
+.novel-meta .author i {
+    margin-right: 5px;
+}
+
+.novel-meta .stats {
+    display: flex;
+    gap: 15px;
+}
+
+.novel-meta .stats span {
+    display: flex;
+    align-items: center;
+}
+
+.novel-meta .stats i {
+    margin-right: 4px;
+    font-size: 0.9em;
+}
+
+.novel-tags {
+    margin-bottom: 12px;
+}
+
+.novel-tags .tag {
+    display: inline-block;
+    background: #e9ecef;
+    color: #495057;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    margin-right: 6px;
+    margin-bottom: 4px;
+}
+
+.novel-tags .no-tags {
+    color: #adb5bd;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+.novel-summary p {
+    color: #6c757d;
+    font-size: 0.9em;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* No Results */
+.no-results {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.no-results-icon {
+    font-size: 5rem;
+    color: #adb5bd;
+    margin-bottom: 20px;
+}
+
+.no-results h4 {
+    color: #6c757d;
+    margin-bottom: 15px;
+}
+
+.search-suggestions {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.search-suggestions h6 {
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.search-suggestions ul li {
+    color: #6c757d;
+    margin-bottom: 5px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.search-suggestions ul li:before {
+    content: "•";
+    color: #007bff;
+    position: absolute;
+    left: 0;
+}
+
+/* Popular Novels */
+.popular-novels {
+    margin-top: 40px;
+}
+
+.popular-novels h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .search-form-section {
+        padding: 20px 15px;
+    }
+    
+    .search-input {
+        border-radius: 25px;
+        margin-bottom: 10px;
+    }
+    
+    .search-btn {
+        border-radius: 25px;
+        width: 100%;
+    }
+    
+    .input-group {
+        flex-direction: column;
+    }
+    
+    .novel-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .novel-meta .stats {
+        gap: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .novel-image {
+        height: 150px;
+    }
+    
+    .novel-info {
+        padding: 15px;
+    }
+    
+    .no-results {
+        padding: 40px 15px;
+    }
+    
+    .no-results-icon {
+        font-size: 3rem;
+    }
+}
+
+/* Dark Mode Styles */
+[data-bs-theme="dark"] .search-page {
+    background-color: #1a1a1a;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .search-header h2 {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .search-form-section {
+    background: #2d2d2d;
+    border: 1px solid #495057;
+}
+
+[data-bs-theme="dark"] .search-input {
+    background-color: #404040;
+    border-color: #6c757d;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .search-input:focus {
+    background-color: #495057;
+    border-color: #42a5f5;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .search-input::placeholder {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .search-btn {
+    background: #42a5f5;
+    border-color: #42a5f5;
+}
+
+[data-bs-theme="dark"] .search-btn:hover {
+    background: #1976d2;
+    border-color: #1976d2;
+}
+
+[data-bs-theme="dark"] .novel-card {
+    background: #2d2d2d;
+    border: 1px solid #495057;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+[data-bs-theme="dark"] .novel-card:hover {
+    box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+}
+
+[data-bs-theme="dark"] .novel-title a {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .novel-title a:hover {
+    color: #42a5f5;
+}
+
+[data-bs-theme="dark"] .novel-meta {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .novel-tags .tag {
+    background: #495057;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .novel-tags .no-tags {
+    color: #6c757d;
+}
+
+[data-bs-theme="dark"] .novel-summary p {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .no-results-icon {
+    color: #6c757d;
+}
+
+[data-bs-theme="dark"] .no-results h4 {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .search-suggestions {
+    background: #404040;
+    border: 1px solid #6c757d;
+}
+
+[data-bs-theme="dark"] .search-suggestions h6 {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .search-suggestions ul li {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .search-suggestions ul li:before {
+    color: #42a5f5;
+}
+
+[data-bs-theme="dark"] .popular-novels h3 {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .text-muted {
+    color: #adb5bd !important;
+}
+
+[data-bs-theme="dark"] .text-center {
+    color: #f8f9fa;
+}

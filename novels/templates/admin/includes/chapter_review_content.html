@@ -15,8 +15,12 @@
     
     <div class="content-body">
         <div class="prose">
-            {% if content %}
-                {{ content|safe }}
+            {% if chunks %}
+                {% for chunk in chunks %}
+                <div class="chunk" data-position="{{ chunk.position }}">
+                    {{ chunk.content }}
+                </div>
+                {% endfor %}
             {% else %}
                 <div class="empty-content">
                     <i class="fas fa-file-alt"></i>

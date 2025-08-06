@@ -1,0 +1,65 @@
+{% load i18n %}
+<!-- Enhanced Admin Pagination with Range Support -->
+{% if page_obj.paginator.num_pages > 1 %}
+<nav aria-label="{% trans 'Phân trang' %}">
+    <ul class="pagination justify-content-center">
+        <!-- First Page -->
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1" aria-label="{% trans 'Trang đầu' %}">
+                    &laquo;&laquo;
+                </a>
+            </li>
+        {% endif %}
+
+        <!-- Previous Page -->
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}" aria-label="{% trans 'Trang trước' %}">
+                    &laquo;
+                </a>
+            </li>
+        {% endif %}
+
+        <!-- Page Numbers - Simple Implementation -->
+        {% for num in page_obj.paginator.page_range %}
+            {% if num == page_obj.number %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}">{{ num }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        <!-- Next Page -->
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}" aria-label="{% trans 'Trang tiếp' %}">
+                    &raquo;
+                </a>
+            </li>
+        {% endif %}
+
+        <!-- Last Page -->
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.paginator.num_pages }}" aria-label="{% trans 'Trang cuối' %}">
+                    &raquo;&raquo;
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+
+<!-- Page info -->
+<div class="pagination-info text-center mt-3">
+    <small class="text-muted">
+        {% trans "Hiển thị" %} {{ page_obj.start_index }} - {{ page_obj.end_index }} 
+        {% trans "trong tổng số" %} {{ page_obj.paginator.count }} {% trans "bản ghi" %}
+        ({% trans "Trang" %} {{ page_obj.number }} / {{ page_obj.paginator.num_pages }})
+    </small>
+</div>
+{% endif %}

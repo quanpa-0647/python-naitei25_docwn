@@ -1,5 +1,6 @@
 {% load status_novel_request %}
 {% load i18n %}
+{% load datetime_filters %}
 
 <div class="row">
   <!-- Bên trái: Thông tin -->
@@ -12,7 +13,7 @@
     </div>
     <p><strong>{% trans "Tác giả:" %}</strong> {{ novel.author.name }}</p>
     <p><strong>{% trans "Họa sĩ:" %}</strong> {{ novel.artist.name }}</p>
-    <p><strong>{% trans "Ngày gửi yêu cầu:" %}</strong> {{ novel.created_at }}</p>
+    <p><strong>{% trans "Ngày gửi yêu cầu:" %}</strong> {{ novel.created_at|localtime_format:DATE_FORMAT_DMYHI }}</p>
     <p><strong>{% trans "Trạng thái hiện tại:" %}</strong>
       <span class="badge {{ novel.approval_status|approval_class }}">
         {{ novel.approval_status|approval_label }}
@@ -23,6 +24,12 @@
 
   <!-- Bên phải: Ảnh -->
   <div class="col-md-4 text-end">
-    <img src="{{ novel.image_url }}" alt="{{ novel.name }}" class="img-fluid rounded novel-thumbnail">
+    {% if novel.image_url %}
+      <img src="{{ novel.image_url }}" alt="{{ novel.name }}" class="img-fluid rounded novel-thumbnail">
+    {% else %}
+      <div class="img-fluid rounded novel-thumbnail novel-image-placeholder admin-thumbnail-placeholder">
+        <i class="fas fa-book"></i>
+      </div>
+    {% endif %}
   </div>
 </div>

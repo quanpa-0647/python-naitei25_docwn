@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load chapter_extras %}
+{% load datetime_filters %}
 
 <div class="card header-card">
     <div class="header-content">
@@ -32,11 +33,11 @@
                 </div>
                 <div class="meta-item">
                     <i class="fas fa-plus-circle"></i>
-                    <span><strong>{% trans "Ngày tạo" %}:</strong> {{ chapter.created_at|date:DATE_FORMAT_DMYHI }}</span>
+                    <span><strong>{% trans "Ngày tạo" %}:</strong> {{ chapter.created_at|localtime_format:DATE_FORMAT_DMYHI }}</span>
                 </div>
                 <div class="meta-item">
                     <i class="fas fa-edit"></i>
-                    <span><strong>{% trans "Chỉnh sửa" %}:</strong> {{ chapter.updated_at|date:DATE_FORMAT_DMYHI }}</span>
+                    <span><strong>{% trans "Chỉnh sửa" %}:</strong> {{ chapter.updated_at|localtime_format:DATE_FORMAT_DMYHI }}</span>
                 </div>
             </div>
         </div>

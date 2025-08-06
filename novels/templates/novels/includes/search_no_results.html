@@ -1,0 +1,16 @@
+{% load i18n %}
+
+<div class="no-results">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="no-results-icon">
+                <i class="bx bx-search-alt-2"></i>
+            </div>
+            <h4>{% trans "Không tìm thấy kết quả" %}</h4>
+            <p class="text-muted">
+                {% blocktrans %}Không tìm thấy truyện nào với từ khóa "{{ query }}". Hãy thử tìm kiếm với từ khóa khác.{% endblocktrans %}
+            </p>
+            {% include "novels/includes/search_suggestions.html" %}
+        </div>
+    </div>
+</div>

@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import IntegrityError, models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.text import slugify
 from django.utils.crypto import get_random_string
@@ -9,15 +9,18 @@ from constants import (
     MAX_COUNTRY_LENGTH,
     MAX_TAG_LENGTH,
     MAX_TITLE_LENGTH,
+    MAX_SLUG_LENGTH,
     MAX_GENDER_LENGTH,
     MAX_STATUS_LENGTH,
+    MAX_RANDOM_STRING_LENGTH,
     Gender,
     ProgressStatus,
     ApprovalStatus,
     MIN_RATE,
     MAX_RATE,
     COUNT_DEFAULT,
-    PROGRESS_DEFAULT
+    PROGRESS_DEFAULT,
+    MAX_ATTEMPTS
 )
 
 
@@ -174,10 +177,14 @@ class Volume(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('novel', 'position')
+        unique_together = [
+            ('novel', 'position'),
+            ('novel', 'name')  # Prevent duplicate volume names within the same novel
+        ]
         ordering = ['position']
         indexes = [
             models.Index(fields=['novel', 'position']),
+            models.Index(fields=['novel', 'name']),  # Index for name lookups
         ]
         
     def __str__(self):
@@ -187,7 +194,7 @@ class Volume(models.Model):
 class Chapter(models.Model):
     volume = models.ForeignKey(Volume, on_delete=models.RESTRICT, related_name='chapters')
     title = models.CharField(max_length=MAX_TITLE_LENGTH)
-    slug = models.SlugField(max_length=MAX_TITLE_LENGTH)
+    slug = models.SlugField(max_length=MAX_SLUG_LENGTH, unique=True)  # Uses constant for chapter slugs
     position = models.IntegerField()
     word_count = models.IntegerField(default=COUNT_DEFAULT)
     view_count = models.IntegerField(default=COUNT_DEFAULT)
@@ -209,6 +216,35 @@ class Chapter(models.Model):
         
     def __str__(self):
         return f"{self.volume.novel.name} - {self.title}"
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            # Generate slug from volume name and chapter title
+            volume_slug = slugify(self.volume.name) if self.volume.name else f'tap-{self.volume.position}'
+            
+            if self.title and self.title.strip():
+                chapter_slug = slugify(self.title.strip())
+            else:
+                chapter_slug = f'chuong-{self.position}'
+                
+            # Combine volume and chapter information
+            if chapter_slug:
+                base_slug = f'{volume_slug}-{chapter_slug}'
+            else:
+                base_slug = f'{volume_slug}-chuong-{self.position}'
+            
+            # Ensure global uniqueness for admin URLs
+            self.slug = base_slug
+            for attempt in range(MAX_ATTEMPTS):
+                try:
+                    super().save(*args, **kwargs)
+                    break
+                except IntegrityError as e:
+                    if 'unique constraint' in str(e).lower() or 'duplicate key' in str(e).lower():
+                        rand = get_random_string(MAX_RANDOM_STRING_LENGTH)
+                        self.slug = f"{self.slug}-{rand}"
+                    else:
+                        raise
     
     @property
     def novel(self):

@@ -55,6 +55,7 @@ MAX_TAG_LENGTH = 255
 MAX_COUNTRY_LENGTH = 100
 MAX_IMAGE_URL_LENGTH = 255
 MAX_TITLE_LENGTH = 255
+MAX_SLUG_LENGTH = 600  # For chapter slugs combining volume and title
 MAX_TYPE_LENGTH = 255
 MAX_GENDER_LENGTH = 1
 MAX_STATUS_LENGTH = 1
@@ -71,6 +72,8 @@ MAX_FINISH_NOVELS =13
 MAX_NEWUPDATE_NOVELS =12
 MAX_LATEST_CHAPTER = 14
 MIN_LATEST_CHAPTER = 1
+MAX_HOME_COMMENTS = 10  # Maximum comments to show on home page
+MAX_RANDOM_STRING_LENGTH = 10 
 
 # Constants for min_length
 MIN_RATE = 0
@@ -96,8 +99,8 @@ MAX_NOVEL_SUMMARY_LENGTH = 2000
 MAX_NOVEL_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
 
 # PAGINATOR
-PAGINATOR_TAG_LIST = 5
-PAGINATOR_COMMON_LIST = 5
+PAGINATOR_TAG_LIST = 10  # Increased for better consistency
+PAGINATOR_COMMON_LIST = 10  # Increased for better consistency
 DEFAULT_PAGE_NUMBER = 1
 
 # Allowed image types for novel uploads
@@ -115,12 +118,17 @@ MAX_REJECTTED_REASONS_LENGTH = 1000
 # Constants for pagination
 NOVEL_PER_PAGE = 10
 PAGINATION_PAGE_RANGE = 3  # Number of pages to show before and after current page
+PAGINATION_TEMPLATE_PATH = 'admin/includes/pagination_range.html'  # Template path for pagination
+PAGINATION_MIN_PAGE = 1  # Minimum page number
+PAGINATION_ELLIPSIS_THRESHOLD = 2  # Page difference threshold for showing ellipsis
+PAGINATION_MIN_PAGES_TO_SHOW = 1  # Minimum number of pages required to show pagination
 
 # Chunking configuration
 MAX_CHUNK_SIZE = 10000  # Maximum size for a chunk in characters
 
 # Reading constants
 WORDS_PER_MINUTE = 200  # Average reading speed for time estimation
+SUMMARY_TRUNCATE_WORDS = 20  # Number of words to show in novel summary previews
 
 # Draft constants
 DEFAULT_DRAFT_NAME_PREFIX = "Draft"
@@ -129,3 +137,19 @@ DEFAULT_DRAFT_SUMMARY = "Draft content - to be updated later"
 
 # Volume constants
 MAX_VOLUME_NAME_LENGTH = 255
+
+#Rating constants
+DEFAULT_RATING_AVERAGE = 0.0
+
+# Security constants
+SECURE_HSTS_SECONDS_HEROKU = 31536000  # 1 year in seconds
+SECURE_HSTS_SECONDS_DEVELOPMENT = 0  # No HSTS in development mode
+
+# Time constants for relative time calculation
+SECONDS_PER_HOUR = 3600  # 60 * 60
+SECONDS_PER_MINUTE = 60
+SEARCH_RESULTS_LIMIT = 20  # Limit for search results
+COMMENT_TRUNCATE_LENGTH = 200  # Length to truncate comments
+
+# Constants for attempting
+MAX_ATTEMPTS = 10

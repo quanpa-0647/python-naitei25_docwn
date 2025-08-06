@@ -671,3 +671,196 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* Dark Theme Support */
+[data-bs-theme="dark"] body {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .card {
+    background: rgba(45, 45, 45, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-bs-theme="dark"] .header-card {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+}
+
+[data-bs-theme="dark"] .chapter-title {
+    color: #ffffff;
+    font-weight: 800;
+}
+
+[data-bs-theme="dark"] .meta-item {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+[data-bs-theme="dark"] .status-badge {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+[data-bs-theme="dark"] .content-card {
+    background: rgba(45, 45, 45, 0.95);
+}
+
+[data-bs-theme="dark"] .content-header {
+    background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .content-header h2 {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .content-body {
+    color: #f1f3f4;
+}
+
+[data-bs-theme="dark"] .chunk-content {
+    color: #f1f3f4;
+    background: #404040;
+    border-color: #6c757d;
+}
+
+[data-bs-theme="dark"] .chunk-content h1,
+[data-bs-theme="dark"] .chunk-content h2,
+[data-bs-theme="dark"] .chunk-content h3,
+[data-bs-theme="dark"] .chunk-content h4,
+[data-bs-theme="dark"] .chunk-content h5,
+[data-bs-theme="dark"] .chunk-content h6 {
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .chunk-content p,
+[data-bs-theme="dark"] .chunk-content div,
+[data-bs-theme="dark"] .chunk-content span {
+    color: #e9ecef !important;
+    line-height: 1.7;
+}
+
+[data-bs-theme="dark"] .chunk-content strong,
+[data-bs-theme="dark"] .chunk-content b {
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .chunk-navigation .chunk-number {
+    background: #495057;
+    color: #f8f9fa;
+    border-color: #6c757d;
+}
+
+[data-bs-theme="dark"] .chunk-navigation .chunk-number.active {
+    background: #0d6efd;
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .chunk-navigation .chunk-number:hover {
+    background: #5a6268;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .actions-card {
+    background: rgba(45, 45, 45, 0.95);
+}
+
+[data-bs-theme="dark"] .actions-header {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+[data-bs-theme="dark"] .actions-header h3 {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .form-group label {
+    color: #f8f9fa;
+    font-weight: 600;
+}
+
+[data-bs-theme="dark"] .form-control {
+    background-color: #404040;
+    border-color: #6c757d;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .form-control:focus {
+    background-color: #404040;
+    border-color: #42a5f5;
+    color: #f8f9fa;
+    box-shadow: 0 0 0 0.2rem rgba(66, 165, 245, 0.25);
+}
+
+[data-bs-theme="dark"] .form-control::placeholder {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .textarea-reason {
+    background-color: #404040;
+    border-color: #6c757d;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .textarea-reason:focus {
+    background-color: #404040;
+    border-color: #42a5f5;
+    color: #f8f9fa;
+    box-shadow: 0 0 0 3px rgba(66, 165, 245, 0.25);
+}
+
+[data-bs-theme="dark"] .textarea-reason::placeholder {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .btn-approve {
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+}
+
+[data-bs-theme="dark"] .btn-reject {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+[data-bs-theme="dark"] .btn-secondary {
+    background: #495057;
+    border-color: #6c757d;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .btn-secondary:hover {
+    background: #5a6268;
+    border-color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .empty-content {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .word-counter {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .alert {
+    border-color: #6c757d;
+}
+
+[data-bs-theme="dark"] .alert-success {
+    background-color: #1b2d1b;
+    border-color: #16a34a;
+    color: #4ade80;
+}
+
+[data-bs-theme="dark"] .alert-danger {
+    background-color: #2d1b1b;
+    border-color: #dc2626;
+    color: #f87171;
+}
+
+[data-bs-theme="dark"] .alert-warning {
+    background-color: #2d2a1b;
+    border-color: #ca8a04;
+    color: #facc15;
+}

@@ -133,3 +133,50 @@ border-right: none;
   right: 0;
 }
 
+/* Dark mode table styling fixes */
+[data-bs-theme="dark"] .table {
+  color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .table-light {
+  --bs-table-color: #f8f9fa;
+  --bs-table-bg: #495057;
+  --bs-table-border-color: #6c757d;
+  --bs-table-striped-bg: #5a6268;
+  --bs-table-striped-color: #f8f9fa;
+  --bs-table-active-bg: #6c757d;
+  --bs-table-active-color: #f8f9fa;
+  --bs-table-hover-bg: #5a6268;
+  --bs-table-hover-color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .table-light th {
+  background-color: #495057 !important;
+  color: #ffffff !important;
+  border-color: #6c757d !important;
+}
+
+[data-bs-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > td {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-bs-theme="dark"] .table-bordered {
+  border-color: #6c757d;
+}
+
+[data-bs-theme="dark"] .table-bordered th,
+[data-bs-theme="dark"] .table-bordered td {
+  border-color: #6c757d;
+}
+
+[data-bs-theme="dark"] .table thead th {
+  color: #ffffff;
+  background-color: #495057;
+  border-color: #6c757d;
+}
+
+[data-bs-theme="dark"] .table tbody td {
+  color: #f8f9fa;
+  border-color: #6c757d;
+}
+

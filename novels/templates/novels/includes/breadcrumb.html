@@ -30,7 +30,7 @@
         </a>
       </li>
       <li class="breadcrumb-item">
-        <a href="{% url 'novels:novel_detail' novel.slug %}">
+        <a href="{% url 'novels:novel_detail' novel_slug=novel.slug %}">
           <i class="fas fa-book-open"></i>
           {{ novel.name }}
         </a>
@@ -47,7 +47,7 @@
         </a>
       </li>
       <li class="breadcrumb-item">
-        <a href="{% url 'novels:novel_detail' novel.slug %}">
+        <a href="{% url 'novels:novel_detail' novel_slug=novel.slug %}">
           <i class="fas fa-book-open"></i>
           {{ novel.name }}
         </a>
@@ -85,9 +85,9 @@
         </a>
       </li>
       <li class="breadcrumb-item">
-        <a href="{% url 'novels:novel_detail' novel.slug %}">
+        <a href="{% url 'novels:novel_detail' novel_slug=novel.slug %}">
           <i class="fas fa-book-open"></i>
-          {{ novel.name }}
+          {{ novel.name %}
         </a>
       </li>
       <li class="breadcrumb-item active" aria-current="page">

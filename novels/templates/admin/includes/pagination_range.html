@@ -1,0 +1,97 @@
+<!-- Pagination component for admin pages -->
+{% load admin_pagination_tags %}
+
+{% if show_pagination %}
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        
+        <!-- First page link -->
+        {% if page_obj.has_previous and show_first_page %}
+            <li class="page-item">
+                <a class="page-link" href="?{% url_replace request 'page' 1 %}">
+                    &laquo;&laquo; First
+                </a>
+            </li>
+        {% endif %}
+
+        <!-- Previous page link -->
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?{% url_replace request 'page' page_obj.previous_page_number %}">
+                    &laquo; Previous
+                </a>
+            </li>
+        {% endif %}
+
+        <!-- Show first page if needed -->
+        {% if show_first_page %}
+            <li class="page-item">
+                <a class="page-link" href="?{% url_replace request 'page' 1 %}">1</a>
+            </li>
+        {% endif %}
+
+        <!-- Show first ellipsis -->
+        {% if show_first_ellipsis %}
+            <li class="page-item disabled">
+                <span class="page-link">...</span>
+            </li>
+        {% endif %}
+
+        <!-- Page numbers -->
+        {% for page_num in page_numbers %}
+            {% if page_num == page_obj.number %}
+                <li class="page-item active">
+                    <span class="page-link">{{ page_num }}</span>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% url_replace request 'page' page_num %}">
+                        {{ page_num }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        <!-- Show last ellipsis -->
+        {% if show_last_ellipsis %}
+            <li class="page-item disabled">
+                <span class="page-link">...</span>
+            </li>
+        {% endif %}
+
+        <!-- Show last page if needed -->
+        {% if show_last_page %}
+            <li class="page-item">
+                <a class="page-link" href="?{% url_replace request 'page' page_obj.paginator.num_pages %}">
+                    {{ page_obj.paginator.num_pages }}
+                </a>
+            </li>
+        {% endif %}
+
+        <!-- Next page link -->
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?{% url_replace request 'page' page_obj.next_page_number %}">
+                    Next &raquo;
+                </a>
+            </li>
+        {% endif %}
+
+        <!-- Last page link -->
+        {% if page_obj.has_next and show_last_page %}
+            <li class="page-item">
+                <a class="page-link" href="?{% url_replace request 'page' page_obj.paginator.num_pages %}">
+                    Last &raquo;&raquo;
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+
+<!-- Pagination info -->
+<div class="text-center mt-2">
+    <small class="text-muted">
+        Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} results
+    </small>
+</div>
+{% endif %}

@@ -192,9 +192,15 @@ class ChapterReader {
     }
 
     toggleDarkMode() {
-        this.isDarkMode = !this.isDarkMode;
-        document.body.classList.toggle('dark-mode', this.isDarkMode);
-
+        const html = document.documentElement;
+        const currentTheme = html.getAttribute('data-bs-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        html.setAttribute('data-bs-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        this.isDarkMode = newTheme === 'dark';
+        
         const btn = document.getElementById('darkModeBtn');
         btn.classList.toggle('active', this.isDarkMode);
 
@@ -249,9 +255,11 @@ class ChapterReader {
             document.body.classList.add(`font-${this.fontSize}`);
         }
 
-        if (settings.isDarkMode) {
-            this.isDarkMode = settings.isDarkMode;
-            document.body.classList.toggle('dark-mode', this.isDarkMode);
+        // Load theme from localStorage (shared with main theme system)
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            this.isDarkMode = savedTheme === 'dark';
+            document.documentElement.setAttribute('data-bs-theme', savedTheme);
             document.getElementById('darkModeBtn')?.classList.toggle('active', this.isDarkMode);
         }
     }

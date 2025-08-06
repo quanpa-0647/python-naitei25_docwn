@@ -1,5 +1,6 @@
 {% load static %}
 {% load i18n %}
+{% load message_tags %}
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
   <head>
@@ -17,10 +18,8 @@
       rel="stylesheet"
     />
     <link href="{% static 'novels/css/base__admin.css' %}" rel="stylesheet" />
-    <link
-      href="https://cdn.boxicons.com/fonts/basic/boxicons.min.css"
-      rel="stylesheet"
-    />
+    <link href="{% static 'boxicons/css/boxicons.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'boxicons/css/transformations.min.css' %}" rel="stylesheet" />
     {% block extra_css %}{% endblock %}
     <script src="{% static 'novels/js/jquery.min.js' %}"></script>
     <script src="{% static 'novels/js/popper.min.js' %}"></script>
@@ -34,6 +33,14 @@
     {% include 'admin/includes/admin_sidebar.html' %}
     <div class="flex-grow-1 p-4 main__container">
       {% include 'admin/includes/navbar.html' %}
+      
+      <!-- Messages Display -->
+      {% if messages %}
+        <div class="my-3">
+          {% show_messages messages dismissible=True show_icons=False %}
+        </div>
+      {% endif %}
+      
       <div class="content__container my-5">
         {% block content %} {% endblock %}
       </div>

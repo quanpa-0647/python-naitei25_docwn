@@ -1,10 +1,17 @@
 {% load i18n %}
+{% load static %}
 <a class="card1" href="/novels/{{ card.slug }}">
-  <img
-    class="card-custom1"
-    src="{{ card.image_url }}"
-    alt="{{ card.name}}"
-  />
+  {% if card.image_url %}
+    <img
+      class="card-custom1"
+      src="{{ card.image_url }}"
+      alt="{{ card.name}}"
+    />
+  {% else %}
+    <div class="card-custom1 novel-image-placeholder card1-placeholder">
+      <i class="bx bx-book"></i>
+    </div>
+  {% endif %}
 
   <div class="card-overlay1">
     <p class="card-text1">{{ card.name}}</p>

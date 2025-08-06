@@ -29,6 +29,11 @@
           >
         </li>
         <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'novels:search_novels' %}"
+            >{% trans "Tìm kiếm" %}</a
+          >
+        </li>
+        <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="#"
             >{% trans "Danh sách" %}</a
           >
@@ -58,15 +63,17 @@
         </li>
       </ul>
       <div class="navbar__last">
-        <form class="d-flex custom-gap" role="search">
+        <form class="d-flex custom-gap" role="search" method="GET" action="{% url 'novels:search_novels' %}">
           <input
             class="form-control me-2"
             type="search"
+            name="q"
             placeholder="Tìm kiếm..."
             aria-label="Search"
+            value="{{ request.GET.q }}"
           />
           <button class="btn btn-outline-success btn-small-text" type="submit">
-            <i class="bxr bx-search-big"></i>
+            <i class="bx bx-search"></i>
           </button>
         </form>
         <div class="dropdown">
@@ -99,7 +106,7 @@
         </div>
         <div class="dropdown">
           <i
-            class="bxr bx-dots-vertical"
+            class="bx bx-dots-vertical"
             role="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"

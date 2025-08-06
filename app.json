@@ -1,0 +1,62 @@
+{
+  "name": "DocWN - Novel Reading Website",
+  "description": "A Django-based online novel reading platform",
+  "keywords": ["django", "python", "novels", "reading", "web"],
+  "website": "https://github.com/TaiZuon/python-naitei25_docwn",
+  "repository": "https://github.com/TaiZuon/python-naitei25_docwn",
+  "logo": "",
+  "success_url": "/",
+  "env": {
+    "SECRET_KEY": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    },
+    "DEBUG": {
+      "description": "Enable debug mode for development. Set to False for production.",
+      "value": "False"
+    },
+    "ALLOWED_HOSTS": {
+      "description": "Comma-separated list of allowed hostnames",
+      "value": "your-app-name.herokuapp.com"
+    },
+    "EMAIL_HOST_USER": {
+      "description": "Email address for sending notifications",
+      "required": false
+    },
+    "EMAIL_HOST_PASSWORD": {
+      "description": "Password for email account",
+      "required": false
+    },
+    "GOOGLE_OAUTH2_CLIENT_ID": {
+      "description": "Google OAuth2 Client ID for social authentication",
+      "required": false
+    },
+    "GOOGLE_OAUTH2_CLIENT_SECRET": {
+      "description": "Google OAuth2 Client Secret for social authentication",
+      "required": false
+    },
+    "RECAPTCHA_PUBLIC_KEY": {
+      "description": "reCAPTCHA public key for form validation",
+      "required": false
+    },
+    "RECAPTCHA_PRIVATE_KEY": {
+      "description": "reCAPTCHA private key for form validation",
+      "required": false
+    },
+    "IMGBB_API_KEY": {
+      "description": "ImgBB API key for image hosting",
+      "required": false
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql:essential-0",
+      "as": "DATABASE"
+    }
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ]
+}

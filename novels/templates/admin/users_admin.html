@@ -3,17 +3,16 @@
 {% load static %}
 <div class="container mt-5">
   <h4 class="mb-3">{% trans "Danh sách tất cả người dùng" %}</h4>
-  <input
-    class="form-control mb-3"
-    id="novelSearch"
-    type="text"
-    placeholder="Lọc theo tên, giới tính..."
-  />
+  
+  <form method="get" class="mb-3">
+    <div class="d-flex">
+      <input class="form-control" name="q" type="text" placeholder="Lọc theo tên, email..." value="{{ search_query|default:'' }}">
+      <button type="submit" class="btn btn-outline-secondary ms-2">{% trans "Tìm kiếm" %}</button>
+    </div>
+  </form>
+  
   <div class="table-responsive">
-    <table
-      class="table table-bordered table-striped align-middle"
-      id="userTable"
-    >
+    <table class="table table-bordered table-striped align-middle">
       <thead class="table-light">
         <tr>
           <th class="text-center align-middle">{% trans "STT" %}</th>
@@ -24,14 +23,14 @@
         </tr>
       </thead>
       <tbody>
-        {% for user in users %}
+        {% for user in page_obj %}
         <tr>
-          <td class="text-center align-middle">{{ forloop.counter }}</td>
+          <td class="text-center align-middle">{{ forloop.counter|add:page_obj.start_index|add:"-1" }}</td>
           <td class="text-center align-middle">{{ user.username }}</td>
           <td class="text-center align-middle">{{ user.email }}</td>
-          <td class="text-center align-middle">{{ user.date_joined }}</td>
+          <td class="text-center align-middle">{{ user.date_joined|date:DATE_FORMAT_DMY }}</td>
           <td class="text-center align-middle">
-            {% if user.is_blocked == 0%}
+            {% if not user.is_blocked %}
             <span class="badge bg-success">{% trans "Hoạt động" %}</span>
             {% else %}
             <span class="badge bg-danger">{% trans "Đã chặn" %}</span>
@@ -42,10 +41,9 @@
       </tbody>
     </table>
   </div>
-  <nav>
-    <ul class="pagination justify-content-center mt-3" id="pagination"></ul>
-  </nav>
+  
+  <!-- Backend Pagination -->
+  {% load admin_pagination_tags %}
+  {% pagination_with_range page_obj %}
 </div>
-<script src= {% static "novels/js/user_admin.js" %}></script>
-
 {% endblock %}

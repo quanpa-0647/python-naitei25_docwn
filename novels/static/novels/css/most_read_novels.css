@@ -142,3 +142,22 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Dark theme support */
+[data-bs-theme="dark"] .card1,
+[data-bs-theme="dark"] .card-custom1 {
+  background: #2d2d2d;
+  border-color: #495057;
+}
+
+[data-bs-theme="dark"] .card2-container {
+  color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .card2-title {
+  color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .main__container h1 {
+  color: #f8f9fa;
+}
