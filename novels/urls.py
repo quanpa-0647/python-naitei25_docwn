@@ -7,18 +7,20 @@ app_name = 'novels'
 
 urlpatterns = [
     path("", views.Home, name = "home"),
-    path("admin/", views.Admin, name="admin"),
+    path("admin/", views_admin.Admin, name="admin"),
     path("create/", views.NovelCreateView.as_view(), name="novel_create"),
-    path("admin/dashboard/", views.Dashboard, name="dashboard"),
-    path("admin/users/", views.Users, name="users"),
-    path("admin/novels/", views.Novels, name="novels"),
-    path("admin/requests/", views.Requests, name="requests"),
+    path("admin/dashboard/", views_admin.Dashboard, name="dashboard"),
+    path("admin/users/", views_admin.Users, name="users"),
+    path("admin/novels/", views_admin.Novels, name="novels"),
+    path("admin/requests/", views_admin.Requests, name="requests"),
     path("most-read-novels/", views.most_read_novels, name ="most-read-novels"),
     path("finish-novels/", views.finish_novels, name ="finish-novels"),
     path("new-novels/", views.new_novels, name ="new-novels"),
-    path("admin/comments/", views.Comments, name="comments"),
+    path("admin/comments/", views_admin.Comments, name="comments"),
     path("my-novels/", views.MyNovelsView.as_view(), name="my_novels"),
-    
+    path("admin/upload_novel_requests/", views_admin.upload_novel_requests, name="upload_novel_requests"),
+    path("admin/upload_chapter_requests/", views_admin.request_chapter_admin, name="upload_chapter_requests"),
+    path("admin/novels/<slug:slug>", views_admin.novel_detail, name="novel_detail"),
     # Specific routes must come before generic slug patterns
     path('chapter-upload-rules/', 
          views.chapter_upload_rules, 
@@ -42,8 +44,8 @@ urlpatterns = [
          name='chapter_list'),
     
     # Admin routes
-    path('admin/', 
-         views_admin.admin_dashboard, name='admin_dashboard'),
+#     path('admin/', 
+#          views_admin.admin_dashboard, name='admin_dashboard'),
 
     path('admin/tags/', 
          views_admin.admin_tag_list, 

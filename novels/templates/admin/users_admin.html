@@ -18,9 +18,8 @@
         <tr>
           <th class="text-center align-middle">{% trans "STT" %}</th>
           <th class="text-center align-middle">{% trans "Tên" %}</th>
-          <th class="text-center align-middle">{% trans "Giới tính" %}</th>
           <th class="text-center align-middle">{% trans "Email" %}</th>
-          <th class="text-center align-middle">{% trans "SĐT" %}</th>
+          <th class="text-center align-middle">{% trans "Ngày đăng ký" %}</th>
           <th class="text-center align-middle">{% trans "Trạng thái" %}</th>
         </tr>
       </thead>
@@ -28,12 +27,11 @@
         {% for user in users %}
         <tr>
           <td class="text-center align-middle">{{ forloop.counter }}</td>
-          <td class="text-center align-middle">{{ user.name }}</td>
-          <td class="text-center align-middle">{{ user.gender }}</td>
+          <td class="text-center align-middle">{{ user.username }}</td>
           <td class="text-center align-middle">{{ user.email }}</td>
-          <td class="text-center align-middle">{{ user.phone }}</td>
+          <td class="text-center align-middle">{{ user.date_joined }}</td>
           <td class="text-center align-middle">
-            {% if user.status == "active" %}
+            {% if user.is_blocked == 0%}
             <span class="badge bg-success">{% trans "Hoạt động" %}</span>
             {% else %}
             <span class="badge bg-danger">{% trans "Đã chặn" %}</span>

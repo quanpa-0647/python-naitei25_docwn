@@ -8,7 +8,6 @@
       <tr>
         <th class="text-center align-middle">{% trans "STT" %}</th>
         <th class="text-center align-middle">{% trans "Tên tiểu thuyết" %}</th>
-        <th class="text-center align-middle">{% trans "Chương số" %}</th>
         <th class="text-center align-middle">{% trans "Tên chương" %}</th>
         <th class="text-center align-middle">{% trans "Người đăng" %}</th>
         <th class="text-center align-middle">{% trans "Ngày gửi" %}</th>
@@ -19,13 +18,12 @@
       {% for chap in chapter_uploads %}
       <tr>
         <td class="text-center align-middle">{{ forloop.counter }}</td>
-        <td class="text-center align-middle">{{ chap.title }}</td>
-        <td class="text-center align-middle">{{ chap.chapter_number }}</td>
-        <td class="text-center align-middle">{{ chap.title }}</td>
+        <td class="text-center align-middle">{{ chap.novel_name }}</td>
+        <td class="text-center align-middle">{{ chap.chapter_title }}</td>
         <td class="text-center align-middle">{{ chap.user }}</td>
-        <td class="text-center align-middle">{{ chap.upload_date }}</td>
+        <td class="text-center align-middle">{{ chap.submitted_date }}</td>
         <td class="text-center align-middle">
-          <a href="#">{% trans "Xem chi tiết" %}</a>
+          <a href="{% url 'novels:chapter_review' chapter_slug=chap.slug %}">{% trans "Xem chi tiết" %}</a>
         </td>
       </tr>
       {% endfor %}

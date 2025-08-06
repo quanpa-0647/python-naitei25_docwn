@@ -60,14 +60,16 @@ from .forms import NovelForm, ChapterForm
 from django.shortcuts import render
 
 def Home(request):
-    trend_novels = Novel.objects.order_by('-view_count')[:MAX_TREND_NOVELS]
-    new_novels = Novel.objects.order_by('-created_at') 
-    like_novels = Novel.objects.order_by('-favorite_count') [:MAX_LIKE_NOVELS]
+    approved_novels = Novel.objects.filter(approval_status=ApprovalStatus.APPROVED.value, deleted_at__isnull=True)
+    trend_novels = approved_novels.order_by('-view_count')[:MAX_TREND_NOVELS]
+    new_novels = approved_novels.order_by('-created_at') 
+    like_novels = approved_novels.order_by('-favorite_count') [:MAX_LIKE_NOVELS]
     finish_novels = Novel.objects.filter(
-        progress_status=ProgressStatus.COMPLETED.value
+        progress_status=ProgressStatus.COMPLETED.value,
+        approval_status=ApprovalStatus.APPROVED.value
     ).order_by('-updated_at')
     novel_ids = list(Novel.objects.filter(
-    progress_status='c').order_by('-updated_at').values_list('id', flat=True)[:MAX_FINISH_NOVELS])
+    progress_status=ProgressStatus.COMPLETED.value).order_by('-updated_at').values_list('id', flat=True)[:MAX_FINISH_NOVELS])
     all_volumes = Volume.objects.filter(novel_id__in=novel_ids).order_by('-updated_at')
     all_chapters = Chapter.objects.filter(volume__novel_id__in=novel_ids).order_by('-updated_at')
     recent_volume_dict = {}
@@ -100,46 +102,6 @@ def Home(request):
 
     return render(request, 'novels/home.html', context)
 
-
-
-def Admin(request):
-    return render(request, 'admin/home_admin.html')
-
-
-def Dashboard(request):
-    labels, data = getNewNovels()
-    return render(request, 'admin/dashboard_admin.html', {
-        'labels': labels,
-        'data': data,
-        'top_novels': top_novels_this_month,
-        'new_novels': new_novels,
-        'top_authors': authors,
-    })
-
-
-def Users(request):
-    return render(request, 'admin/users_admin.html', {
-        'users': users
-    })
-
-
-def Novels(request):
-    return render(request, 'admin/novels_admin.html', {'novels': novels})
-
-
-def Requests(request):
-    context = {
-        "novel_uploads": novel_uploads,
-        "volume_uploads": volume_uploads,
-        "chapter_uploads": chapter_uploads,
-    }
-    return render(request, 'admin/requests_admin.html', context)
-
-
-def Comments(request):
-    return render(request, 'admin/comments_admin.html', {'comments': comments})
-
-
 def novel_detail(request, novel_slug):
     novel = get_object_or_404(Novel, slug=novel_slug)
 
@@ -149,10 +111,7 @@ def novel_detail(request, novel_slug):
     
     tags = Tag.objects.filter(noveltag__novel=novel)
     volumes = Volume.objects.filter(novel=novel).prefetch_related("chapters")
-
-    # Check if user is the owner of the novel
     is_owner = request.user.is_authenticated and novel.created_by == request.user
-
     for volume in volumes:
         if is_owner:
             # Owner can see all chapters (including drafts/unapproved) but not deleted ones
@@ -185,14 +144,14 @@ def novel_detail(request, novel_slug):
     }
     return render(request, "novels/novel_detail.html", context)
 def most_read_novels(request):
-    novels = Novel.objects.order_by('-view_count')[:MAX_MOST_READ_NOVELS]
+    novels = Novel.objects.filter(approval_status=ApprovalStatus.APPROVED.value).order_by('-view_count')[:MAX_MOST_READ_NOVELS]
 
     context = {
         'novels': novels,
     }
     return render(request, 'novels/most_read_novels.html', context)
 def new_novels(request):
-    new_novels = Novel.objects.order_by('-created_at')[:MAX_NEW_NOVELS]
+    new_novels = Novel.objects.filter(approval_status=ApprovalStatus.APPROVED.value).order_by('-created_at')[:MAX_NEW_NOVELS]
     context = {
         'new_novels': new_novels,
     }
@@ -200,7 +159,8 @@ def new_novels(request):
 
 def finish_novels(request):
     finish_novels = Novel.objects.filter(
-        progress_status=ProgressStatus.COMPLETED.value
+        progress_status=ProgressStatus.COMPLETED.value,
+        approval_status=ApprovalStatus.APPROVED.value
     ).order_by('-updated_at')
     novel_ids = finish_novels.values_list('id', flat=True)
     all_volumes = Volume.objects.filter(novel_id__in=novel_ids).order_by('-updated_at')
@@ -356,13 +316,13 @@ def get_recent_volumes_for_cards(limit=MAX_LATEST_CHAPTER):
 
     volumes = Volume.objects.select_related('novel').annotate(
         novel_name=Subquery(
-            Novel.objects.filter(pk=OuterRef('novel_id')).values('name')[:MIN_LATEST_CHAPTER]
+            Novel.objects.filter(pk=OuterRef('novel_id'), approval_status=ApprovalStatus.APPROVED.value).values('name')[:MIN_LATEST_CHAPTER]
         ),
         novel_slug=Subquery(
-            Novel.objects.filter(pk=OuterRef('novel_id')).values('slug')[:MIN_LATEST_CHAPTER ]
+            Novel.objects.filter(pk=OuterRef('novel_id'), approval_status=ApprovalStatus.APPROVED.value).values('slug')[:MIN_LATEST_CHAPTER ]
         ),
         image_url=Subquery(
-            Novel.objects.filter(pk=OuterRef('novel_id')).values('image_url')[:MIN_LATEST_CHAPTER ]
+            Novel.objects.filter(pk=OuterRef('novel_id'), approval_status=ApprovalStatus.APPROVED.value).values('image_url')[:MIN_LATEST_CHAPTER ]
         ),
         recent_chapter_title=Subquery(latest_chapter)
     ).order_by('-updated_at')[:limit]
