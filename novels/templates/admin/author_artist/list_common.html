@@ -1,0 +1,59 @@
+{% extends "base_admin.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'admin/css/modal.author.css' %}">
+{% endblock %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+<div class="container mt-4">
+  <div class="mb-2">
+      <button id="createBtn" class="btn btn-primary">{% trans "Thêm" %} {{ item_name }}</button>
+  </div>
+
+  <div class="mb-3">
+      <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm...">
+  </div>
+</div>
+
+<div id="itemTable">
+    {% include table_partial %}
+</div>
+
+<!-- Modal Form -->
+<div class="modal fade custom-modal-top" id="formModal" tabindex="-1"></div>
+
+<!-- Modal Xác nhận Xóa -->
+<div class="modal fade custom-modal-top" id="deleteConfirmModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{% trans "Xác nhận xóa" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>{% blocktrans with item_name=item_name %}Bạn có chắc chắn muốn xóa {{ item_name }} này không?{% endblocktrans %}</p>
+      </div>
+      <div class="modal-footer">
+        <form id="deleteForm" method="post" action="">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">{% trans "Xóa" %}</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Hủy" %}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.listUrl = "{{ list_url }}";
+    window.createUrl = "{{ create_url }}";
+    window.csrfToken = "{{ csrf_token }}";
+</script>
+<script src="{% static js_path %}"></script>
+{% endblock %}

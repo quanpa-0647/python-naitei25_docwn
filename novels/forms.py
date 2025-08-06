@@ -563,3 +563,13 @@ class ChapterForm(forms.ModelForm):
             # Note: chapter.word_count is updated automatically by ChunkManager
         
         return chapter
+class AuthorForm(forms.ModelForm):
+    class Meta:
+        model = Author
+        fields = ['name', 'pen_name']
+
+class ArtistForm(forms.ModelForm):
+    class Meta:
+        model = Artist
+        fields = ['name', 'pen_name']
+

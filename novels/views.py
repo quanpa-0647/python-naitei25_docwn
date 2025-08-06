@@ -4,7 +4,7 @@ from datetime import date, timedelta
 
 from django.contrib import messages
 from django.db.models import Prefetch
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
@@ -142,6 +142,11 @@ def Comments(request):
 
 def novel_detail(request, novel_slug):
     novel = get_object_or_404(Novel, slug=novel_slug)
+
+    if request.user != novel.created_by:
+        if novel.approval_status != ApprovalStatus.APPROVED.value:
+            return redirect("novels:home")
+    
     tags = Tag.objects.filter(noveltag__novel=novel)
     volumes = Volume.objects.filter(novel=novel).prefetch_related("chapters")
 
