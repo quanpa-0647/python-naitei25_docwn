@@ -1,0 +1,46 @@
+{% load i18n %}
+
+<div class="sidebar">
+    <div class="card actions-card">
+        <div class="actions-header">
+            <i class="fas fa-cogs"></i>
+            <h3>{% trans "Thao tác" %}</h3>
+        </div>
+        
+        <div class="actions-body">
+            <form method="post">
+                {% csrf_token %}
+
+                {% if not chapter.rejected_reason %}
+                    <div class="form-group">
+                        <label for="rejected_reason" class="form-label">
+                            <i class="fas fa-comment-dots"></i>
+                            {% trans "Lý do từ chối:" %}
+                        </label>
+                        <textarea name="rejected_reason" 
+                                id="rejected_reason"
+                                class="textarea-reason"
+                                placeholder="{% trans 'Vui lòng nhập lý do chi tiết nếu từ chối chương này...' %}"
+                                rows="4"
+                                data-tooltip="{% trans 'Nhập lý do từ chối chi tiết để giúp tác giả hiểu và cải thiện' %}">{{ chapter.rejected_reason|default_if_none:"" }}</textarea>
+                        
+                        <button type="submit" name="action" value={{ REJECTED }}
+                                class="btn btn-reject">
+                            <i class="fas fa-times"></i>
+                            {% trans "Từ chối chương" %}
+                        </button>
+                    </div>
+                {% endif %}
+
+                {% if not chapter.approved %}
+                    <button type="submit" name="action" value={{ APPROVED }}
+                            class="btn btn-approve"
+                            data-tooltip="{% trans 'Duyệt chương này và xuất bản cho độc giả' %}">
+                        <i class="fas fa-check"></i>
+                        {% trans "Duyệt chương" %}
+                    </button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>

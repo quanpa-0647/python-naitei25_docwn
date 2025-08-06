@@ -1,0 +1,8 @@
+{% load message_tags %}
+
+{% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        <i class="{{ message.tags|message_icon }}"></i>
+        <span>{{ message }}</span>
+    </div>
+{% endfor %}
