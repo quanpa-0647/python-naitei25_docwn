@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "interactions.apps.InteractionsConfig",
     "social_django",
     "django_recaptcha",
+    "django_select2",
 ]
 
 MIDDLEWARE = [

@@ -4,6 +4,8 @@
 
 {% block head %}
     {{ form.media }}
+    <link rel="stylesheet" href="{% static 'novels/css/fontawesome.all.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'novels/css/novel.detail.css' %}" />
     <link rel="stylesheet" href="{% static 'novels/css/theme.css' %}" />
     <link rel="stylesheet" href="{% static 'novels/css/novel_form.css' %}" />
     <link rel="stylesheet" href="{% static 'novels/css/modal.css' %}" />
@@ -11,6 +13,11 @@
 
 {% block content %}
 <div class="novel-form-page">
+    <!-- Breadcrumb Navigation -->
+    <div class="breadcrumb-wrapper">
+        {% include "novels/includes/breadcrumb.html" %}
+    </div>
+    
     <!-- Include Header Section -->
     {% include "novels/includes/novel_form_header.html" %}
     

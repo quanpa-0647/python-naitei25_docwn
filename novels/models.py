@@ -194,6 +194,7 @@ class Chapter(models.Model):
     approved = models.BooleanField(default=False, db_index=True)
     rejected_reason = models.TextField(null=True, blank=True)
     is_hidden = models.BooleanField(default=False, db_index=True)
+    deleted_at = models.DateTimeField(default=None, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -203,6 +204,7 @@ class Chapter(models.Model):
         indexes = [
             models.Index(fields=['volume', 'position']),
             models.Index(fields=['approved', 'is_hidden']),
+            models.Index(fields=['deleted_at']),
         ]
         
     def __str__(self):
@@ -222,7 +224,8 @@ class Chapter(models.Model):
             volume__position__gte=self.volume.position,
             position__gt=self.position,
             approved=True,
-            is_hidden=False
+            is_hidden=False,
+            deleted_at__isnull=True
         ).order_by('volume__position', 'position').first()
     
     def get_previous_chapter(self):
@@ -231,7 +234,8 @@ class Chapter(models.Model):
             volume__position__lte=self.volume.position,
             position__lt=self.position,
             approved=True,
-            is_hidden=False
+            is_hidden=False,
+            deleted_at__isnull=True
         ).order_by('-volume__position', '-position').first()
 
 

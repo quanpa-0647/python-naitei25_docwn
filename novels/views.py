@@ -155,11 +155,11 @@ def novel_detail(request, novel_slug):
 
     for volume in volumes:
         if is_owner:
-            # Owner can see all chapters (including drafts/unapproved)
-            volume.chapter_list = list(volume.chapters.all())
+            # Owner can see all chapters (including drafts/unapproved) but not deleted ones
+            volume.chapter_list = list(volume.chapters.filter(deleted_at__isnull=True))
         else:
-            # Public view - only approved and visible chapters
-            volume.chapter_list = list(volume.chapters.filter(approved=True, is_hidden=False))
+            # Public view - only approved and visible chapters that are not deleted
+            volume.chapter_list = list(volume.chapters.filter(approved=True, is_hidden=False, deleted_at__isnull=True))
         
         volume.remaining_chapters = max(
             len(volume.chapter_list) - MAX_CHAPTER_LIST, 0
@@ -173,6 +173,8 @@ def novel_detail(request, novel_slug):
     )
 
     context = {
+        'is_owner': is_owner,
+        'novel_slug': novel_slug,
         'novel': novel,
         'tags': tags,
         'volumes': volumes,
@@ -233,7 +235,8 @@ def chapter_detail_view(request, novel_slug, chapter_slug):
             slug=chapter_slug,
             volume__novel__slug=novel_slug,
             is_hidden=False,
-            approved=True
+            approved=True,
+            deleted_at__isnull=True
         )
     except Chapter.DoesNotExist:
         # If not found and user is authenticated, check if they own the chapter
@@ -242,7 +245,8 @@ def chapter_detail_view(request, novel_slug, chapter_slug):
                 Chapter.objects.select_related('volume__novel'),
                 slug=chapter_slug,
                 volume__novel__slug=novel_slug,
-                volume__novel__created_by=request.user
+                volume__novel__created_by=request.user,
+                deleted_at__isnull=True
             )
         else:
             # If user is not authenticated, show 404
@@ -270,16 +274,18 @@ def chapter_detail_view(request, novel_slug, chapter_slug):
     
     # Lấy danh sách chapters trong novel để sidebar
     if request.user.is_authenticated and chapter.volume.novel.created_by == request.user:
-        # User can see all their own chapters (including drafts/unapproved)
+        # User can see all their own chapters (including drafts/unapproved) but not deleted ones
         all_chapters = Chapter.objects.filter(
-            volume__novel=chapter.volume.novel
+            volume__novel=chapter.volume.novel,
+            deleted_at__isnull=True
         ).select_related('volume').order_by('volume__position', 'position')
     else:
-        # Public view - only approved and visible chapters
+        # Public view - only approved and visible chapters that are not deleted
         all_chapters = Chapter.objects.filter(
             volume__novel=chapter.volume.novel,
             approved=True,
-            is_hidden=False
+            is_hidden=False,
+            deleted_at__isnull=True
         ).select_related('volume').order_by('volume__position', 'position')
     
     # Chunking information
@@ -411,7 +417,8 @@ def chapter_list_view(request, novel_slug):
     chapters = Chapter.objects.filter(
         volume__novel=novel,
         approved=True,
-        is_hidden=False
+        is_hidden=False,
+        deleted_at__isnull=True
     ).select_related('volume').order_by('volume__position', 'position')
     
     context = {
@@ -590,6 +597,33 @@ def chapter_add_view(request, novel_slug):
         'form': form,
     }
     return render(request, 'chapters/chapter_form.html', context)
+
+
+@login_required
+@require_http_methods(["POST"])
+def chapter_delete_view(request, novel_slug, chapter_slug):
+    """View for soft deleting user's own chapters"""
+    from django.utils import timezone
+    
+    # Get the chapter
+    chapter = get_object_or_404(
+        Chapter.objects.select_related('volume__novel'),
+        slug=chapter_slug,
+        volume__novel__slug=novel_slug,
+        deleted_at__isnull=True  # Only allow deleting non-deleted chapters
+    )
+    
+    # Check if user owns the chapter
+    if chapter.volume.novel.created_by != request.user:
+        messages.error(request, _("Bạn không có quyền xóa chapter này."))
+        return redirect('novels:novel_detail', novel_slug=novel_slug)
+    
+    # Perform soft delete
+    chapter.deleted_at = timezone.now()
+    chapter.save(update_fields=['deleted_at'])
+    
+    messages.success(request, _("Chapter đã được xóa thành công."))
+    return redirect('novels:novel_detail', novel_slug=novel_slug)
 
 
 def chapter_upload_rules(request):
