@@ -1,7 +1,29 @@
 {% load i18n %}
 
 <div class="controls-panel">
-    <a href="{% url 'home' %}" class="control-btn" id="homeBtn" title="{% trans 'Trang chủ' %}">
+    <!-- Chapter Navigation -->
+    {% if prev_chapter %}
+    <a href="{% url 'novels:chapter_detail' novel.slug prev_chapter.slug %}" class="control-btn" title="{{ prev_chapter.title }}">
+        <i class="fas fa-chevron-left"></i>
+    </a>
+    {% else %}
+    <button class="control-btn disabled" disabled title="{% trans 'Không có chương trước' %}">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    {% endif %}
+    
+    {% if next_chapter %}
+    <a href="{% url 'novels:chapter_detail' novel.slug next_chapter.slug %}" class="control-btn" title="{{ next_chapter.title }}">
+        <i class="fas fa-chevron-right"></i>
+    </a>
+    {% else %}
+    <button class="control-btn disabled" disabled title="{% trans 'Không có chương tiếp theo' %}">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+    {% endif %}
+    
+    <!-- Other Controls -->
+    <a href="{% url 'novels:home' %}" class="control-btn" id="homeBtn" title="{% trans 'Trang chủ' %}">
         <i class="fas fa-home"></i>
     </a>
     <button class="control-btn" id="bookmarkBtn" title="{% trans 'Bookmark' %}">

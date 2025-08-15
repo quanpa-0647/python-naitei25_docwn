@@ -4,7 +4,9 @@ import json
 from django import forms
 from django.utils.translation import gettext as _
 from django_select2.forms import Select2MultipleWidget, Select2Widget
+from django.utils.text import slugify
 
+from .utils import ChunkManager, SimpleChunker
 from .models import Novel, Tag, Author, Artist, Volume, Chapter
 from .api import ExternalAPIManager
 from docwn import settings
@@ -484,10 +486,28 @@ class ChapterForm(forms.ModelForm):
             
             self.fields['volume_choice'].choices = volume_choices
 
+    def clean_new_volume_name(self):
+        new_volume_name = self.cleaned_data.get('new_volume_name')
+        volume_choice = self.cleaned_data.get('volume_choice')
+        
+        if volume_choice == 'new' and new_volume_name and self.novel:
+            # Check if volume name already exists in this novel
+            if Volume.objects.filter(novel=self.novel, name=new_volume_name).exists():
+                raise forms.ValidationError(_("Tên volume đã tồn tại trong tiểu thuyết này"))
+        
+        return new_volume_name
+
+    def clean_title(self):
+        title = self.cleaned_data.get('title')
+        if not title or not title.strip():
+            raise forms.ValidationError(_("Tiêu đề chapter là bắt buộc"))
+        return title.strip()
+
     def clean(self):
         cleaned_data = super().clean()
         volume_choice = cleaned_data.get('volume_choice')
         new_volume_name = cleaned_data.get('new_volume_name')
+        title = cleaned_data.get('title')
         
         if not volume_choice:
             raise forms.ValidationError(_("Vui lòng chọn volume hoặc tạo volume mới"))
@@ -497,6 +517,49 @@ class ChapterForm(forms.ModelForm):
         
         if volume_choice != 'new' and volume_choice and new_volume_name:
             raise forms.ValidationError(_("Không thể vừa chọn volume có sẵn vừa tạo volume mới"))
+        
+        # Check for duplicate volume name when creating new volume
+        if volume_choice == 'new' and new_volume_name and self.novel:
+            if Volume.objects.filter(novel=self.novel, name=new_volume_name).exists():
+                raise forms.ValidationError(_("Tên volume đã tồn tại trong tiểu thuyết này"))
+        
+        # Check for duplicate chapter title within the selected volume
+        if title and self.novel:
+            if volume_choice == 'new' and new_volume_name:
+                # For new volume, check if the combination of volume name + chapter title
+                # would create a duplicate slug
+                volume_slug = slugify(new_volume_name)
+                chapter_slug = slugify(title)
+                
+                # Check if any existing chapter would have the same slug pattern
+                existing_chapters = Chapter.objects.filter(
+                    volume__novel=self.novel,
+                    deleted_at__isnull=True
+                )
+                
+                for existing_chapter in existing_chapters:
+                    existing_volume_slug = slugify(existing_chapter.volume.name)
+                    existing_chapter_slug = slugify(existing_chapter.title)
+                    
+                    if (existing_volume_slug == volume_slug and 
+                        existing_chapter_slug == chapter_slug):
+                        raise forms.ValidationError(
+                            _("Kết hợp tên volume và tiêu đề chapter này sẽ tạo ra slug trùng lặp")
+                        )
+                        
+            elif volume_choice and volume_choice != 'new':
+                # For existing volume, check within that specific volume
+                try:
+                    volume = Volume.objects.get(id=volume_choice, novel=self.novel)
+                    existing_chapters = Chapter.objects.filter(
+                        volume=volume,
+                        title=title,
+                        deleted_at__isnull=True
+                    )
+                    if existing_chapters.exists():
+                        raise forms.ValidationError(_("Tiêu đề chapter đã tồn tại trong volume này"))
+                except Volume.DoesNotExist:
+                    raise forms.ValidationError(_("Volume được chọn không hợp lệ"))
             
         return cleaned_data
 
@@ -531,25 +594,13 @@ class ChapterForm(forms.ModelForm):
         last_chapter = Chapter.objects.filter(volume=volume).order_by('-position').first()
         chapter.position = (last_chapter.position + 1) if last_chapter else 1
         
-        # Generate slug
-        from django.utils.text import slugify
-        base_slug = slugify(chapter.title)
-        if not base_slug:
-            base_slug = f'chapter-{chapter.position}'
-            
-        slug = base_slug
-        counter = 1
-        while Chapter.objects.filter(volume=volume, slug=slug).exists():
-            slug = f"{base_slug}-{counter}"
-            counter += 1
-        chapter.slug = slug
+        # Note: slug will be generated automatically by the model's save method
+        # which includes volume information to prevent conflicts
         
         if commit:
             chapter.save()
             
             # Use normal chunking to create chunks
-            from .utils import ChunkManager, SimpleChunker
-            
             # Create simple chunker with database limit
             chunker = SimpleChunker(max_chunk_size=MAX_CHUNK_SIZE)  # Database TEXT field limit
             

@@ -827,3 +827,383 @@
     font-style: italic;
 }
 
+/* Dark theme support */
+[data-bs-theme="dark"] .novel-form-page {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .novel-form-page .container {
+    background: #2d2d2d;
+    border-color: #495057;
+}
+
+[data-bs-theme="dark"] .novel-form-page .header {
+    background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
+}
+
+[data-bs-theme="dark"] .novel-form-page .series-title {
+    color: #42a5f5;
+}
+
+[data-bs-theme="dark"] .novel-form-page .series-description {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .novel-form-page .form-section h3 {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .novel-form-page .form-label {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .novel-form-page .form-input input,
+[data-bs-theme="dark"] .novel-form-page .form-input textarea,
+[data-bs-theme="dark"] .novel-form-page .form-input select {
+    background-color: #404040;
+    border-color: #6c757d;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .novel-form-page .form-input input:focus,
+[data-bs-theme="dark"] .novel-form-page .form-input textarea:focus,
+[data-bs-theme="dark"] .novel-form-page .form-input select:focus {
+    background-color: #404040;
+    border-color: #42a5f5;
+    color: #f8f9fa;
+    box-shadow: 0 0 0 4px rgba(66, 165, 245, 0.15);
+}
+
+[data-bs-theme="dark"] .novel-form-page .form-input input:hover,
+[data-bs-theme="dark"] .novel-form-page .form-input textarea:hover,
+[data-bs-theme="dark"] .novel-form-page .form-input select:hover {
+    background-color: #495057;
+    border-color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .novel-form-page .form-input input::placeholder,
+[data-bs-theme="dark"] .novel-form-page .form-input textarea::placeholder {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .novel-form-page .helptext {
+    color: #adb5bd;
+    background: #404040;
+    border-color: #6c757d;
+}
+
+[data-bs-theme="dark"] .novel-form-page .file-input-display {
+    background: #404040;
+    border-color: #6c757d;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .novel-form-page .anonymous-upload {
+    background: #404040;
+    border-color: #6c757d;
+}
+
+[data-bs-theme="dark"] .novel-form-page .anonymous-upload label {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .novel-form-page .anonymous-upload .helptext {
+    color: #adb5bd;
+}
+
+/* Dark mode Select2 styles */
+[data-bs-theme="dark"] .select2-container .select2-selection--single {
+    background-color: #404040 !important;
+    border-color: #6c757d !important;
+    color: #f8f9fa !important;
+}
+
+[data-bs-theme="dark"] .select2-container .select2-selection--multiple {
+    background-color: #404040 !important;
+    border-color: #6c757d !important;
+}
+
+[data-bs-theme="dark"] .select2-container .select2-selection__rendered {
+    color: #f8f9fa !important;
+}
+
+[data-bs-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: #adb5bd transparent transparent transparent !important;
+}
+
+[data-bs-theme="dark"] .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+    color: white !important;
+}
+
+[data-bs-theme="dark"] .select2-dropdown {
+    background-color: #404040 !important;
+    border-color: #6c757d !important;
+}
+
+[data-bs-theme="dark"] .select2-container--default .select2-results__option {
+    background-color: #404040 !important;
+    color: #f8f9fa !important;
+}
+
+[data-bs-theme="dark"] .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #495057 !important;
+}
+
+[data-bs-theme="dark"] .select2-container--default.select2-container--focus .select2-selection--single,
+[data-bs-theme="dark"] .select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #42a5f5 !important;
+    box-shadow: 0 0 0 2px rgba(66, 165, 245, 0.15) !important;
+}
+
+/* Dark mode character counter */
+[data-bs-theme="dark"] .novel-form-page .char-counter {
+    color: #adb5bd;
+    background: #495057;
+    border-color: #6c757d;
+}
+
+[data-bs-theme="dark"] .novel-form-page .char-counter.error {
+    color: #f87171;
+    background: #2d1b1b;
+    border-color: #dc2626;
+}
+
+/* Dark mode file upload styles */
+[data-bs-theme="dark"] .novel-form-page .file-input-wrapper input[type="file"] {
+    background: linear-gradient(135deg, #404040 0%, #495057 100%);
+    border-color: #6c757d;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .novel-form-page .file-input-wrapper input[type="file"]:hover {
+    background: linear-gradient(135deg, #495057 0%, #5a6268 100%);
+    border-color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .novel-form-page .file-input-display:hover {
+    background: #495057;
+    border-color: #42a5f5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(66, 165, 245, 0.2);
+}
+
+[data-bs-theme="dark"] .novel-form-page .file-input-display.has-file {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+    border-color: #42a5f5;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .novel-form-page .file-input-wrapper.drag-over .file-input-display {
+    background: linear-gradient(135deg, #495057 0%, #5a6268 100%);
+    border-color: #42a5f5;
+    color: #42a5f5;
+}
+
+/* Dark mode button hover effects */
+[data-bs-theme="dark"] .novel-form-page .submit-btn:hover {
+    background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
+    box-shadow: 0 6px 24px rgba(66, 165, 245, 0.4);
+}
+
+/* Dark mode error styles */
+[data-bs-theme="dark"] .novel-form-page .form-input.error input,
+[data-bs-theme="dark"] .novel-form-page .form-input.error textarea,
+[data-bs-theme="dark"] .novel-form-page .form-input.error select {
+    border-color: #dc2626;
+    background-color: #2d1b1b;
+}
+
+[data-bs-theme="dark"] .novel-form-page .error-message {
+    color: #f87171;
+}
+
+/* Dark mode alert styles */
+[data-bs-theme="dark"] .alert-danger {
+    background-color: #2d1b1b;
+    border-color: #dc2626;
+    color: #f87171;
+}
+
+[data-bs-theme="dark"] .alert-success {
+    background-color: #1b2d1b;
+    border-color: #16a34a;
+    color: #4ade80;
+}
+
+[data-bs-theme="dark"] .alert-warning {
+    background-color: #2d2a1b;
+    border-color: #ca8a04;
+    color: #facc15;
+}
+
+/* Dark mode image preview */
+[data-bs-theme="dark"] .novel-form-page .image-preview {
+    background: #404040;
+    border-color: #6c757d;
+}
+
+[data-bs-theme="dark"] .novel-form-page .image-preview img {
+    border-color: #6c757d;
+}
+
+/* Dark mode for additional form elements */
+[data-bs-theme="dark"] .novel-form-page .guide-link {
+    color: #42a5f5;
+    background: rgba(66, 165, 245, 0.1);
+}
+
+[data-bs-theme="dark"] .novel-form-page .guide-link:hover {
+    background: rgba(66, 165, 245, 0.2);
+    box-shadow: 0 4px 8px rgba(66, 165, 245, 0.2);
+}
+
+[data-bs-theme="dark"] .novel-form-page .update-date {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .novel-form-page .required {
+    color: #f87171;
+}
+
+/* Dark mode for form sections */
+[data-bs-theme="dark"] .novel-form-page .form-container {
+    background: #2d2d2d;
+    border-color: #495057;
+}
+
+/* Dark mode for checkboxes and radio buttons */
+[data-bs-theme="dark"] .novel-form-page input[type="checkbox"],
+[data-bs-theme="dark"] .novel-form-page input[type="radio"] {
+    accent-color: #42a5f5;
+    background-color: #404040;
+    border-color: #6c757d;
+}
+
+/* Dark mode for input file specific styling */
+[data-bs-theme="dark"] .novel-form-page .form-input input[type="file"] {
+    background: linear-gradient(135deg, #404040 0%, #495057 100%);
+    border: 2px dashed #6c757d;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .novel-form-page .form-input input[type="file"]:hover {
+    border-color: #42a5f5;
+    background: linear-gradient(135deg, #495057 0%, #5a6268 100%);
+}
+
+[data-bs-theme="dark"] .novel-form-page .form-input input[type="file"]:focus {
+    border-color: #42a5f5;
+    box-shadow: 0 0 0 4px rgba(66, 165, 245, 0.15);
+}
+
+/* Dark mode for placeholder text in all inputs */
+[data-bs-theme="dark"] .novel-form-page input::placeholder,
+[data-bs-theme="dark"] .novel-form-page textarea::placeholder,
+[data-bs-theme="dark"] .novel-form-page select::placeholder {
+    color: #adb5bd;
+    opacity: 0.8;
+}
+
+/* Dark mode for disabled inputs */
+[data-bs-theme="dark"] .novel-form-page input:disabled,
+[data-bs-theme="dark"] .novel-form-page textarea:disabled,
+[data-bs-theme="dark"] .novel-form-page select:disabled {
+    background-color: #2d2d2d;
+    border-color: #495057;
+    color: #6c757d;
+    opacity: 0.7;
+}
+
+/* Dark mode for form validation feedback */
+[data-bs-theme="dark"] .novel-form-page .invalid-feedback {
+    color: #f87171;
+}
+
+[data-bs-theme="dark"] .novel-form-page .valid-feedback {
+    color: #4ade80;
+}
+
+/* Dark mode for form progress indicators if any */
+[data-bs-theme="dark"] .novel-form-page .progress {
+    background-color: #404040;
+}
+
+[data-bs-theme="dark"] .novel-form-page .progress-bar {
+    background-color: #42a5f5;
+}
+
+/* Dark mode for submit and button elements */
+[data-bs-theme="dark"] .novel-form-page .submit-btn:disabled {
+    background: #495057;
+    color: #6c757d;
+}
+
+[data-bs-theme="dark"] .novel-form-page .submit-btn:active {
+    background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+}
+
+/* Dark mode for secondary buttons if any */
+[data-bs-theme="dark"] .novel-form-page .btn-secondary {
+    background-color: #495057;
+    border-color: #6c757d;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .novel-form-page .btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #adb5bd;
+}
+
+/* Dark mode for cancel/reset buttons */
+[data-bs-theme="dark"] .novel-form-page .btn-outline-secondary {
+    border-color: #6c757d;
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .novel-form-page .btn-outline-secondary:hover {
+    background-color: #495057;
+    border-color: #adb5bd;
+    color: #f8f9fa;
+}
+
+/* Dark mode for any link buttons */
+[data-bs-theme="dark"] .novel-form-page .btn-link {
+    color: #42a5f5;
+}
+
+[data-bs-theme="dark"] .novel-form-page .btn-link:hover {
+    color: #64b5f6;
+    text-decoration: underline;
+}
+
+/* Dark mode for form focus rings and accessibility */
+[data-bs-theme="dark"] .novel-form-page *:focus-visible {
+    outline: 2px solid #42a5f5;
+    outline-offset: 2px;
+}
+
+/* Dark mode for any tooltips or help text */
+[data-bs-theme="dark"] .novel-form-page .tooltip,
+[data-bs-theme="dark"] .novel-form-page .help-text {
+    background-color: #404040;
+    color: #f8f9fa;
+    border-color: #6c757d;
+}
+
+/* Dark mode for form labels and legends */
+[data-bs-theme="dark"] .novel-form-page fieldset {
+    border-color: #6c757d;
+}
+
+[data-bs-theme="dark"] .novel-form-page legend {
+    color: #f8f9fa;
+}
+
+/* Ensure all transitions work smoothly in dark mode */
+[data-bs-theme="dark"] .novel-form-page * {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+

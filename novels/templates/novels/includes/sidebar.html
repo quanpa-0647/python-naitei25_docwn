@@ -1,14 +1,15 @@
 {% load i18n %}
+{% load static %}
 
 <div class="side-info-box">
   <div class="group-box">
     {% if novel.is_anonymous and user != novel.created_by %}
       <div class="group-header">
-        <img src="/static/images/anonymous-avatar.png" alt="Anonymous Avatar">
+        <img src="{% static '/images/default-avatar.png' %}" alt="Anonymous Avatar">
         <span class="group-user">{% trans "Ẩn danh" %}</span>
       </div>
       <div class="group-body">
-        <p class="group-label">{% trans "Nhóm dịch" %}</p>
+        <p class="group-label">{% trans "Người đăng" %}</p>
         <p class="group-name">{% trans "Ẩn danh" %}</p>
       </div>
     {% else %}
@@ -24,7 +25,7 @@
         </span>
       </div>
       <div class="group-body">
-        <p class="group-label">{% trans "Nhóm dịch" %}</p>
+        <p class="group-label">{% trans "Người đăng" %}</p>
         <p class="group-name">
           {{ novel.created_by }}
           {% if novel.is_anonymous %}

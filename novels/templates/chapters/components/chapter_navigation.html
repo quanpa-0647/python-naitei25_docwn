@@ -1,13 +1,1 @@
-<div class="chapter-navigation">
-    {% if prev_chapter %}
-    <a href="{% url 'novels:chapter_detail' novel.slug prev_chapter.slug %}" class="nav-btn">
-        <i class="fas fa-chevron-left"></i> {{ prev_chapter.title }}
-    </a>
-    {% endif %}
-    
-    {% if next_chapter %}
-    <a href="{% url 'novels:chapter_detail' novel.slug next_chapter.slug %}" class="nav-btn">
-        {{ next_chapter.title }} <i class="fas fa-chevron-right"></i>
-    </a>
-    {% endif %}
-</div>
+<!-- Chapter navigation moved to controls panel -->

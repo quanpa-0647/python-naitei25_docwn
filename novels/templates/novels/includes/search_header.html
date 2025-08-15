@@ -1,0 +1,17 @@
+{% load i18n %}
+
+<div class="search-header">
+    <div class="row">
+        <div class="col-12">
+            <div class="search-info">
+                {% if query %}
+                    <h2>{% blocktrans %}Kết quả tìm kiếm cho: "{{ query }}"{% endblocktrans %}</h2>
+                    <p class="text-muted">{% blocktrans count total=total_results %}Tìm thấy {{ total }} kết quả{% plural %}Tìm thấy {{ total }} kết quả{% endblocktrans %}</p>
+                {% else %}
+                    <h2>{% trans "Tìm kiếm truyện" %}</h2>
+                    <p class="text-muted">{% trans "Nhập từ khóa để tìm kiếm truyện" %}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

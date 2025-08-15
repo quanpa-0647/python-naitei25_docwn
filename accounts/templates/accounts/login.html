@@ -46,9 +46,11 @@
                 {{ form.captcha }}
             </div>
 
-            <div class="remember-me">
-                {{ form.remember_me }}
-                {{ form.remember_me.label_tag }}
+            <div class="form-group">
+                <div class="remember-me">
+                    {{ form.remember_me }}
+                    <label for="id_remember_me">{% trans "Ghi nhớ đăng nhập" %}</label>
+                </div>
             </div>
 
             <button type="submit" class="login-button">{% trans "Đăng nhập" %}</button>

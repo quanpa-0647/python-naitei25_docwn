@@ -14,7 +14,7 @@
         href="{% url 'novels:dashboard' %}"
         class="nav-link d-flex align-items-center gap-2"
       >
-        <i class="bxr bx-dashboard fs-4"></i> <span>{% trans "Dashboard" %}</span>
+  <i class="bx bx-grid-alt fs-4"></i> <span>{% trans "Dashboard" %}</span>
       </a>
     </li>
     <li>
@@ -22,7 +22,7 @@
         href="{% url 'novels:novels' %}"
         class="nav-link d-flex align-items-center gap-2"
       >
-        <i class="bxr bx-book-open fs-4"></i> <span>{% trans "Novels" %}</span>
+  <i class="bx bx-book-open fs-4"></i> <span>{% trans "Novels" %}</span>
       </a>
     </li>
     <li>
@@ -30,7 +30,7 @@
         href="{% url 'novels:comments' %}"
         class="nav-link d-flex align-items-center gap-2"
       >
-        <i class="bxr bx-message-dots fs-4"></i> <span>{% trans "Comments" %}</span>
+  <i class="bx bx-message-rounded-dots fs-4"></i> <span>{% trans "Comments" %}</span>
       </a>
     </li>
     <li>
@@ -38,31 +38,31 @@
         href="{% url 'novels:users' %}"
         class="nav-link d-flex align-items-center gap-2"
       >
-        <i class="bxr bx-user-check fs-4"></i> <span>{% trans "Users" %}</span>
+  <i class="bx bx-user-check fs-4"></i> <span>{% trans "Users" %}</span>
       </a>
     </li>
     <li class="nav-item">
       <div  
      class="nav-link d-flex align-items-center justify-content-between gap-2 {% if request.resolver_match.url_name == 'requests' %}active{% endif %}">
     <div class="d-flex align-items-center gap-2">
-        <i class="bxr bx-message-question-mark fs-4"></i>
+  <i class="bx bx-question-mark fs-4"></i>
         <span>{% trans "Requests" %}</span>
     </div>
-    <i class="bxr bx-chevron-down fs-5"></i> 
+  <i class="bx bx-chevron-down fs-5"></i> 
       </div>
     
       <ul class="nav flex-column ms-4">
         <li class="nav-item">
           <a href="{% url 'novels:upload_novel_requests' %}" 
              class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'upload_chapter' %}active{% endif %}">
-             <i class="bxr bx-book-open fs-4"></i>
+             <i class="bx bx-book-open fs-4"></i>
             <span>{% trans "Novels" %}</span>
           </a>
         </li>
         <li class="nav-item">
           <a href="{% url 'novels:upload_chapter_requests' %}" 
              class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'upload_novel' %}active{% endif %}">
-            <i class="bxr bx-book-add fs-4"></i>
+            <i class="bx bx-book-add fs-4"></i>
             <span>{% trans "Chapters" %}</span>
           </a>
         </li>
@@ -72,31 +72,31 @@
       <div  
      class="nav-link d-flex align-items-center justify-content-between gap-2 ">
     <div class="d-flex align-items-center gap-2">
-      <i class='bxr  bx-layers-minus-alt'></i> 
+  <i class='bx bx-layer'></i> 
         <span>{% trans "Manages" %}</span>
     </div>
-    <i class="bxr bx-chevron-down fs-5"></i> 
+  <i class="bx bx-chevron-down fs-5"></i> 
       </div>
     
       <ul class="nav flex-column ms-4">
         <li class="nav-item">
           <a href="{% url 'novels:admin_tag_list' %}" 
              class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'upload_chapter' %}active{% endif %}">
-             <i class='bxr  bx-price-tag-alt'></i> 
+             <i class='bx bx-purchase-tag-alt'></i> 
             <span>{% trans "Tags" %}</span>
           </a>
         </li>
         <li class="nav-item">
           <a href="{% url 'novels:author_list' %}" 
              class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'author_list' %}active{% endif %}">
-             <i class='bxr  bx-pen-alt'></i> 
+             <i class='bx bx-pen'></i> 
             <span>{% trans "Authors" %}</span>
           </a>
         </li>
         <li class="nav-item">
           <a href="{% url 'novels:artist_list' %}" 
              class="nav-link d-flex align-items-center gap-2 {% if request.resolver_match.url_name == 'artist_list' %}active{% endif %}">
-             <i class='bxr  bx-stroke-freehand'></i> 
+             <i class='bx bx-paint'></i> 
             <span>{% trans "Artists" %}</span>
           </a>
         </li>

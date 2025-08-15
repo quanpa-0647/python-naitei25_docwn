@@ -1,0 +1,103 @@
+/* Breadcrumb Component Styles */
+.breadcrumb {
+    display: flex;
+    background-color: var(--bs-secondary-bg, #f8f9fa);
+    color: var(--bs-body-color, #333);
+    padding: 8px 16px;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: sans-serif;
+    gap: 6px;
+    margin: 20px 0 10px 0;
+    width: fit-content;
+    list-style: none;
+    flex-wrap: wrap;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    color: var(--bs-secondary-color, #666);
+    margin: 0 8px;
+    font-weight: bold;
+}
+
+.breadcrumb-item a {
+    text-decoration: none;
+    color: var(--bs-primary, #007bff);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--bs-primary-dark, #0056b3);
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: var(--bs-secondary-color, #6c757d);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    color: var(--bs-body-color, #333);
+}
+
+.breadcrumb i {
+    font-size: 16px;
+}
+
+/* Dark theme support */
+[data-bs-theme="dark"] .breadcrumb {
+    background-color: var(--bs-secondary-bg, #2a2a2a);
+    color: var(--bs-body-color, #f1f1f1);
+    border-color: var(--bs-border-color, #444);
+}
+
+[data-bs-theme="dark"] .breadcrumb-item + .breadcrumb-item::before {
+    color: var(--bs-secondary-color, #adb5bd);
+}
+
+[data-bs-theme="dark"] .breadcrumb-item a {
+    color: var(--bs-primary, #42a5f5);
+}
+
+[data-bs-theme="dark"] .breadcrumb-item a:hover {
+    color: var(--bs-primary-light, #64b5f6);
+}
+
+[data-bs-theme="dark"] .breadcrumb-item.active {
+    color: var(--bs-secondary-color, #adb5bd);
+}
+
+[data-bs-theme="dark"] .breadcrumb a {
+    color: var(--bs-body-color, #f1f1f1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .breadcrumb {
+        padding: 6px 12px;
+        font-size: 12px;
+        margin: 10px 0 5px 0;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        margin: 0 4px;
+    }
+    
+    .breadcrumb i {
+        font-size: 14px;
+    }
+}

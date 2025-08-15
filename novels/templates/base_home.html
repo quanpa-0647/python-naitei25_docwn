@@ -1,4 +1,4 @@
-{% load static %} {% load i18n %}
+{% load static %} {% load i18n %} {% load message_tags %}
 <!DOCTYPE html>
 <html data-bs-theme="light">
   <head>
@@ -16,15 +16,21 @@
     <script src="{% static 'novels/js/jquery.min.js' %}"></script>
     <script src="{% static 'novels/js/popper.min.js' %}"></script>
     <script src="{% static 'novels/js/bootstrap.min.js' %}"></script>
-    <link
-      href="https://cdn.boxicons.com/fonts/basic/boxicons.min.css"
-      rel="stylesheet"
-    />
+    <link href="{% static 'boxicons/css/boxicons.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'boxicons/css/transformations.min.css' %}" rel="stylesheet" />
     {% block head %}{% endblock %}
   </head>
   <body class="bg-body text-body">
     {% include 'novels/includes/navbar.html' %}
     {% include 'novels/includes/user_sidebar.html' %}
+    
+    <!-- Messages Display -->
+    {% if messages %}
+        <div class="container mt-5 pt-4">
+            {% show_messages messages dismissible=True show_icons=False %}
+        </div>
+    {% endif %}
+    
     <main class="container mt-5 pt-4">{% block content %} {% endblock %}</main>
     {% include 'novels/includes/footer.html' %}
     <script src="{% static 'novels/js/theme-toggle.js' %}"></script>

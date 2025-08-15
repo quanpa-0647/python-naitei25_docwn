@@ -68,6 +68,18 @@
   color: var(--bs-body-color);
 }
 
+/* Fix font for Table of Contents link */
+.stats #openTOC {
+  font-family: inherit;
+  font-weight: normal;
+  text-decoration: none;
+  color: var(--bs-body-color);
+}
+
+.stats #openTOC:hover {
+  color: var(--bs-primary);
+}
+
 .meta-row {
   gap: 30px;
 }
@@ -541,4 +553,18 @@ hr {
   max-width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
+}
+
+/* Novel Image Placeholder Styles for Detail Pages */
+.novel-image-placeholder {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.novel-image-placeholder.admin-thumbnail-placeholder {
+  height: 250px;
+  font-size: 3rem;
 }

@@ -16,8 +16,10 @@ from constants import (
     PAGINATOR_TAG_LIST, 
     PAGINATOR_COMMON_LIST,
     DEFAULT_PAGE_NUMBER,
+    PAGINATION_PAGE_RANGE,
     ApprovalStatus,
     DATE_FORMAT_DMYHI,
+    DATE_FORMAT_DMY,
     UserRole,
     DATE_FORMAT_DMY2
 )
@@ -57,26 +59,38 @@ def Dashboard(request):
 
 @website_admin_required
 def Novels(request):  
+    search_query = request.GET.get('q', '')
+    page = request.GET.get('page', DEFAULT_PAGE_NUMBER)
+    
     novels = Novel.objects.filter(
-    approval_status=ApprovalStatus.APPROVED.value,
-    deleted_at__isnull=True
+        approval_status=ApprovalStatus.APPROVED.value,
+        deleted_at__isnull=True
     ).select_related('author').prefetch_related(
-    Prefetch(
-        'tags',
-        queryset=Tag.objects.all(),
-        to_attr='tag_list' 
-    )).order_by('-created_at')
-    result = []
-    for novel in novels:
-        result.append({
-        'name': novel.name,
-        'slug': novel.slug,
-        'tags': [tag.name for tag in novel.tag_list], 
-        'view_count': novel.view_count,
-        'author': novel.author.name if novel.author else None,
-        'created_at': localtime(novel.created_at).strftime(DATE_FORMAT_DMY2)
+        Prefetch(
+            'tags',
+            queryset=Tag.objects.all(),
+            to_attr='tag_list' 
+        )
+    ).order_by('-created_at')
+    
+    # Add search functionality
+    if search_query:
+        novels = novels.filter(
+            Q(name__icontains=search_query) |
+            Q(author__name__icontains=search_query) |
+            Q(tags__name__icontains=search_query)
+        ).distinct()
+    
+    # Add pagination
+    paginator = Paginator(novels, PAGINATOR_COMMON_LIST)
+    page_obj = paginator.get_page(page)
+    
+    return render(request, 'admin/novels_admin.html', {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'DATE_FORMAT_DMYHI': DATE_FORMAT_DMYHI,
+        'PAGINATION_PAGE_RANGE': PAGINATION_PAGE_RANGE,
     })
-    return render(request, 'admin/novels_admin.html', {'novels': novels})
 
 @website_admin_required
 def Requests(request):
@@ -89,12 +103,44 @@ def Requests(request):
 
 @website_admin_required
 def Comments(request):
-    return render(request, 'admin/comments_admin.html', {'comments': comments})
+    search_query = request.GET.get('q', '')
+    status_filter = request.GET.get('status', '')
+    page = request.GET.get('page', DEFAULT_PAGE_NUMBER)
+    
+    # For now using fake data, but should be replaced with real Comment model
+    # comments_qs = Comment.objects.all().order_by('-created_at')
+    
+    # Add search and filtering when real model is implemented
+    # if search_query:
+    #     comments_qs = comments_qs.filter(
+    #         Q(content__icontains=search_query) |
+    #         Q(user__username__icontains=search_query) |
+    #         Q(novel__name__icontains=search_query)
+    #     )
+    
+    # if status_filter:
+    #     comments_qs = comments_qs.filter(status=status_filter)
+    
+    # paginator = Paginator(comments_qs, PAGINATOR_COMMON_LIST)
+    # page_obj = paginator.get_page(page)
+    
+    # Temporary pagination for fake data
+    paginator = Paginator(comments, PAGINATOR_COMMON_LIST)
+    page_obj = paginator.get_page(page)
+    
+    return render(request, 'admin/comments_admin.html', {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'status_filter': status_filter,
+        'PAGINATION_PAGE_RANGE': PAGINATION_PAGE_RANGE,
+    })
 
 @website_admin_required
 def upload_novel_requests(request):
+    search_query = request.GET.get('q', '')
+    page = request.GET.get('page', DEFAULT_PAGE_NUMBER)
+    
     novels = Novel.objects.filter(
-        
         approval_status=ApprovalStatus.PENDING.value 
     ).select_related(
         'author',
@@ -107,41 +153,56 @@ def upload_novel_requests(request):
         )
     ).order_by('-created_at')
 
-    result = []
-    for novel in novels: 
-        result.append({
-            'name': novel.name,
-            'slug': novel.slug,
-            'tags': [tag.name for tag in novel.tag_list],
-            'created_at': localtime(novel.created_at).strftime(DATE_FORMAT_DMY2),
-            'posted_by': novel.created_by.username if novel.created_by else _("Ẩn danh")
-        })
+    # Add search functionality
+    if search_query:
+        novels = novels.filter(
+            Q(name__icontains=search_query) |
+            Q(author__name__icontains=search_query) |
+            Q(created_by__username__icontains=search_query)
+        ).distinct()
+    
+    # Add pagination
+    paginator = Paginator(novels, PAGINATOR_COMMON_LIST)
+    page_obj = paginator.get_page(page)
 
-    return render(request, 'admin/request_novel_admin.html', {'up_novels': result})
+    return render(request, 'admin/request_novel_admin.html', {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'DATE_FORMAT_DMYHI': DATE_FORMAT_DMYHI,
+        'PAGINATION_PAGE_RANGE': PAGINATION_PAGE_RANGE,
+    })
 
 @website_admin_required
 def request_chapter_admin(request):
+    search_query = request.GET.get('q', '')
+    page = request.GET.get('page', DEFAULT_PAGE_NUMBER)
+    
     chapters = Chapter.objects.filter(
         approved=False,
-        is_hidden=False
+        is_hidden=False,
+        rejected_reason__isnull=True
     ).select_related(
         'volume__novel',  
         'volume__novel__created_by'  
     ).order_by('-created_at')
-
-    # Chuẩn bị dữ liệu
-    chapter_uploads = []
-    for chapter in chapters:
-        chapter_uploads.append({
-            'novel_name': chapter.volume.novel.name,
-            'slug': chapter.slug,
-            'chapter_title': chapter.title,
-            'submitted_date': localtime(chapter.created_at).strftime(DATE_FORMAT_DMY2),
-            'user': chapter.volume.novel.created_by.username if chapter.volume.novel.created_by else "Ẩn danh"
-        })
+    
+    # Add search functionality
+    if search_query:
+        chapters = chapters.filter(
+            Q(title__icontains=search_query) |
+            Q(volume__novel__name__icontains=search_query) |
+            Q(volume__novel__created_by__username__icontains=search_query)
+        )
+    
+    # Add pagination
+    paginator = Paginator(chapters, PAGINATOR_COMMON_LIST)
+    page_obj = paginator.get_page(page)
 
     return render(request, 'admin/request_chapter_admin.html', {
-        'chapter_uploads': chapter_uploads,
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'DATE_FORMAT_DMY': DATE_FORMAT_DMY,
+        'PAGINATION_PAGE_RANGE': PAGINATION_PAGE_RANGE,
     })
 @website_admin_required
 def admin_dashboard(request):
@@ -165,9 +226,9 @@ def admin_tag_list(request):
     page_obj = paginator.get_page(page)
 
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
-        return render(request, "admin/tags/partials/list.html", {"tags": page_obj, "query": query})
+        return render(request, "admin/tags/partials/list.html", {"tags": page_obj, "query": query, "PAGINATION_PAGE_RANGE": PAGINATION_PAGE_RANGE})
 
-    return render(request, "admin/tags/tag_list.html", {"tags": page_obj, "query": query})
+    return render(request, "admin/tags/tag_list.html", {"tags": page_obj, "query": query, "PAGINATION_PAGE_RANGE": PAGINATION_PAGE_RANGE})
 
 @website_admin_required
 def admin_tag_create(request):
@@ -219,6 +280,7 @@ def novel_request_detail(request, slug):
         'APPROVED': ApprovalStatus.APPROVED.value,
         'REJECTED': ApprovalStatus.REJECTED.value,
         },
+        'DATE_FORMAT_DMYHI': DATE_FORMAT_DMYHI,
     }
     return render(request, 'admin/novel_request/novel_request_detail.html', context)
 
@@ -241,7 +303,28 @@ def admin_reject_novel(request, slug):
 
 @website_admin_required
 def chapter_review(request, chapter_slug):
-    chapter = get_object_or_404(Chapter, slug=chapter_slug)
+    try:
+        # Try to get a single chapter first
+        chapter = Chapter.objects.get(slug=chapter_slug)
+    except Chapter.DoesNotExist:
+        messages.error(request, _('Chương không tồn tại.'))
+        return redirect('novels:request_chapter_admin')
+    except Chapter.MultipleObjectsReturned:
+        # If multiple chapters have the same slug, get the most recent unapproved one
+        chapter = Chapter.objects.filter(
+            slug=chapter_slug,
+            approved=False,
+            is_hidden=False
+        ).order_by('-created_at').first()
+        
+        if not chapter:
+            # If no unapproved chapters, get the most recent one
+            chapter = Chapter.objects.filter(slug=chapter_slug).order_by('-created_at').first()
+        
+        if not chapter:
+            messages.error(request, _('Chương không tồn tại.'))
+            return redirect('novels:request_chapter_admin')
+    
     context = {
         'chapter': chapter,
         'novel': chapter.novel,
@@ -275,6 +358,8 @@ def author_list(request):
         "create_url": reverse('novels:author_create'),
         "js_path": "admin/js/crud_common.js",
         "page_obj": page_obj,
+        "search_query": search_query,
+        "PAGINATION_PAGE_RANGE": PAGINATION_PAGE_RANGE,
     }
 
     return render(request, "admin/author_artist/list_common.html", context)
@@ -325,6 +410,8 @@ def artist_list(request):
         "create_url": reverse('novels:artist_create'),
         "js_path": "admin/js/crud_common.js",
         "page_obj": page_obj,
+        "search_query": search_query,
+        "PAGINATION_PAGE_RANGE": PAGINATION_PAGE_RANGE,
     }
 
     return render(request, "admin/author_artist/list_common.html", context)
@@ -359,7 +446,23 @@ def artist_delete(request, pk):
 @require_POST
 @website_admin_required
 def approve_chapter_view(request, chapter_slug):
-    chapter = get_object_or_404(Chapter, slug=chapter_slug)
+    try:
+        # Try to get a single chapter first
+        chapter = Chapter.objects.get(slug=chapter_slug)
+    except Chapter.DoesNotExist:
+        messages.error(request, _('Chương không tồn tại.'))
+        return redirect('novels:request_chapter_admin')
+    except Chapter.MultipleObjectsReturned:
+        # If multiple chapters have the same slug, get the most recent unapproved one
+        chapter = Chapter.objects.filter(
+            slug=chapter_slug,
+            approved=False
+        ).order_by('-created_at').first()
+        
+        if not chapter:
+            messages.error(request, _('Không tìm thấy chương chưa được duyệt với slug này.'))
+            return redirect('novels:request_chapter_admin')
+    
     chapter.approved = True
     chapter.rejected_reason = None
     chapter.save()
@@ -370,7 +473,23 @@ def approve_chapter_view(request, chapter_slug):
 @require_POST
 @website_admin_required
 def reject_chapter_view(request, chapter_slug):
-    chapter = get_object_or_404(Chapter, slug=chapter_slug)
+    try:
+        # Try to get a single chapter first
+        chapter = Chapter.objects.get(slug=chapter_slug)
+    except Chapter.DoesNotExist:
+        messages.error(request, _('Chương không tồn tại.'))
+        return redirect('novels:request_chapter_admin')
+    except Chapter.MultipleObjectsReturned:
+        # If multiple chapters have the same slug, get the most recent unapproved one
+        chapter = Chapter.objects.filter(
+            slug=chapter_slug,
+            approved=False
+        ).order_by('-created_at').first()
+        
+        if not chapter:
+            messages.error(request, _('Không tìm thấy chương chưa được duyệt với slug này.'))
+            return redirect('novels:request_chapter_admin')
+    
     rejected_reason = request.POST.get('rejected_reason', '').strip()
 
     if not rejected_reason:
@@ -386,24 +505,30 @@ def reject_chapter_view(request, chapter_slug):
 
 @website_admin_required
 def Users(request):
-    users = User.objects.all().values(
-        'username',
-        'email',
-        'date_joined',
-        'is_blocked'
-    ).order_by('-date_joined')
-    user_list = []
-    for user in users:
-        user_list.append({
-            'username': user['username'],
-            'email': user['email'],
-            'date_joined': localtime(user['date_joined']).strftime(DATE_FORMAT_DMY2),
-            'is_blocked': user['is_blocked']
-        })
+    search_query = request.GET.get('q', '')
+    page = request.GET.get('page', DEFAULT_PAGE_NUMBER)
+    
+    users = User.objects.filter(role=UserRole.USER.value).order_by('-date_joined')
+    
+    # Add search functionality
+    if search_query:
+        users = users.filter(
+            Q(username__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
+    
+    # Add pagination
+    paginator = Paginator(users, PAGINATOR_COMMON_LIST)
+    page_obj = paginator.get_page(page)
 
     return render(request, 'admin/users_admin.html', {
-        'users': user_list,
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'DATE_FORMAT_DMY': DATE_FORMAT_DMY,
+        'PAGINATION_PAGE_RANGE': PAGINATION_PAGE_RANGE,
     })
+
+@website_admin_required
 def novel_detail(request, slug):
     try:
         novel = Novel.objects.get(slug=slug)
@@ -421,5 +546,6 @@ def novel_detail(request, slug):
         'APPROVED': ApprovalStatus.APPROVED.value,
         'REJECTED': ApprovalStatus.REJECTED.value,
         },
+        'DATE_FORMAT_DMYHI': DATE_FORMAT_DMYHI,
     }
     return render(request, 'admin/novel_detail.html',  context)

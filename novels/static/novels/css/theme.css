@@ -89,18 +89,18 @@
     --bg-primary: #1a1a1a;
     --bg-secondary: #2d2d2d;
     --bg-tertiary: #404040;
-    --text-primary: #f8f9fa;
-    --text-secondary: #adb5bd;
-    --text-muted: #6c757d;
+    --text-primary: #ffffff;
+    --text-secondary: #f1f3f4;
+    --text-muted: #adb5bd;
     --border-color: #495057;
     --border-light: #404040;
     --border-dark: #6c757d;
 
     --bs-body-bg: #121212;
-    --bs-body-color: #f1f1f1;
+    --bs-body-color: #ffffff;
     --bs-card-bg: #1e1e1e;
     --bs-secondary-bg: #2a2a2a;
-    --bs-secondary-color: #adb5bd;
+    --bs-secondary-color: #f1f3f4;
     --bs-border-color: #444;
     --bs-white: #ffffff;
     --bs-primary: #36a189;
@@ -349,4 +349,151 @@ a:hover {
         width: 100%;
         margin-bottom: var(--spacing-sm);
     }
+}
+
+/* Breadcrumb Component */
+.breadcrumb {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    color: var(--text-secondary);
+}
+
+.breadcrumb-item a {
+    color: var(--primary-color);
+}
+
+.breadcrumb-item a:hover {
+    color: var(--primary-dark);
+}
+
+.breadcrumb-item.active {
+    color: var(--text-secondary);
+}
+
+/* Enhanced Dark Mode Text Brightness */
+[data-bs-theme="dark"] h1,
+[data-bs-theme="dark"] h2,
+[data-bs-theme="dark"] h3,
+[data-bs-theme="dark"] h4,
+[data-bs-theme="dark"] h5,
+[data-bs-theme="dark"] h6 {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+[data-bs-theme="dark"] p,
+[data-bs-theme="dark"] div,
+[data-bs-theme="dark"] span,
+[data-bs-theme="dark"] li {
+    color: #f1f3f4 !important;
+}
+
+[data-bs-theme="dark"] strong,
+[data-bs-theme="dark"] b {
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .text-primary {
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .text-secondary {
+    color: #f1f3f4 !important;
+}
+
+[data-bs-theme="dark"] .text-muted {
+    color: #adb5bd !important;
+}
+
+[data-bs-theme="dark"] .card-title {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+[data-bs-theme="dark"] .card-text {
+    color: #f1f3f4 !important;
+}
+
+[data-bs-theme="dark"] .btn-primary {
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .btn-secondary {
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .navbar-brand {
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .nav-link {
+    color: #f1f3f4 !important;
+}
+
+[data-bs-theme="dark"] .nav-link:hover {
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .dropdown-item {
+    color: #f1f3f4 !important;
+}
+
+[data-bs-theme="dark"] .dropdown-item:hover {
+    color: #ffffff !important;
+    background-color: #495057;
+}
+
+[data-bs-theme="dark"] label {
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+[data-bs-theme="dark"] .form-label {
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+/* Novel content specific enhancements */
+[data-bs-theme="dark"] .novel-title {
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .novel-content {
+    color: #f1f3f4 !important;
+}
+
+[data-bs-theme="dark"] .chapter-title {
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .chapter-content {
+    color: #f1f3f4 !important;
+    line-height: 1.8;
+}
+
+[data-bs-theme="dark"] .author-name {
+    color: #f1f3f4 !important;
+    font-weight: 500;
+}
+
+/* Table content */
+[data-bs-theme="dark"] table {
+    color: #f1f3f4 !important;
+}
+
+[data-bs-theme="dark"] th {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+[data-bs-theme="dark"] td {
+    color: #f1f3f4 !important;
 }

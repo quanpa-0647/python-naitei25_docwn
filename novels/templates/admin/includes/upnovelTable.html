@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load datetime_filters %}
 <h4 class="mb-3">{% trans "Yêu cầu Up Tiểu Thuyết Mới" %}</h4>
 <input class="form-control mb-3" id="searchNovel" type="text" placeholder="{% trans 'Lọc theo tên, thể loại...' %}">
 
@@ -29,7 +30,7 @@
           {% endif %}
         </td>
         <td class="text-center align-middle">{{ novel.posted_by}}</td>
-        <td class="text-center align-middle">{{ novel.created_at}}</td>
+        <td class="text-center align-middle">{{ novel.created_at|localtime_format:DATE_FORMAT_DMYHI}}</td>
         <td class="text-center align-middle">
           <a href="{% url 'novels:novel_request_detail' slug=novel.slug %}">{% trans "Xem chi tiết" %}</a>
         </td>

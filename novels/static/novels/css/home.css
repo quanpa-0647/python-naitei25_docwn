@@ -45,20 +45,24 @@
   flex-wrap: wrap;
   justify-content: flex-start !important;
 }
-html.light .custom-btn {
+html.light .custom-btn,
+[data-bs-theme="light"] .custom-btn {
   color: #000;
 }
-html.light .custom-btn:hover {
+html.light .custom-btn:hover,
+[data-bs-theme="light"] .custom-btn:hover {
   background-color: #000;
   color: #fff;
 }
 
-html.dark .custom-btn {
+html.dark .custom-btn,
+[data-bs-theme="dark"] .custom-btn {
   color: #fff;
 }
-html.dark .custom-btn:hover {
-  background-color: #fff;
-  color: #000;
+html.dark .custom-btn:hover,
+[data-bs-theme="dark"] .custom-btn:hover {
+  background-color: #495057;
+  color: #f8f9fa;
 }
 .card-custom1 {
   width: 180px !important;
@@ -512,6 +516,26 @@ html.dark .custom-btn:hover {
 .more__card:hover .more__card-text {
   color: #00cc66;
 }
+
+/* Dark mode styling for more__card */
+[data-bs-theme="dark"] .more__card {
+  border-color: #495057;
+  background-color: #2d2d2d;
+}
+
+[data-bs-theme="dark"] .more__card-overlay {
+  background-color: rgba(0, 0, 0, 0.8);
+  border-color: #f8f9fa;
+  color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .more__card:hover .more__card-icon {
+  color: #42a5f5;
+}
+
+[data-bs-theme="dark"] .more__card:hover .more__card-text {
+  color: #42a5f5;
+}
 .pagination {
   display: flex;
   justify-content: center;
@@ -535,4 +559,37 @@ html.dark .custom-btn:hover {
 }
 #collapseBtn{
   display: none;
+}
+
+/* Novel Image Placeholder Styles */
+.novel-image-placeholder {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.novel-image-placeholder.card1-placeholder {
+  font-size: 3rem;
+}
+
+.novel-image-placeholder.card2-placeholder,
+.novel-image-placeholder.card3-placeholder,
+.novel-image-placeholder.card4-placeholder {
+  font-size: 2.5rem;
+}
+
+.novel-image-placeholder.main-info-placeholder {
+  width: 100%;
+  height: 240px;
+  border-radius: 4px;
+  font-size: 3rem;
+}
+
+.novel-image-placeholder.volume-cover-placeholder {
+  width: 120px;
+  height: 160px;
+  border-radius: 4px;
+  font-size: 2rem;
 }

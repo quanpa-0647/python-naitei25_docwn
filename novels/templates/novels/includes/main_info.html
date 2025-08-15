@@ -2,7 +2,13 @@
 
 <div class="content-box section">
   <div class="left">
-    <img src="{{ novel.image_url }}" alt="{{ novel.name }}">
+    {% if novel.image_url %}
+      <img src="{{ novel.image_url }}" alt="{{ novel.name }}">
+    {% else %}
+      <div class="novel-image-placeholder main-info-placeholder">
+        <i class="bx bx-book"></i>
+      </div>
+    {% endif %}
   </div>
   <div class="right">
     <h1>{{ novel.name }}</h1>

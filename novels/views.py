@@ -1,6 +1,7 @@
 import json
 import random
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
+from django.utils import timezone
 
 from django.contrib import messages
 from django.db.models import Prefetch
@@ -10,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.utils.translation import gettext_lazy as _
 from common.decorators import require_active_novel
-from .fake_data import card_list, discussion_data, comments, getNewNovels,top_novels_this_month, new_novels,authors,novels, users,comments,novel_uploads,chapter_uploads,volume_uploads
+from .fake_data import card_list, discussion_data, getNewNovels,top_novels_this_month, new_novels,authors,novels, users,novel_uploads,chapter_uploads,volume_uploads
 from django.shortcuts import render
 from datetime import date, timedelta
 import random
@@ -23,7 +24,7 @@ from django.contrib.auth.mixins import (
 )
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import CreateView
@@ -37,6 +38,8 @@ from constants import (
     DATE_FORMAT_DMY,
     DATE_FORMAT_DMYHI,
     MAX_CHAPTER_LIST,
+    SUMMARY_TRUNCATE_WORDS,
+    DEFAULT_RATING_AVERAGE,
     MAX_CHAPTER_LIST_PLUS,
     MAX_TRUNCATED_REJECTED_REASON_LENGTH,
     NOVEL_PER_PAGE,
@@ -49,15 +52,44 @@ from constants import (
     MAX_NEWUPDATE_NOVELS,
     MAX_LATEST_CHAPTER,
     MIN_LATEST_CHAPTER,
+    MAX_HOME_COMMENTS,
     ApprovalStatus,
     ProgressStatus,
-    WORDS_PER_MINUTE
+    WORDS_PER_MINUTE,
+    SECONDS_PER_HOUR,
+    SECONDS_PER_MINUTE,
+    SEARCH_RESULTS_LIMIT,
+    COMMENT_TRUNCATE_LENGTH
 )
 from .models import (
     Novel, Tag, NovelTag, Author, Artist, Volume, Chapter, ReadingHistory
 )
+from interactions.models import Comment
 from .forms import NovelForm, ChapterForm
 from django.shortcuts import render
+
+def get_relative_time(created_at):
+    """Get relative time string in Vietnamese"""
+    if not created_at:
+        return ''
+    
+    # Ensure we're working with timezone-aware datetime
+    if timezone.is_naive(created_at):
+        created_at = timezone.make_aware(created_at)
+    
+    now = timezone.now()
+    diff = now - created_at
+    
+    if diff.days > 0:
+        return f"{diff.days} {_('ngày')}"
+    elif diff.seconds >= SECONDS_PER_HOUR:
+        hours = diff.seconds // SECONDS_PER_HOUR
+        return f"{hours} {_('giờ')}"
+    elif diff.seconds >= SECONDS_PER_MINUTE:
+        minutes = diff.seconds // SECONDS_PER_MINUTE
+        return f"{minutes} {_('phút')}"
+    else:
+        return _("Vừa xong")
 
 def Home(request):
     approved_novels = Novel.objects.filter(approval_status=ApprovalStatus.APPROVED.value, deleted_at__isnull=True)
@@ -89,12 +121,37 @@ def Home(request):
             recent_chapter = Chapter.objects.filter(volume=recent_volume).order_by('-updated_at').first()
             novel.recent_chapter = recent_chapter
     newupdate_novels = get_recent_volumes_for_cards(limit=MAX_NEWUPDATE_NOVELS)
+    
+    # Get recent comments from database
+    comments = Comment.objects.select_related('user', 'novel', 'user__profile').filter(
+        novel__approval_status=ApprovalStatus.APPROVED.value,
+        novel__deleted_at__isnull=True,
+        is_reported=False  # Exclude reported comments
+    ).exclude(
+        user__isnull=True  # Exclude comments from deleted users
+    ).order_by('-created_at')[:MAX_HOME_COMMENTS]
+    
+    # Format comments data for template compatibility
+    comments_data = []
+    for comment in comments:
+        avatar_url = None
+        if comment.user and hasattr(comment.user, 'profile') and comment.user.profile:
+            avatar_url = comment.user.profile.get_avatar()
+        
+        comments_data.append({
+            'title': comment.novel.name if comment.novel else 'Unknown Novel',
+            'comment': comment.content[:COMMENT_TRUNCATE_LENGTH] + '...' if len(comment.content) > COMMENT_TRUNCATE_LENGTH else comment.content,  # Truncate long comments
+            'username': comment.user.username if comment.user else 'Anonymous',
+            'avatar': avatar_url,
+            'time': get_relative_time(comment.created_at)
+        })
+    
     context = {
         "finish_novels": finish_novels,
         "trend_novels": trend_novels,
         "new_novels":new_novels,
         "discussion_data": discussion_data,
-        "comments": comments,
+        "comments": comments_data,
         "newupdate_novels" : newupdate_novels,
         "card_list" : card_list,
         "like_novels" : like_novels,
@@ -143,6 +200,7 @@ def novel_detail(request, novel_slug):
         'MAX_CHAPTER_LIST_PLUS': MAX_CHAPTER_LIST_PLUS
     }
     return render(request, "novels/novel_detail.html", context)
+
 def most_read_novels(request):
     novels = Novel.objects.filter(approval_status=ApprovalStatus.APPROVED.value).order_by('-view_count')[:MAX_MOST_READ_NOVELS]
 
@@ -150,6 +208,7 @@ def most_read_novels(request):
         'novels': novels,
     }
     return render(request, 'novels/most_read_novels.html', context)
+
 def new_novels(request):
     new_novels = Novel.objects.filter(approval_status=ApprovalStatus.APPROVED.value).order_by('-created_at')[:MAX_NEW_NOVELS]
     context = {
@@ -186,6 +245,7 @@ def finish_novels(request):
     }
 
     return render(request, 'novels/finish_novels.html', context)
+
 @require_active_novel
 def chapter_detail_view(request, novel_slug, chapter_slug):
     """Hiển thị chapter với lazy loading"""
@@ -278,7 +338,6 @@ def chapter_detail_view(request, novel_slug, chapter_slug):
     }
     return render(request, "chapters/chapter_details.html", context)
 
-
 @require_http_methods(["GET"])
 def load_more_chunks(request, chapter_id):
     """AJAX endpoint để load thêm chunks"""
@@ -310,27 +369,36 @@ def load_more_chunks(request, chapter_id):
     })
 
 def get_recent_volumes_for_cards(limit=MAX_LATEST_CHAPTER):
-    latest_chapter = Chapter.objects.filter(
-        volume_id=OuterRef('pk')
-    ).order_by('-updated_at').values('title')[:MIN_LATEST_CHAPTER]
+    """Get recent volumes with their latest chapters for homepage cards"""
+    
+    # Get the most recent chapter for each volume
+    latest_chapter_subquery = Chapter.objects.filter(
+        volume_id=OuterRef('pk'),
+        approved=True,
+        is_hidden=False,
+        deleted_at__isnull=True
+    ).order_by('-updated_at').values('title', 'updated_at')[:1]
 
-    volumes = Volume.objects.select_related('novel').annotate(
-        novel_name=Subquery(
-            Novel.objects.filter(pk=OuterRef('novel_id'), approval_status=ApprovalStatus.APPROVED.value).values('name')[:MIN_LATEST_CHAPTER]
-        ),
-        novel_slug=Subquery(
-            Novel.objects.filter(pk=OuterRef('novel_id'), approval_status=ApprovalStatus.APPROVED.value).values('slug')[:MIN_LATEST_CHAPTER ]
-        ),
-        image_url=Subquery(
-            Novel.objects.filter(pk=OuterRef('novel_id'), approval_status=ApprovalStatus.APPROVED.value).values('image_url')[:MIN_LATEST_CHAPTER ]
-        ),
-        recent_chapter_title=Subquery(latest_chapter)
-    ).order_by('-updated_at')[:limit]
-
+    # Get volumes with approved novels, ordered by their latest chapter update
+    volumes = Volume.objects.select_related('novel').filter(
+        novel__approval_status=ApprovalStatus.APPROVED.value,
+        novel__deleted_at__isnull=True,
+        # Only include volumes that have at least one approved chapter
+        chapters__approved=True,
+        chapters__is_hidden=False,
+        chapters__deleted_at__isnull=True
+    ).annotate(
+        recent_chapter_title=Subquery(latest_chapter_subquery.values('title')),
+        latest_chapter_update=Subquery(latest_chapter_subquery.values('updated_at'))
+    ).filter(
+        # Only include volumes that have chapters
+        recent_chapter_title__isnull=False
+    ).distinct().order_by('-latest_chapter_update')[:limit]
+    
     return [{
-        'name': vol.novel_name,  
-        'slug': vol.novel_slug,  
-        'image_url': vol.image_url,
+        'name': vol.novel.name,  
+        'slug': vol.novel.slug,  
+        'image_url': vol.novel.image_url,
         'recent_volume': {
             'name': vol.name
         },
@@ -368,7 +436,6 @@ def save_reading_progress(request):
             'success': False,
             'error': _('Đã xảy ra lỗi khi lưu tiến độ đọc: ') + str(e)
         })
-
 
 @require_active_novel
 def chapter_list_view(request, novel_slug):
@@ -589,3 +656,40 @@ def chapter_delete_view(request, novel_slug, chapter_slug):
 def chapter_upload_rules(request):
     """Static page showing chapter upload rules"""
     return render(request, 'chapters/chapter_upload_rules.html')
+
+
+def novel_upload_rules(request):
+    """Static page showing novel upload rules and guidelines"""
+    return render(request, 'novels/novel_upload_rule.html')
+
+
+def search_novels(request):
+    """Simple search function for novels"""
+    query = request.GET.get('q', '').strip()
+    novels = []
+    
+    if query:
+        # Search in novel name, summary, author name, other names, and tags
+        novels = Novel.objects.filter(
+            models.Q(name__icontains=query) |
+            models.Q(summary__icontains=query) |
+            models.Q(author__name__icontains=query) |
+            models.Q(artist__name__icontains=query) |
+            models.Q(other_names__icontains=query) |
+            models.Q(tags__name__icontains=query),
+            approval_status=ApprovalStatus.APPROVED.value,
+            deleted_at__isnull=True
+        ).select_related('author', 'artist').prefetch_related('tags').distinct().order_by('-view_count')[:SEARCH_RESULTS_LIMIT]
+    
+    for novel in novels:
+        novel.tag_list = list(novel.tags.all())
+
+    context = {
+        'novels': novels,
+        'query': query,
+        'total_results': len(novels),
+        'SUMMARY_TRUNCATE_WORDS': SUMMARY_TRUNCATE_WORDS,
+        'DEFAULT_RATING_AVERAGE': DEFAULT_RATING_AVERAGE,
+    }
+    
+    return render(request, 'novels/search_results.html', context)

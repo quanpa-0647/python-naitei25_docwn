@@ -4,20 +4,32 @@
 {% block content %}
 <div class="container mt-5">
   <h4 class="mb-3">{% trans "Danh sách bình luận" %}</h4>
-  <form method="get" class="mb-3 d-flex align-items-center gap-2">
-    <label for="statusFilter" class="form-label mb-0">{% trans "Lọc theo trạng thái:" %}</label>
-    <select name="status" id="statusFilter" class="form-select w-auto" onchange="this.form.submit()">
-      <option value="">{% trans "Tất cả trạng thái" %}</option>
-      <option value="Bình thường" {% if status_filter == 'Bình thường' %}selected{% endif %}>{% trans "Bình thường" %}</option>
-      <option value="Bị báo cáo" {% if status_filter == 'Bị báo cáo' %}selected{% endif %}>{% trans "Bị báo cáo" %}</option>
-    </select>
-  </form>
+  
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <form method="get" class="d-flex">
+        <input class="form-control" name="q" type="text" placeholder="{% trans 'Tìm kiếm bình luận...'%}" value="{{ search_query|default:'' }}">
+        <button type="submit" class="btn btn-outline-secondary ms-2">{% trans "Tìm kiếm" %}</button>
+      </form>
+    </div>
+    <div class="col-md-6">
+      <form method="get" class="d-flex align-items-center gap-2">
+        {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
+        <label for="statusFilter" class="form-label mb-0">{% trans "Lọc theo trạng thái:" %}</label>
+        <select name="status" id="statusFilter" class="form-select w-auto" onchange="this.form.submit()">
+          <option value="">{% trans "Tất cả trạng thái" %}</option>
+          <option value="Bình thường" {% if status_filter == 'Bình thường' %}selected{% endif %}>{% trans "Bình thường" %}</option>
+          <option value="Bị báo cáo" {% if status_filter == 'Bị báo cáo' %}selected{% endif %}>{% trans "Bị báo cáo" %}</option>
+        </select>
+      </form>
+    </div>
+  </div>
+  
   <!-- Table -->
   <div class="table-responsive">
-    <table class="table table-bordered table-striped align-middle" id="commentTable">
+    <table class="table table-bordered table-striped align-middle">
       <thead class="table-light">
         <tr>
-          {% load i18n %}
           <th class="text-center align-middle">{% trans "STT" %}</th>
           <th class="text-center align-middle">{% trans "Người dùng" %}</th>
           <th class="text-center align-middle">{% trans "Tiểu thuyết" %}</th>
@@ -27,9 +39,9 @@
         </tr>
       </thead>
       <tbody>
-        {% for c in comments %}
+        {% for c in page_obj %}
         <tr>
-            <td class="text-center align-middle">{{ c.id }}</td>
+            <td class="text-center align-middle">{{ forloop.counter|add:page_obj.start_index|add:"-1" }}</td>
             <td class="text-center align-middle">{{ c.username }}</td>
             <td class="text-center align-middle">{{ c.novel }}</td>
             <td class="text-center align-middle">{{ c.content }}</td>
@@ -49,9 +61,9 @@
       </tbody>
     </table>
   </div>
-  <nav>
-    <ul class="pagination justify-content-center mt-3" id="pagination"></ul>
-  </nav>
+  
+  <!-- Backend Pagination -->
+  {% load admin_pagination_tags %}
+  {% pagination_with_range page_obj %}
 </div>
-<script src= {% static "novels/js/comment_admin.js" %}></script>
 {% endblock %}

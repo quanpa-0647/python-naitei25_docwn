@@ -1,7 +1,14 @@
 {% load i18n %}
+{% load static %}
 <a class="card2-container" href="/novels/{{ card.slug }}">
   <div class="card2-image-wrapper">
-    <img src="{{ card.image_url }}" alt="Thumbnail" class="card2-image" />
+    {% if card.image_url %}
+      <img src="{{ card.image_url }}" alt="Thumbnail" class="card2-image" />
+    {% else %}
+      <div class="card2-image novel-image-placeholder card2-placeholder">
+        <i class="bx bx-book"></i>
+      </div>
+    {% endif %}
 
     <div class="card2-overlay">
       <div class="card2-chap">{{ card.recent_chapter.title }}</div>

@@ -1,11 +1,12 @@
 {% load i18n %}
+{% load datetime_filters %}
 
 <div class="chapter-header">
     <div class="header-content">
         <div class="inside-content">
             <div class="chapter-title">{{ chapter.title }}</div>
             <div class="chapter-meta">
-                {{ volume.name }} • {{ chapter.word_count }} {% trans "từ" %} • {% trans "Cập nhật" %}: {{ chapter.updated_at|date:DATE_FORMAT_DMY }}
+                {{ volume.name }} • {{ chapter.word_count }} {% trans "từ" %} • {% trans "Cập nhật" %}: {{ chapter.updated_at|localtime_format:DATE_FORMAT_DMY }}
             </div>
         </div>
     </div>

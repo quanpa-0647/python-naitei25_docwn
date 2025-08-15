@@ -20,7 +20,7 @@
                             <div class="row">
                                 <div class="col-md-8">
                                     <h5 class="novel-title">
-                                        <a href="{% url 'novels:novel_detail' novel.slug %}">
+                                        <a href="{% url 'novels:novel_detail' novel_slug=novel.slug %}">
                                             {{ novel.name }}
                                         </a>
                                     </h5>
@@ -50,24 +50,6 @@
                                 <div class="col-md-4">
                                     <div class="novel-actions">
                                         {% include 'novels/includes/approval_status_tag.html' with novel=novel %}
-                                        <!-- Action buttons -->
-                                        <div class="action-buttons">
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                <a href="{% url 'novels:novel_detail' novel.slug %}" class="btn btn-outline-primary btn-sm" title="{% trans 'Xem chi tiết' %}">
-                                                    <i class="bx bx-show"></i>
-                                                </a>
-                                                {% if novel.can_edit %}
-                                                    <button type="button" class="btn btn-outline-secondary btn-sm" title="{% trans 'Chỉnh sửa' %}">
-                                                        <i class="bx bx-edit"></i>
-                                                    </button>
-                                                {% endif %}
-                                                {% if novel.can_manage_chapters %}
-                                                    <a href="{% url 'novels:chapter_list' novel.slug %}" class="btn btn-outline-info btn-sm" title="{% trans 'Quản lý chương' %}">
-                                                        <i class="bx bx-list-ul"></i>
-                                                    </a>
-                                                {% endif %}
-                                            </div>
-                                        </div>
                                         
                                         <div class="novel-stats">
                                             <small>

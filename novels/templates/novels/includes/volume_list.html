@@ -1,12 +1,19 @@
 {% load i18n %}
 
 {% for volume in volumes %}
+  {% if volume.chapter_list %}
   <div id="volume{{ forloop.counter }}" class="volume-box">
     <h3 class="volume-title">{{ volume.name }}</h3>
 
     <div class="volume-content">
       <div class="volume-cover">
-        <img src="{{ novel.image_url }}" alt="{{ volume.name }}">
+        {% if novel.image_url %}
+          <img src="{{ novel.image_url }}" alt="{{ volume.name }}">
+        {% else %}
+          <div class="novel-image-placeholder volume-cover-placeholder">
+            <i class="bx bx-book"></i>
+          </div>
+        {% endif %}
       </div>
 
       <div class="chapter-list">
@@ -110,6 +117,7 @@
       </div>
     </div>
   </div>
+  {% endif %}
 {% endfor %}
 
 {% if can_add_chapter %}

@@ -1,11 +1,18 @@
 {% load i18n %}
+{% load static %}
 <a href="/novels/{{ card.slug }}" class="card3">
   <div class="card3-img-wrapper">
-    <img
-      src="{{ card.image_url }}"
-      alt="Card Image"
-      class="card3-img"
-    />
+    {% if card.image_url %}
+      <img
+        src="{{ card.image_url }}"
+        alt="Card Image"
+        class="card3-img"
+      />
+    {% else %}
+      <div class="card3-img novel-image-placeholder card3-placeholder">
+        <i class="bx bx-book"></i>
+      </div>
+    {% endif %}
   </div>
   <div class="card3-text">
     <div class="card3-title">{{ card.name }}</div>

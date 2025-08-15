@@ -133,3 +133,95 @@
 .rules-back-actions {
     text-align: center;
 }
+
+/* Dark Theme Support */
+[data-bs-theme="dark"] .rules-page {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+[data-bs-theme="dark"] .rules-container {
+    background: #2d2d2d;
+    border: 1px solid #495057;
+}
+
+[data-bs-theme="dark"] .rules-header {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+}
+
+[data-bs-theme="dark"] .rules-header h1 {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .rules-header p {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+[data-bs-theme="dark"] .rules-content {
+    background: #2d2d2d;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .rule-section h2 {
+    color: #ffffff;
+    border-left-color: #42a5f5;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .rule-list li {
+    background: #404040;
+    border-left-color: #42a5f5;
+    color: #f1f3f4;
+}
+
+[data-bs-theme="dark"] .rule-list li strong {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .rule-list li:before {
+    background: #42a5f5;
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .warning-box {
+    background: #2d2a1b;
+    border-color: #ca8a04;
+    color: #facc15;
+}
+
+[data-bs-theme="dark"] .warning-box h3 {
+    color: #facc15;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .info-box {
+    background: #1b2a2d;
+    border-color: #0891b2;
+    color: #67e8f9;
+}
+
+[data-bs-theme="dark"] .info-box h3 {
+    color: #67e8f9;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .back-link {
+    background: #42a5f5;
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .back-link:hover {
+    background: #1976d2;
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .highlight {
+    background: #ca8a04;
+    color: #000000;
+    font-weight: 600;
+}
+
+[data-bs-theme="dark"] .rules-back-actions {
+    color: #f8f9fa;
+}

@@ -427,3 +427,78 @@
         margin: 0 0.05rem;
     }
 }
+
+/* Dark theme support */
+[data-bs-theme="dark"] .stats-card {
+    background: #2d2d2d;
+    border-color: #495057;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .stats-card:hover {
+    background: #343a40;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .stats-card.active {
+    background: #0d6efd;
+    color: white;
+}
+
+[data-bs-theme="dark"] .stats-number {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .stats-label {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .novel-card {
+    background: #2d2d2d;
+    border-color: #495057;
+}
+
+[data-bs-theme="dark"] .novel-title a {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .novel-title a:hover {
+    color: #42a5f5;
+}
+
+[data-bs-theme="dark"] .novel-summary {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .empty-state {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .empty-state h4 {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .empty-state i {
+    color: #495057;
+}
+
+[data-bs-theme="dark"] .pagination .page-link {
+    background-color: #2d2d2d;
+    border-color: #495057;
+    color: #42a5f5;
+}
+
+[data-bs-theme="dark"] .pagination .page-link:hover {
+    background-color: #343a40;
+    border-color: #6c757d;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .pagination .page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+[data-bs-theme="dark"] .pagination-info {
+    color: #adb5bd;
+}

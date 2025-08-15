@@ -61,7 +61,9 @@ class SimpleChunker:
         result = []
         for chunk in chunks:
             word_count = count_words(chunk)
-            result.append((chunk.strip(), word_count))
+            # Only strip excessive leading/trailing whitespace, preserve paragraph structure
+            chunk_clean = chunk.strip(' \t')  # Only strip spaces and tabs, keep newlines
+            result.append((chunk_clean, word_count))
             
         return result
     
@@ -70,7 +72,7 @@ class SimpleChunker:
         # For plain text content, normalize whitespace
         content = re.sub(r'\n\s*\n\s*\n+', '\n\n', content)  # Multiple blank lines to double
         content = re.sub(r'[ \t]+', ' ', content)  # Multiple spaces to single space
-        return content.strip()
+        return content.strip(' \t')  # Only strip spaces and tabs, preserve newlines
     
     def _create_simple_chunks(self, content: str) -> List[str]:
         """Create chunks by splitting at safe text boundaries."""
@@ -108,7 +110,7 @@ class SimpleChunker:
                                 end = space + 1
                             # Otherwise, force break at max_chunk_size
             
-            chunk = content[start:end].strip()
+            chunk = content[start:end].strip(' \t')  # Only strip spaces and tabs, preserve newlines
             if chunk:
                 chunks.append(chunk)
             
@@ -135,13 +137,15 @@ class ChunkManager:
         if chunker is None:
             chunker = SimpleChunker()
             
+        # Calculate total word count from original content first
+        total_word_count = count_words(content)
+        
         # Clear existing chunks
         Chunk.objects.filter(chapter=chapter).delete()
         
         # Create new chunks
         chunks_data = chunker.split_into_chunks(content)
         
-        total_word_count = 0
         for position, (chunk_content, word_count) in enumerate(chunks_data, 1):
             Chunk.objects.create(
                 chapter=chapter,
@@ -149,9 +153,8 @@ class ChunkManager:
                 content=chunk_content,
                 word_count=word_count
             )
-            total_word_count += word_count
         
-        # Update chapter word count
+        # Update chapter word count with pre-calculated total
         chapter.word_count = total_word_count
         chapter.save(update_fields=['word_count'])
         

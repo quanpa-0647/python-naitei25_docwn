@@ -1,0 +1,9 @@
+{% load i18n %}
+
+<div class="search-results">
+    <div class="row">
+        {% for novel in novels %}
+            {% include "novels/includes/search_novel_card.html" with novel=novel SUMMARY_TRUNCATE_WORDS=SUMMARY_TRUNCATE_WORDS DEFAULT_RATING_AVERAGE=DEFAULT_RATING_AVERAGE %}
+        {% endfor %}
+    </div>
+</div>

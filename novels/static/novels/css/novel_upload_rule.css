@@ -1,0 +1,331 @@
+/* Novel Upload Rules Page Styles */
+
+.rules-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 40px 0;
+}
+
+.rules-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.rules-header {
+    background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.rules-header h1 {
+    margin: 0;
+    font-size: 2.5em;
+    font-weight: 700;
+}
+
+.rules-header p {
+    margin: 10px 0 0 0;
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+.rules-content {
+    padding: 40px;
+}
+
+.rule-section {
+    margin-bottom: 30px;
+}
+
+.rule-section h2 {
+    color: #2c3e50;
+    border-left: 4px solid #e67e22;
+    padding-left: 15px;
+    margin-bottom: 15px;
+    font-size: 1.4em;
+}
+
+.rule-list {
+    list-style: none;
+    padding: 0;
+}
+
+.rule-list li {
+    background: #f8f9fa;
+    margin: 10px 0;
+    padding: 15px;
+    border-left: 3px solid #e67e22;
+    border-radius: 5px;
+    position: relative;
+}
+
+.rule-list li:before {
+    content: "✓";
+    position: absolute;
+    left: -12px;
+    top: 15px;
+    background: #e67e22;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.warning-box {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.warning-box h3 {
+    color: #856404;
+    margin-top: 0;
+}
+
+.info-box {
+    background: #d1ecf1;
+    border: 1px solid #bee5eb;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.info-box h3 {
+    color: #0c5460;
+    margin-top: 0;
+}
+
+.novel-specific-box {
+    background: #ffeaa7;
+    border: 2px solid #e67e22;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.novel-specific-box h3 {
+    color: #d63031;
+    margin-top: 0;
+}
+
+.back-link {
+    display: inline-block;
+    background: #e67e22;
+    color: white;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 25px;
+    margin-top: 20px;
+    transition: background 0.3s;
+}
+
+.back-link:hover {
+    background: #d35400;
+    color: white;
+    text-decoration: none;
+}
+
+.highlight {
+    background: #ffeb3b;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+.rules-back-actions {
+    text-align: center;
+}
+
+.step-number {
+    background: #e67e22;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.process-step {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #ecf0f1;
+    border-radius: 8px;
+}
+
+.process-step-content {
+    flex: 1;
+}
+
+.process-step h4 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+}
+
+.forbidden-list {
+    background: #ffebee;
+    border: 2px solid #e74c3c;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.forbidden-list h3 {
+    color: #c0392b;
+    margin-top: 0;
+}
+
+.forbidden-list ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.forbidden-list li {
+    color: #e74c3c;
+    margin-bottom: 8px;
+}
+
+/* Dark Theme Support */
+[data-bs-theme="dark"] .rules-page {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+[data-bs-theme="dark"] .rules-container {
+    background: #2d2d2d;
+    border: 1px solid #495057;
+}
+
+[data-bs-theme="dark"] .rules-header {
+    background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
+}
+
+[data-bs-theme="dark"] .rules-header h1 {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .rules-header p {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+[data-bs-theme="dark"] .rules-content {
+    background: #2d2d2d;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .rule-section h2 {
+    color: #ffffff;
+    border-left-color: #e67e22;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .rule-list li {
+    background: #404040;
+    border-left-color: #e67e22;
+    color: #f1f3f4;
+}
+
+[data-bs-theme="dark"] .rule-list li strong {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .rule-list li:before {
+    background: #e67e22;
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .warning-box {
+    background: #2d2a1b;
+    border-color: #ca8a04;
+    color: #facc15;
+}
+
+[data-bs-theme="dark"] .warning-box h3 {
+    color: #facc15;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .info-box {
+    background: #1b2a2d;
+    border-color: #0891b2;
+    color: #67e8f9;
+}
+
+[data-bs-theme="dark"] .info-box h3 {
+    color: #67e8f9;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .novel-specific-box {
+    background: #2d1e1b;
+    border-color: #e67e22;
+    color: #f39c12;
+}
+
+[data-bs-theme="dark"] .novel-specific-box h3 {
+    color: #f39c12;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .back-link {
+    background: #e67e22;
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .back-link:hover {
+    background: #d35400;
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .highlight {
+    background: #ca8a04;
+    color: #000000;
+    font-weight: 600;
+}
+
+[data-bs-theme="dark"] .process-step {
+    background: #404040;
+    color: #f1f3f4;
+}
+
+[data-bs-theme="dark"] .process-step h4 {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .step-number {
+    background: #e67e22;
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .forbidden-list {
+    background: #2d1b1b;
+    border-color: #dc2626;
+    color: #f87171;
+}
+
+[data-bs-theme="dark"] .forbidden-list h3 {
+    color: #f87171;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .forbidden-list li {
+    color: #f87171;
+}

@@ -20,11 +20,19 @@ urlpatterns = [
     path("my-novels/", views.MyNovelsView.as_view(), name="my_novels"),
     path("admin/upload_novel_requests/", views_admin.upload_novel_requests, name="upload_novel_requests"),
     path("admin/upload_chapter_requests/", views_admin.request_chapter_admin, name="upload_chapter_requests"),
-    path("admin/novels/<slug:slug>", views_admin.novel_detail, name="novel_detail"),
+    path("admin/novels/<slug:slug>", views_admin.novel_detail, name="admin_novel_detail"),
     # Specific routes must come before generic slug patterns
     path('chapter-upload-rules/', 
          views.chapter_upload_rules, 
          name='chapter_upload_rules'),
+    
+    path('novel-upload-rules/', 
+         views.novel_upload_rules, 
+         name='novel_upload_rules'),
+    
+    path('search/', 
+         views.search_novels, 
+         name='search_novels'),
     
     path('ajax/load-chunks/<int:chapter_id>/', 
          views.load_more_chunks, 

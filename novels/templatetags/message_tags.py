@@ -14,5 +14,9 @@ def message_icon(tag):
     return icons.get(tag, 'fas fa-info-circle')
 
 @register.inclusion_tag('admin/partials/_messages.html')
-def show_messages(messages):
-    return {'messages': messages}
+def show_messages(messages, dismissible=False, show_icons=True):
+    return {
+        'messages': messages,
+        'dismissible': dismissible,
+        'show_icons': show_icons
+    }

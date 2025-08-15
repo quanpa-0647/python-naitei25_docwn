@@ -1,0 +1,34 @@
+{% extends "base_home.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'novels/css/novel.detail.css' %}">
+<link rel="stylesheet" href="{% static 'novels/css/search_results.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="search-page">
+    <div class="container">
+        <!-- Search Header -->
+        {% include "novels/includes/search_header.html" with query=query total_results=total_results %}
+
+        <!-- Search Form -->
+        {% include "novels/includes/search_form.html" with query=query %}
+
+        <!-- Search Results -->
+        {% if query %}
+            {% if novels %}
+                {% include "novels/includes/search_results_grid.html" with novels=novels SUMMARY_TRUNCATE_WORDS=SUMMARY_TRUNCATE_WORDS DEFAULT_RATING_AVERAGE=DEFAULT_RATING_AVERAGE %}
+            {% else %}
+                {% include "novels/includes/search_no_results.html" with query=query %}
+            {% endif %}
+        {% endif %}
+
+        <!-- Popular Novels Section (when no search query) -->
+        {% if not query %}
+            {% include "novels/includes/search_popular_novels.html" %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

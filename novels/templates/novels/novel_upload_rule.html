@@ -1,0 +1,157 @@
+{% extends "base_home.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'novels/css/novel.detail.css' %}">
+<link rel="stylesheet" href="{% static 'novels/css/novel_upload_rule.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="rules-page">    
+    <div class="rules-container">
+        <div class="rules-header">
+            <h1>{% trans "Hướng Dẫn Đăng Truyện" %}</h1>
+            <p>{% trans "Vui lòng đọc kỹ các quy định và hướng dẫn trước khi đăng truyện mới" %}</p>
+        </div>
+
+        <div class="rules-content">
+            <div class="rule-section">
+                <h2>{% trans "Quy Định Về Nội Dung Truyện" %}</h2>
+                <ul class="rule-list">
+                    <li>
+                        <strong>{% trans "Nội dung phù hợp:" %}</strong> {% trans "Truyện phải có nội dung phù hợp với độ tuổi và không chứa yếu tố bạo lực, khiêu dâm quá mức." %}
+                    </li>
+                    <li>
+                        <strong>{% trans "Ngôn ngữ văn minh:" %}</strong> {% trans "Sử dụng ngôn ngữ lịch sự, tránh từ ngữ tục tĩu, xúc phạm người khác." %}
+                    </li>
+                    <li>
+                        <strong>{% trans "Tính nguyên bản:" %}</strong> {% trans "Nội dung phải là sáng tác gốc hoặc có bản quyền hợp pháp. Không sao chép từ nguồn khác." %}
+                    </li>
+                    <li>
+                        <strong>{% trans "Chất lượng nội dung:" %}</strong> {% trans "Truyện cần có cốt truyện rõ ràng, văn phong ổn định và ít lỗi chính tả." %}
+                    </li>
+                    <li>
+                        <strong>{% trans "Thể loại rõ ràng:" %}</strong> {% trans "Phân loại truyện đúng thể loại để độc giả dễ tìm kiếm." %}
+                    </li>
+                </ul>
+            </div>
+
+            <div class="rule-section">
+                <h2>{% trans "Thông Tin Cần Thiết" %}</h2>
+                <ul class="rule-list">
+                    <li>
+                        <strong>{% trans "Tên truyện:" %}</strong> {% trans "Chọn tên truyện" %} <span class="highlight">{% trans "độc đáo, hấp dẫn" %}</span> {% trans "và dễ nhớ. Tránh trùng tên với truyện đã có." %}
+                    </li>
+                    <li>
+                        <strong>{% trans "Tóm tắt nội dung:" %}</strong> {% trans "Viết tóm tắt hấp dẫn, giới thiệu cốt truyện chính mà không spoiler." %}
+                    </li>
+                    <li>
+                        <strong>{% trans "Thông tin tác giả:" %}</strong> {% trans "Cung cấp thông tin tác giả chính xác. Có thể chọn đăng ẩn danh." %}
+                    </li>
+                    <li>
+                        <strong>{% trans "Ảnh bìa:" %}</strong> {% trans "Sử dụng ảnh bìa chất lượng cao, có bản quyền hoặc tự thiết kế." %}
+                    </li>
+                    <li>
+                        <strong>{% trans "Thẻ tag:" %}</strong> {% trans "Chọn các thẻ tag phù hợp để độc giả dễ tìm kiếm truyện." %}
+                    </li>
+                </ul>
+            </div>
+
+            <div class="rule-section">
+                <h2>{% trans "Quy Trình Đăng Truyện" %}</h2>
+                
+                <div class="process-step">
+                    <span class="step-number">1</span>
+                    <div class="process-step-content">
+                        <h4>{% trans "Chuẩn bị thông tin" %}</h4>
+                        <p>{% trans "Chuẩn bị đầy đủ tên truyện, tóm tắt, thông tin tác giả, ảnh bìa và danh sách thẻ tag." %}</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <span class="step-number">2</span>
+                    <div class="process-step-content">
+                        <h4>{% trans "Điền form đăng truyện" %}</h4>
+                        <p>{% trans "Điền đầy đủ thông tin vào form, kiểm tra kỹ trước khi gửi." %}</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <span class="step-number">3</span>
+                    <div class="process-step-content">
+                        <h4>{% trans "Chọn trạng thái" %}</h4>
+                        <p>{% trans "Có thể lưu nháp để chỉnh sửa sau hoặc gửi để admin duyệt ngay." %}</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <span class="step-number">4</span>
+                    <div class="process-step-content">
+                        <h4>{% trans "Chờ duyệt" %}</h4>
+                        <p>{% trans "Admin sẽ duyệt truyện trong vòng 24-48 giờ. Bạn sẽ nhận được thông báo kết quả." %}</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <span class="step-number">5</span>
+                    <div class="process-step-content">
+                        <h4>{% trans "Đăng chapter" %}</h4>
+                        <p>{% trans "Sau khi truyện được duyệt, bạn có thể bắt đầu đăng các chapter." %}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="novel-specific-box">
+                <h3>{% trans "Lưu Ý Đặc Biệt Cho Truyện Sáng Tác" %}</h3>
+                <ul>
+                    <li>{% trans "Truyện sáng tác phải là tác phẩm nguyên bản của bạn" %}</li>
+                    <li>{% trans "Không được sao chép hoặc dịch từ nguồn khác mà không có bản quyền" %}</li>
+                    <li>{% trans "Cần cam kết hoàn thành truyện hoặc thông báo nếu tạm ngưng" %}</li>
+                    <li>{% trans "Có thể đăng ẩn danh nhưng vẫn phải chịu trách nhiệm về nội dung" %}</li>
+                </ul>
+            </div>
+
+            <div class="forbidden-list">
+                <h3>{% trans "Nội Dung Cấm Đăng" %}</h3>
+                <ul>
+                    <li>{% trans "Nội dung khiêu dâm, bạo lực quá mức" %}</li>
+                    <li>{% trans "Nội dung xúc phạm tôn giáo, chính trị" %}</li>
+                    <li>{% trans "Nội dung vi phạm bản quyền" %}</li>
+                    <li>{% trans "Nội dung quảng cáo spam" %}</li>
+                    <li>{% trans "Nội dung kích động bạo lực, thù hận" %}</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <h3>{% trans "Chú Ý Quan Trọng" %}</h3>
+                <p>{% trans "Việc vi phạm quy định có thể dẫn đến:" %}</p>
+                <ul>
+                    <li>{% trans "Truyện bị từ chối duyệt" %}</li>
+                    <li>{% trans "Truyện bị gỡ bỏ khỏi hệ thống" %}</li>
+                    <li>{% trans "Tài khoản bị cảnh báo hoặc khóa" %}</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3>{% trans "Hỗ Trợ" %}</h3>
+                <p>{% trans "Nếu có thắc mắc về quy định hoặc cần hỗ trợ, vui lòng liên hệ:" %}</p>
+                <ul>
+                    <li>{% trans "Email hỗ trợ: support@docwn.com" %}</li>
+                    <li>{% trans "Forum thảo luận trong website" %}</li>
+                    <li>{% trans "Hệ thống report trong trang cá nhân" %}</li>
+                </ul>
+            </div>
+
+            <div class="rules-back-actions">
+                <a href="{% url 'novels:novel_create' %}" class="back-link">
+                    {% trans "Đăng Truyện Ngay" %}
+                </a>
+                <a href="{% url 'novels:home' %}" class="back-link">
+                    {% trans "Quay Về Trang Chủ" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
