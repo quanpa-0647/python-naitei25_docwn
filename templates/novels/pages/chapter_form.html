@@ -1,0 +1,37 @@
+{% extends "base_home.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'novels/css/novel.detail.css' %}">
+<link rel="stylesheet" href="{% static 'novels/css/novel_form.css' %}">
+<link rel="stylesheet" href="{% static 'novels/css/chapter_styles.css' %}">
+<script src="{% static 'novels/js/jquery.min.js' %}"></script>
+<script src="{% static 'novels/js/chapter_form.js' %}"></script>
+{{ form.media }}
+{% endblock %}
+
+{% block content %}
+<div class="novel-form-page">
+    <!-- Breadcrumb Navigation -->
+    <div class="breadcrumb-wrapper">
+        {% include "novels/includes/breadcrumb.html" %}
+    </div>
+    
+    <div class="container">
+        {% include "novels/includes/chapter_form_header.html" %}
+
+        <div class="form-container">
+            <form method="post" id="chapter-form">
+                {% csrf_token %}
+                
+                {% include "novels/includes/chapter_form_fields.html" %}
+                
+                {% include "novels/includes/form_errors.html" %}
+
+                {% include "novels/includes/chapter_form_actions.html" %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

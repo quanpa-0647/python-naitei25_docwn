@@ -41,25 +41,25 @@ def Home(request):
         "like_novels": like_novels,
     }
 
-    return render(request, 'novels/home.html', context)
+    return render(request, 'novels/pages/home.html', context)
 
 def most_read_novels(request):
     """Most read novels page"""
     novels = NovelService.get_approved_novels().order_by('-view_count')[:MAX_MOST_READ_NOVELS]
     
     context = {'novels': novels}
-    return render(request, 'novels/most_read_novels.html', context)
+    return render(request, 'novels/pages/most_read_novels.html', context)
 
 def new_novels(request):
     """New novels page"""  
     new_novels = NovelService.get_approved_novels().order_by('-created_at')[:MAX_NEW_NOVELS]
     
     context = {'new_novels': new_novels}
-    return render(request, 'novels/new_novels.html', context)
+    return render(request, 'novels/pages/new_novels.html', context)
 
 def finish_novels(request):
     """Finished novels page"""
     finish_novels = NovelService.get_finished_novels_with_chapters()
     
     context = {'finish_novels': finish_novels}
-    return render(request, 'novels/finish_novels.html', context)
+    return render(request, 'novels/pages/finish_novels.html', context)

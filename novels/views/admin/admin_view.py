@@ -25,12 +25,12 @@ def Admin(request):
         'approved_novels': approved_novels,
         'unapproved_chapters': unapproved_chapters,
     }
-    return render(request, 'admin/home_admin.html', context)
+    return render(request, 'admin/pages/home_admin.html', context)
 
 @website_admin_required
 def Dashboard(request):
     labels, data = getNewNovels()
-    return render(request, 'admin/dashboard_admin.html', {
+    return render(request, 'admin/pages/dashboard_admin.html', {
         'labels': labels,
         'data': data,
         'top_novels': top_novels_this_month,

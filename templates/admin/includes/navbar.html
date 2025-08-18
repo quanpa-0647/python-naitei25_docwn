@@ -1,0 +1,36 @@
+{% load i18n %}
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex align-items-center gap-2">
+        <li class="nav-item">
+          <a class="nav-link active fs-5 d-flex align-items-center gap-1 text-white" href="/admin">
+            <i class='bx bx-home'></i> 
+            {% trans "Home" %}
+          </a> 
+       </li>
+        <li class="nav-item">
+           <a class="nav-link active fs-5 text-white" href="#">{% trans "Contact" %}</a> 
+        </li>
+        <li class="nav-item active cursor-pointer">
+          <div class="d-flex align-items-center gap-1">
+            <i class='bx bx-cog fs-5'></i>
+            <span class = "fs-5 text-white">{% trans "Setting" %}</span>
+          </div>
+        </li>
+      </ul>
+      <div class = 'navbar__last'>
+        {% comment %} <div class="search-container search-wrapper">
+          <input type="text" class="search-input" id="searchInput" placeholder="Tìm kiếm..." />
+          <i class="bx bx-search search-icon" id="searchIcon"></i>
+        </div> {% endcomment %}
+         
+  <i class="bx bx-bell bx-flip-horizontal bx-tada "></i>
+      <button id="toggleThemeBtn" class="btn btn-outline-secondary d-flex align-items-center gap-2 text-white">
+        <i class="bx bx-moon-star"></i>
+        <span>{% trans "Dark" %}</span>
+      </button>
+    </div>
+    </div>
+  </div>
+</nav>

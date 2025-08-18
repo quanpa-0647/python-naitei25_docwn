@@ -1,0 +1,48 @@
+{% extends "base_home.html" %} {% load static %} 
+{% load i18n %}
+{% block title %}{% trans "Trang chủ" %}{%endblock %} 
+{% block head %}
+<link rel="stylesheet" href="{% static 'novels/css/home.css' %}" />
+<link rel="stylesheet" href="{% static 'novels/css/fontawesome.all.min.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container my-4">
+  <img
+    id="slideshow-banner"
+    src="{% static 'novels/images/banner1.jpg' %}"
+    class="img-fluid w-100 rounded"
+    alt="Banner"
+  />
+</div>
+
+{% block main %}
+<div class="main__container">
+  <div class="left__container">
+    {% include 'novels/includes/trend_novels_area.html' %}
+    <!-- Sáng tác -->
+    {% include 'novels/includes/new_novels_area.html' %}
+    <!-- Truyện dịch -->
+    {% include 'novels/includes/new_update_novels_area.html' %}
+    <!-- Truyện vừa đăng -->
+    {% include 'novels/includes/like_novels_area.html' %}
+    
+  </div>
+  <div class="right__container">
+    {% include 'novels/includes/review.html' with discussion_data=discussion_data %}
+    <br></br>
+    {% include 'novels/includes/comment.html' with comments=comments %}
+  </div>
+</div>
+<br></br>
+{% include 'novels/includes/container_finish.html' with finish_novels=finish_novels %}
+{% endblock %}
+<script>
+  const images = [
+    "{% static 'novels/images/banner1.jpg' %}",
+    "{% static 'novels/images/banner2.png' %}",
+    "{% static 'novels/images/banner3.png' %}",
+  ];
+</script>
+<script src="{% static 'novels/js/banner.js' %}"></script>
+<script src="{% static 'novels/js/like_novels.js' %}"></script>
+{% endblock %}

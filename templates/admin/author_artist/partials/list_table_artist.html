@@ -1,0 +1,27 @@
+{% load i18n %}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>{% trans "Tên" %}</th>
+            <th>{% trans "Bút danh" %}</th>
+            <th>{% trans "Hành động" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for artist in page_obj %}
+        <tr>
+            <td>{{ artist.name }}</td>
+            <td>{{ artist.pen_name }}</td>
+            <td>
+                <button class="btn btn-sm btn-warning edit-btn" data-url="{% url 'admin:artist_update' artist.pk %}">{% trans "Sửa" %}</button>
+                <button class="btn btn-sm btn-danger delete-btn" data-url="{% url 'admin:artist_delete' artist.pk %}">{% trans "Xóa" %}</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div>
+    {% include 'admin/author_artist/partials/pagination.html' with page_obj=page_obj %}
+</div>

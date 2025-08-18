@@ -41,7 +41,7 @@ def request_chapter_admin(request):
     paginator = Paginator(chapters, PAGINATOR_COMMON_LIST)
     page_obj = paginator.get_page(page)
 
-    return render(request, 'admin/request_chapter_admin.html', {
+    return render(request, 'admin/pages/request_chapter_admin.html', {
         'page_obj': page_obj,
         'search_query': search_query,
         'DATE_FORMAT_DMY': DATE_FORMAT_DMY,
@@ -56,7 +56,7 @@ def approve_chapter_view(request, chapter_slug):
         chapter = Chapter.objects.get(slug=chapter_slug)
     except Chapter.DoesNotExist:
         messages.error(request, _('Chương không tồn tại.'))
-        return redirect('novels:request_chapter_admin')
+        return redirect('admin:request_chapter_admin')
     except Chapter.MultipleObjectsReturned:
         # If multiple chapters have the same slug, get the most recent unapproved one
         chapter = Chapter.objects.filter(
@@ -73,7 +73,7 @@ def approve_chapter_view(request, chapter_slug):
     chapter.save()
 
     messages.success(request, _('Chương "%(title)s" đã được duyệt thành công!') % {'title': chapter.title})
-    return redirect('novels:chapter_review', chapter_slug=chapter.slug)
+    return redirect('admin:chapter_review', chapter_slug=chapter.slug)
 
 @require_POST
 @website_admin_required
@@ -83,7 +83,7 @@ def reject_chapter_view(request, chapter_slug):
         chapter = Chapter.objects.get(slug=chapter_slug)
     except Chapter.DoesNotExist:
         messages.error(request, _('Chương không tồn tại.'))
-        return redirect('novels:request_chapter_admin')
+        return redirect('admin:request_chapter_admin')
     except Chapter.MultipleObjectsReturned:
         # If multiple chapters have the same slug, get the most recent unapproved one
         chapter = Chapter.objects.filter(
@@ -93,20 +93,20 @@ def reject_chapter_view(request, chapter_slug):
         
         if not chapter:
             messages.error(request, _('Không tìm thấy chương chưa được duyệt với slug này.'))
-            return redirect('novels:request_chapter_admin')
+            return redirect('admin:request_chapter_admin')
     
     rejected_reason = request.POST.get('rejected_reason', '').strip()
 
     if not rejected_reason:
         messages.error(request, _('Vui lòng cung cấp lý do từ chối.'))
-        return redirect('novels:chapter_review', chapter_slug=chapter.slug)
+        return redirect('admin:chapter_review', chapter_slug=chapter.slug)
 
     chapter.approved = False
     chapter.rejected_reason = rejected_reason
     chapter.save()
 
     messages.success(request, _('Chương "%(title)s" đã bị từ chối.') % {'title': chapter.title})
-    return redirect('novels:chapter_review', chapter_slug=chapter.slug)
+    return redirect('admin:chapter_review', chapter_slug=chapter.slug)
 
 @website_admin_required
 def chapter_review(request, chapter_slug):
@@ -115,7 +115,7 @@ def chapter_review(request, chapter_slug):
         chapter = Chapter.objects.get(slug=chapter_slug)
     except Chapter.DoesNotExist:
         messages.error(request, _('Chương không tồn tại.'))
-        return redirect('novels:request_chapter_admin')
+        return redirect('admin:request_chapter_admin')
     except Chapter.MultipleObjectsReturned:
         # If multiple chapters have the same slug, get the most recent unapproved one
         chapter = Chapter.objects.filter(
@@ -130,7 +130,7 @@ def chapter_review(request, chapter_slug):
         
         if not chapter:
             messages.error(request, _('Chương không tồn tại.'))
-            return redirect('novels:request_chapter_admin')
+            return redirect('admin:request_chapter_admin')
     
     context = {
         'chapter': chapter,
@@ -145,4 +145,4 @@ def chapter_review(request, chapter_slug):
         'REJECTED': ApprovalStatus.REJECTED.value,
     }
 
-    return render(request, 'admin/chapter_review.html', context)
+    return render(request, 'admin/pages/chapter_review.html', context)

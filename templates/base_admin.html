@@ -1,0 +1,52 @@
+{% load static %}
+{% load i18n %}
+{% load message_tags %}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% trans "Admin Website" %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="{% static 'novels/css/bootstrap.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'novels/css/style.css' %}" rel="stylesheet" />
+    <link 
+      href="{% static 'novels/css/fontawesome.all.min.css' %}"
+      rel="stylesheet"
+    />
+    <link
+      href="{% static 'novels/css/owl.carousel.min.css' %}"
+      rel="stylesheet"
+    />
+    <link href="{% static 'novels/css/base__admin.css' %}" rel="stylesheet" />
+    <link href="{% static 'novels/boxicons/css/boxicons.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'novels/boxicons/css/transformations.min.css' %}" rel="stylesheet" />
+    {% block extra_css %}{% endblock %}
+    <script src="{% static 'novels/js/jquery.min.js' %}"></script>
+    <script src="{% static 'novels/js/popper.min.js' %}"></script>
+    <script src="{% static 'novels/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'novels/js/base__admin.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'novels/css/theme.css' %}" />
+    {% block head %}{% endblock %}
+  </head>
+
+  <body class="d-flex">
+    {% include 'admin/includes/admin_sidebar.html' %}
+    <div class="flex-grow-1 p-4 main__container">
+      {% include 'admin/includes/navbar.html' %}
+      
+      <!-- Messages Display -->
+      {% if messages %}
+        <div class="my-3">
+          {% show_messages messages dismissible=True show_icons=False %}
+        </div>
+      {% endif %}
+      
+      <div class="content__container my-5">
+        {% block content %} {% endblock %}
+      </div>
+    </div>
+    <script src="{% static 'novels/js/theme-toggle.js' %}"></script>
+    <script src="{% static 'novels/js/search.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

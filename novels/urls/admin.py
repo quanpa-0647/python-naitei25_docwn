@@ -1,8 +1,8 @@
 from django.urls import path
 from novels.views.admin import *
-
+app_name = "admin"
 urlpatterns = [
-    # path("", Admin, name="admin"),
+    path("", Admin, name = "admin_home"),
     path("dashboard/", Dashboard, name="admin_dashboard"),
     path("novels/", Novels, name="admin_novels"),
     path("novels/<slug:slug>/", novel_detail, name="admin_novel_detail"),

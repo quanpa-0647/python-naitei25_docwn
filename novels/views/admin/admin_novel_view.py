@@ -20,7 +20,7 @@ def Novels(request):
     
     page_obj = NovelService.get_admin_novels_paginated(search_query, page)
     
-    return render(request, 'admin/novels_admin.html', {
+    return render(request, 'admin/pages/novels_admin.html', {
         'page_obj': page_obj,
         'search_query': search_query,
         'DATE_FORMAT_DMYHI': DATE_FORMAT_DMYHI,
@@ -35,7 +35,7 @@ def upload_novel_requests(request):
     
     page_obj = NovelService.get_pending_novels_paginated(search_query, page)
 
-    return render(request, 'admin/request_novel_admin.html', {
+    return render(request, 'admin/pages/request_novel_admin.html', {
         'page_obj': page_obj,
         'search_query': search_query,
         'DATE_FORMAT_DMYHI': DATE_FORMAT_DMYHI,
@@ -48,7 +48,7 @@ def novel_detail(request, slug):
     novel_data = NovelService.get_admin_novel_detail(slug)
     
     if not novel_data:
-        return redirect('novels:novels')
+        return redirect('admin:novels')
 
     context = {
         'novel': novel_data['novel'],
@@ -61,7 +61,7 @@ def novel_detail(request, slug):
         },
         'DATE_FORMAT_DMYHI': DATE_FORMAT_DMYHI,
     }
-    return render(request, 'admin/novel_detail.html', context)
+    return render(request, 'admin/pages/novel_detail.html', context)
 
 @website_admin_required
 def novel_request_detail(request, slug):
@@ -70,7 +70,7 @@ def novel_request_detail(request, slug):
     
     if not novel_data:
         messages.warning(request, _("Yêu cầu này không còn hiệu lực."))
-        return redirect('novels:upload_novel_requests')
+        return redirect('admin:upload_novel_requests')
 
     context = {
         'novel': novel_data['novel'],
@@ -95,7 +95,7 @@ def admin_approve_novel(request, slug):
     else:
         messages.error(request, _("Không thể phê duyệt tiểu thuyết này."))
     
-    return redirect('novels:upload_novel_requests')
+    return redirect('admin:upload_novel_requests')
 
 @require_POST
 @website_admin_required
@@ -109,4 +109,4 @@ def admin_reject_novel(request, slug):
     else:
         messages.error(request, _("Không thể từ chối tiểu thuyết này."))
     
-    return redirect('novels:upload_novel_requests')
+    return redirect('admin:upload_novel_requests')

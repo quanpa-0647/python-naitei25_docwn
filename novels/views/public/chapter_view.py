@@ -54,7 +54,7 @@ def chapter_detail_view(request, novel_slug, chapter_slug):
         "estimated_reading_time": chunk_stats['estimated_reading_time'],
         "DATE_FORMAT_DMY": DATE_FORMAT_DMY
     }
-    return render(request, "chapters/chapter_details.html", context)
+    return render(request, "novels/pages/chapter_details.html", context)
 
 @require_http_methods(["GET"])
 def load_more_chunks(request, chapter_id):
@@ -118,7 +118,7 @@ def chapter_list_view(request, novel_slug):
         'novel': novel,
         'chapters': chapters,
     }
-    return render(request, 'chapters/chapter_list.html', context)
+    return render(request, 'novels/pages/chapter_list.html', context)
 
 @login_required
 def chapter_add_view(request, novel_slug):
@@ -144,7 +144,7 @@ def chapter_add_view(request, novel_slug):
         'novel': novel,
         'form': form,
     }
-    return render(request, 'chapters/chapter_form.html', context)
+    return render(request, 'novels/pages/chapter_form.html', context)
 
 @login_required
 @require_http_methods(["POST"])
@@ -171,4 +171,4 @@ def chapter_delete_view(request, novel_slug, chapter_slug):
 
 def chapter_upload_rules(request):
     """Static page showing chapter upload rules"""
-    return render(request, 'chapters/chapter_upload_rules.html')
+    return render(request, 'novels/pages/chapter_upload_rules.html')
