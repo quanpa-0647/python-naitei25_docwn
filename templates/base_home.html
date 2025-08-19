@@ -3,6 +3,7 @@
 <html data-bs-theme="light">
   <head>
     <meta charset="utf-8" />
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <title>{% trans "WEB ĐỌC TIỂU THUYẾT DOCWN" %}</title>
     <link href="{% static 'novels/css/bootstrap.min.css' %}" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'novels/css/style.css' %}" />
@@ -34,7 +35,9 @@
     
     <main class="container mt-5 pt-4">{% block content %} {% endblock %}</main>
     {% include 'novels/includes/footer.html' %}
+    <script src="{% url 'javascript-catalog' %}"></script>
     <script src="{% static 'novels/js/theme-toggle.js' %}"></script>
     <script src="{% static 'novels/js/user_sidebar.js' %}"></script>
+    {% block script %}{% endblock %}
   </body>
 </html>

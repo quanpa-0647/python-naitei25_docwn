@@ -1,4 +1,6 @@
 from django.urls import path
 from interactions.views.public import *
 
-urlpatterns = []
+urlpatterns = [
+    path('sse/stream/', sse_stream, name='sse_stream'),
+]
