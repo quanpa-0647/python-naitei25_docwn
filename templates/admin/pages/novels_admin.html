@@ -1,0 +1,60 @@
+{% extends "base_admin.html" %} 
+{% load i18n %}
+{% load static %}
+{% load datetime_filters %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'novels/css/novels_admin.css' %}" />
+{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <h4 class="mb-3">{% trans "Danh sách tất cả tiểu thuyết" %}</h4>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <form method="get" class="d-flex w-75">
+      <input class="form-control" name="q" type="text" placeholder="Lọc theo tên, tác giả..." value="{{ search_query|default:'' }}">
+      <button type="submit" class="btn btn-outline-secondary ms-2">{% trans "Tìm kiếm" %}</button>
+    </form>
+  <a href ="#"><i class='bx bx-plus' title="Thêm tiểu thuyết"></i></a>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped align-middle">
+      <thead class="table-light">
+        <tr>
+          <th class="text-center align-middle">{% trans "STT" %}</th>
+          <th class="text-center align-middle">{% trans "Tên tiểu thuyết" %}</th>
+          <th class="text-center align-middle">{% trans "Lượt đọc"%}</th>
+          <th class="text-center align-middle">{% trans "Thể loại" %}</th>
+          <th class="text-center align-middle">{% trans "Tác giả" %}</th>
+          <th class="text-center align-middle">{% trans "Ngày đăng" %}</th>
+          <th class="text-center align-middle">{% trans "Thao tác" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for novel in page_obj %}
+        <tr>
+          <td class="text-center align-middle">{{ forloop.counter|add:page_obj.start_index|add:"-1" }}</td>
+          <td class="text-center align-middle">{{ novel.name }}</td>
+          <td class="text-center align-middle">{{ novel.view_count }}</td>
+          <td class="text-center align-middle">
+            {% if novel.tag_list %}  
+            {% for tag in novel.tag_list %}  
+            <span class="badge bg-secondary">{{ tag.name }}</span>
+            {% endfor %}
+            {% else %}
+              <span>{% trans "Không có tag" %}</span>
+            {% endif %}
+          </td>
+          <td class="text-center align-middle">{{ novel.author }}</td>
+          <td class="text-center align-middle">{{ novel.created_at|localtime_format:DATE_FORMAT_DMYHI }}</td>
+          <td class="text-center align-middle"><a href="{% url 'admin:admin_novel_detail' slug=novel.slug%}">{% trans "Xem chi tiết" %}</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+    <!-- Backend Pagination -->
+    {% load admin_pagination_tags %}
+    {% pagination_with_range page_obj %}
+    
+  </div>
+</div>
+{% endblock %}

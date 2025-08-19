@@ -1,0 +1,62 @@
+{% extends "base_admin.html" %} 
+{% load i18n %}
+{% block content %}
+<div class="container py-4">
+  <h2 class="mb-3">{% trans "Chào mừng bạn đến với Trang quản trị" %}</h2>
+  <p class="lead">{% trans "Đây là khu vực quản lý hệ thống truyện. Dưới đây là một số thông tin tổng quan." %}</p>
+  <div class="row g-4 mt-4">
+    <div class="col-md-3">
+      <div class="card border-primary shadow-sm">
+        <div class="card-body text-primary">
+          <h5 class="card-title">{% trans "Người dùng" %}</h5>
+          <p class="card-text fs-4">{{total_users}}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card border-success shadow-sm">
+        <div class="card-body text-success">
+          <h5 class="card-title">{% trans "Tiểu thuyết" %}</h5>
+          <p class="card-text fs-4">{{total_novels}}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card border-warning shadow-sm">
+        <div class="card-body text-warning">
+          <h5 class="card-title">{% trans "Bình luận" %}</h5>
+          <p class="card-text fs-4">{% trans "342" %}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card border-danger shadow-sm">
+        <div class="card-body text-danger">
+          <h5 class="card-title">{% trans "Yêu cầu" %}</h5>
+          <p class="card-text fs-4">{{total_requests}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr class="my-5">
+  <h4>{% trans "Truy cập nhanh" %}</h4>
+  <br></br>
+  <div class="row g-3">
+    <div class="col-md-3">
+      <a href="#" class="btn btn-outline-primary w-100">{% trans "Quản lý người dùng" %}</a>
+    </div>
+    <div class="col-md-3">
+      <a href="{% url 'admin:admin_novels' %}" class="btn btn-outline-success w-100">{% trans "Quản lý tiểu thuyết"%}</a>
+    </div>
+    <div class="col-md-3">
+      <a href="#" class="btn btn-outline-warning w-100">{% trans "Quản lý bình luận"%}</a>
+    </div>
+    <div class="col-md-3">
+      <a href="{% url 'admin:admin_dashboard' %}" class="btn btn-outline-secondary w-100">{% trans "Trang Dashboard" %}</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

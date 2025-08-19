@@ -87,7 +87,7 @@ ROOT_URLCONF = "docwn.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [BASE_DIR / "templates", "static"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -204,7 +204,7 @@ STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'novels', 'static'),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 # Static files configuration based on environment

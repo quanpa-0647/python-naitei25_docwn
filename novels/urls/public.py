@@ -1,6 +1,5 @@
 from django.urls import path
 from novels.views.public import *
-
 urlpatterns = [
     path("", Home, name="home"),
     path("most-read/", most_read_novels, name="most_read_novels"),

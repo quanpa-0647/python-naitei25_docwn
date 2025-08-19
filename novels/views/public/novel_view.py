@@ -36,13 +36,13 @@ def novel_detail(request, novel_slug):
         'MAX_CHAPTER_LIST': MAX_CHAPTER_LIST,
         'MAX_CHAPTER_LIST_PLUS': MAX_CHAPTER_LIST_PLUS
     }
-    return render(request, "novels/novel_detail.html", context)
+    return render(request, "novels/pages/novel_detail.html", context)
 
 class NovelCreateView(LoginRequiredMixin, CreateView):
     """Create new novel view"""
     model = Novel
     form_class = NovelForm
-    template_name = "novels/novel_form.html"
+    template_name = "novels/pages/novel_form.html"
     success_url = reverse_lazy("novels:home")
     login_url = reverse_lazy("accounts:login")
     permission_denied_message = _("Bạn cần đăng nhập để tạo tiểu thuyết mới.")
@@ -81,7 +81,7 @@ class NovelCreateView(LoginRequiredMixin, CreateView):
 
 class MyNovelsView(LoginRequiredMixin, ListView):
     """User's novels management page using service"""
-    template_name = "novels/my_novels.html"
+    template_name = "novels/pages/my_novels.html"
     context_object_name = "page_obj"
     login_url = reverse_lazy("accounts:login")
 
@@ -125,7 +125,7 @@ class MyNovelsView(LoginRequiredMixin, ListView):
 
 def novel_upload_rules(request):
     """Static page showing novel upload rules"""
-    return render(request, 'novels/novel_upload_rule.html')
+    return render(request, 'novels/pages/novel_upload_rule.html')
 
 def search_novels(request):
     """Search novels using service"""
@@ -140,4 +140,4 @@ def search_novels(request):
         'DEFAULT_RATING_AVERAGE': DEFAULT_RATING_AVERAGE,
     }
     
-    return render(request, 'novels/search_results.html', context)
+    return render(request, 'novels/pages/search_results.html', context)
