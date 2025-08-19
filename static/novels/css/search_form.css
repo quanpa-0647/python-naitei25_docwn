@@ -1,0 +1,9 @@
+/* Nút bấm mở/đóng tìm kiếm nâng cao */
+.search-advance_toggle {
+    cursor: pointer;
+}
+
+/* Khối tìm kiếm nâng cao */
+.search-advance {
+    display: none;
+}

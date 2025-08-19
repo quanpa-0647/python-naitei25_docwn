@@ -1,5 +1,7 @@
 (function () {
     window.setupTagFormHandler = function () {
+        console.log("Form submit script loaded!");
+
         const $form = $("#tagForm");
 
         $form.on("submit", function (e) {
@@ -11,9 +13,12 @@
             const slug = $form.data("slug");           // slug của tag
 
             const url = action === "edit"
-                ? `/novels/admin/tags/${slug}/edit/`
-                : `/novels/admin/tags/create/`;
+                ? `/admin/tags/${slug}/edit/`
+                : `/admin/tags/create/`;
 
+            console.log(">>> Debug action:", action);
+            console.log(">>> Debug slug:", slug);
+            console.log(">>> Debug URL:", url); 
             $.ajax({
                 url: url,
                 method: "POST",

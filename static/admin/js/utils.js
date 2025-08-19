@@ -5,7 +5,7 @@
 
         const $wrapper = $("#tagTableWrapper");
         $.ajax({
-            url: `/novels/admin/tags/?q=${encodeURIComponent(query)}&page=${page}`,
+            url: `/admin/tags/?q=${encodeURIComponent(query)}&page=${page}`,
             headers: { "X-Requested-With": "XMLHttpRequest" },
             success: function (html) {
                 $wrapper.html(html);

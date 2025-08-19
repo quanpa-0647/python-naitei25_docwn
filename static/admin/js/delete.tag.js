@@ -28,7 +28,7 @@
             }
 
             $.ajax({
-                url: `/novels/admin/tags/${tagSlugToDelete}/delete/`,
+                url: `/admin/tags/${tagSlugToDelete}/delete/`,
                 method: "POST",
                 headers: {
                     "X-CSRFToken": $("#csrfToken").val(),

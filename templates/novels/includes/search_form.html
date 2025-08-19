@@ -1,24 +1,114 @@
 {% load i18n %}
 
-<div class="search-form-section mb-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <form method="GET" action="{% url 'novels:search_novels' %}" class="search-form">
-                <div class="input-group">
+<div class="search-form_wrapper mb-4">
+    <div class="container">
+        <form id="search-form" method="GET" action="{% url 'novels:search_novels' %}" class="search-form">
+            <!-- Main search input -->
+            <div class="row mb-2">
+                <div class="col-12 col-md-8">
                     <input 
                         type="text" 
                         name="q" 
-                        class="form-control search-input" 
+                        class="form-control" 
                         placeholder="{% trans 'Nhập tên truyện, tác giả, hoặc mô tả...' %}"
                         value="{{ query }}"
                         autofocus
                     >
-                    <button class="btn btn-primary search-btn" type="submit">
-                        <i class="bx bx-search"></i>
-                        {% trans "Tìm kiếm" %}
+                </div>
+                <div class="col-12 col-md-4 mt-2 mt-md-0">
+                    <button class="btn btn-primary w-100" type="submit">
+                        <i class="bx bx-search"></i> {% trans "Tìm kiếm" %}
                     </button>
                 </div>
-            </form>
-        </div>
+            </div>
+
+            <!-- Advanced filters toggle -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <!-- Bên trái -->
+                <div>
+                    <label class="form-label mb-0">{% trans "Sắp xếp theo" %}</label>
+                    <select class="form-select d-inline-block w-auto ms-2" name="sort">
+                        <option value="">{% trans "Mặc định" %}</option>
+                        <option value="updated" {% if filter_sort == 'updated' %}selected{% endif %}>{% trans "Ngày cập nhật" %}</option>
+                        <option value="rating" {% if filter_sort == 'rating' %}selected{% endif %}>{% trans "Đánh giá" %}</option>
+                    </select>
+                </div>
+
+                <!-- Bên phải -->
+                <span class="search-advance_toggle">
+                    <i class="fas fa-filter"></i> {% trans "Tìm kiếm nâng cao" %}
+                </span>
+            </div>
+
+            <!-- Advanced filters -->
+            <div class="search-advance mb-3">
+                <div class="row g-3">
+                    <!-- Author & Artist -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="mb-2">
+                            <label class="form-label">{% trans "Tác giả" %}</label>
+                            <input 
+                                type="text"
+                                name="author"
+                                class="form-control"
+                                placeholder="{% trans 'Có thể bỏ trống...' %}"
+                                value="{{ filter_author }}">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">{% trans "Họa sĩ" %}</label>
+                            <input
+                                type="text"
+                                name="artist"
+                                class="form-control"
+                                placeholder="{% trans 'Có thể bỏ trống...' %}"
+                                value="{{ filter_artist }}">
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="col-12 col-md-6 col-lg-2">
+                        <label class="form-label">{% trans "Tình trạng" %}</label>
+                        <select class="form-select" name="status">
+                            <option value="">{% trans "Tất cả" %}</option>
+                            <option 
+                                value="{{ ProgressStatus.ONGOING.value }}"
+                                {% if filter_status == ProgressStatus.ONGOING.value %}
+                                selected{% endif %}>
+                                {% trans "Đang tiến hành" %}
+                            </option>
+                            <option
+                                value="{{ ProgressStatus.SUSPEND.value }}"
+                                {% if filter_status == ProgressStatus.SUSPEND.value %}
+                                selected{% endif %}>
+                                {% trans "Tạm ngưng" %}
+                            </option>
+                            <option
+                                value="{{ ProgressStatus.COMPLETED.value }}"
+                                {% if filter_status == ProgressStatus.COMPLETED.value %}
+                                selected{% endif %}>
+                                {% trans "Hoàn thành" %}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Tag -->
+                    <div class="search-gerne col-12 col-lg-6">
+                        <label class="search-gerne_name">{% trans "Thể loại" %}</label>
+                         <div class="row">
+                            {% for tag in all_tags %}
+                            <div class="search-genre_item include col-4 col-md-3 col-lg-4 col-xl-3">
+                                <label class="genre_label {% if tag.slug in tags_selected %}active{% endif %}" data-genre-slug="{{ tag.slug }}">
+                                    <span class="genre-icon">
+                                        <i class="far {% if tag.slug in tags_selected %}fa-check-square{% else %}fa-square{% endif %}"></i>
+                                    </span>
+                                    <span class="genre-name">{{ tag.name }}</span>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
