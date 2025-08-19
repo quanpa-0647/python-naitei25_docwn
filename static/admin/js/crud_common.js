@@ -41,8 +41,19 @@ $(document).ready(function () {
                 $("#formModal").modal("hide");
                 loadTable();
             } else {
-                $("#formModal").html(data);
+                form.find(".is-invalid").removeClass("is-invalid");
+                form.find(".invalid-feedback").remove();
+
+                for (const [field, errors] of Object.entries(data.errors)) {
+                    const input = form.find(`[name="${field}"]`);
+                    if (input.length) {
+                        input.addClass("is-invalid");
+                        const feedback = $(`<div class="invalid-feedback">${errors[0]}</div>`);
+                        input.after(feedback);
+                    }
+                }
             }
+
         });
     });
 

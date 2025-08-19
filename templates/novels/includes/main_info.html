@@ -16,8 +16,12 @@
       {% for tag in tags %}<span>{{ tag.name }} </span>{% endfor %}
     </div>
 
-    <p><strong>{% trans "Tác giả:" %}</strong> {{ novel.author.name }}</p>
-    <p><strong>{% trans "Họa sĩ:" %}</strong> {{ novel.artist.name }}</p>
+    <p><strong>{% trans "Tác giả:" %}</strong>
+      {% if novel.author %}{{ novel.author.name }}{% else %}{% trans "Đang cập nhật" %}{% endif %}
+    </p>
+    <p><strong>{% trans "Họa sĩ:" %}</strong>
+      {% if novel.artist %}{{ novel.artist.name }}{% else %}{% trans "Đang cập nhật" %}{% endif %}
+    </p>
     <p><strong>{% trans "Tình trạng:" %}</strong> {{ novel.get_progress_status_display }}</p>
   </div>
 </div>

@@ -11,8 +11,12 @@
         <span class="badge bg-secondary me-1">{{ tag.name }}</span>
       {% endfor %}
     </div>
-    <p><strong>{% trans "Tác giả:" %}</strong> {{ novel.author.name }}</p>
-    <p><strong>{% trans "Họa sĩ:" %}</strong> {{ novel.artist.name }}</p>
+    <p><strong>{% trans "Tác giả:" %}</strong>
+      {% if novel.author %}{{ novel.author.name }}{% else %}{% trans "Không rõ" %}{% endif %}
+    </p>
+    <p><strong>{% trans "Họa sĩ:" %}</strong>
+      {% if novel.artist %}{{ novel.artist.name }}{% else %}{% trans "Không rõ" %}{% endif %}
+    </p>
     <p><strong>{% trans "Ngày gửi yêu cầu:" %}</strong> {{ novel.created_at|localtime_format:DATE_FORMAT_DMYHI }}</p>
     <p><strong>{% trans "Trạng thái hiện tại:" %}</strong>
       <span class="badge {{ novel.approval_status|approval_class }}">
