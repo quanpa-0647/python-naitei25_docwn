@@ -31,6 +31,7 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
     path("novels/", include("novels.urls")),
     path("interactions/", include("interactions.urls")),
+    path("tinymce/", include("tinymce.urls")),
     path("", RedirectView.as_view(url="novels/"), name='home'),
     path('oauth/', include('social_django.urls', namespace='social')),
 ] + static(STATIC_URL, document_root=STATIC_ROOT)

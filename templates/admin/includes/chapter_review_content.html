@@ -18,7 +18,7 @@
             {% if chunks %}
                 {% for chunk in chunks %}
                 <div class="chunk" data-position="{{ chunk.position }}">
-                    {{ chunk.content }}
+                    {{ chunk.content|safe }}
                 </div>
                 {% endfor %}
             {% else %}

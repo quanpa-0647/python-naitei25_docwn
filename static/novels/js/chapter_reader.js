@@ -136,7 +136,8 @@ class ChapterReader {
         const div = document.createElement('div');
         div.className = 'chunk';
         div.dataset.position = chunkData.position;
-        div.innerHTML = chunkData.content.replace(/\n/g, '<br>');
+        // Content is already HTML, so set innerHTML directly without replacing newlines
+        div.innerHTML = chunkData.content;
         return div;
     }
 

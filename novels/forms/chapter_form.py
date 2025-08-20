@@ -2,10 +2,13 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from novels.models import Chapter, Volume
 from django.utils.text import slugify
-from novels.utils import ChunkManager, SimpleChunker
+from novels.utils import ChunkManager, HtmlChunker
+from tinymce.widgets import TinyMCE
 from constants import (
     MAX_VOLUME_NAME_LENGTH,
     MAX_CHUNK_SIZE,
+    TINYMCE_COLS,
+    TINYMCE_ROWS,
 )
 
 class ChapterForm(forms.ModelForm):
@@ -37,16 +40,15 @@ class ChapterForm(forms.ModelForm):
         help_text=_("Chap mới sẽ được thêm vào volume mới này")
     )
     
-    # Chapter content field
+    # Chapter content field with rich text editor
     content = forms.CharField(
-        widget=forms.Textarea(
-            attrs={
-                "class": "form-control",
-                "rows": 15,
-                "placeholder": _("Nhập nội dung chapter...")
-            }
-        ),
+        widget=TinyMCE(attrs={
+            'cols': TINYMCE_COLS,
+            'rows': TINYMCE_ROWS,
+            'class': 'form-control'
+        }),
         label=_("Nội dung"),
+        help_text=_("Sử dụng trình soạn thảo để định dạng văn bản với rich text. Nội dung sẽ được lưu dưới dạng HTML.")
     )
 
     class Meta:
@@ -191,12 +193,12 @@ class ChapterForm(forms.ModelForm):
         if commit:
             chapter.save()
             
-            # Use normal chunking to create chunks
-            # Create simple chunker with database limit
-            chunker = SimpleChunker(max_chunk_size=MAX_CHUNK_SIZE)  # Database TEXT field limit
+            # Use HTML chunking for rich text content
+            # Create HTML chunker with database limit
+            chunker = HtmlChunker(max_chunk_size=MAX_CHUNK_SIZE)  # Database TEXT field limit
             
-            # Create chunks using normal chunking
-            chunk_count = ChunkManager.create_normal_chunks_for_chapter(
+            # Create chunks using HTML-aware chunking
+            chunk_count = ChunkManager.create_html_chunks_for_chapter(
                 chapter=chapter,
                 content=content,
                 chunker=chunker

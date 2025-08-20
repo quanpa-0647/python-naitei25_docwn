@@ -173,6 +173,11 @@ PAGINATION_MIN_PAGES_TO_SHOW = 1  # Minimum number of pages required to show pag
 # Chunking configuration
 MAX_CHUNK_SIZE = 10000  # Maximum size for a chunk in characters
 
+# HTML Chunker constants
+HTML_TAG_OVERHEAD = 20  # Buffer size for HTML tags like <p></p>
+BEAUTIFULSOUP_PARSER = 'html.parser'
+HTML_BLOCK_ELEMENTS = ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+
 # Reading constants
 WORDS_PER_MINUTE = 200  # Average reading speed for time estimation
 SUMMARY_TRUNCATE_WORDS = 20  # Number of words to show in novel summary previews
@@ -200,3 +205,9 @@ COMMENT_TRUNCATE_LENGTH = 200  # Length to truncate comments
 
 # Constants for attempting
 MAX_ATTEMPTS = 10
+
+# TinyMCE Editor constants
+TINYMCE_HEIGHT = 400
+TINYMCE_FONT_SIZE = 14
+TINYMCE_COLS = 80
+TINYMCE_ROWS = 20
