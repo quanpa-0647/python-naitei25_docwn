@@ -20,6 +20,8 @@ from constants import (
     MAX_SESSION_REMEMBER,
     SECURE_HSTS_SECONDS_HEROKU,
     SECURE_HSTS_SECONDS_DEVELOPMENT,
+    TINYMCE_HEIGHT,
+    TINYMCE_FONT_SIZE,
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -68,6 +70,7 @@ INSTALLED_APPS = [
     "social_django",
     "django_recaptcha",
     "django_select2",
+    "tinymce",
 ]
 
 MIDDLEWARE = [
@@ -328,3 +331,37 @@ else:
     SECURE_HSTS_SECONDS = SECURE_HSTS_SECONDS_DEVELOPMENT
     SECURE_HSTS_INCLUDE_SUBDOMAINS = False
     SECURE_HSTS_PRELOAD = False
+
+
+# TinyMCE Configuration
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'silver',
+    'height': TINYMCE_HEIGHT,
+    'width': '100%',
+    'menubar': False,
+    'plugins': [
+        'advlist', 'autolink', 'lists', 'link', 'charmap', 'preview',
+        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+        'insertdatetime', 'table', 'help', 'wordcount'
+    ],
+    'toolbar': (
+        'undo redo | blocks | bold italic underline strikethrough | '
+        'alignleft aligncenter alignright alignjustify | '
+        'bullist numlist outdent indent | '
+        'forecolor backcolor | '
+        'link unlink | '
+        'removeformat | code fullscreen'
+    ),
+    'content_style': (
+        f'body {{ font-family: -apple-system, BlinkMacSystemFont, San Francisco, '
+        f'Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: {TINYMCE_FONT_SIZE}px; }}'
+    ),
+    'block_formats': 'Paragraph=p; Heading 1=h1; Heading 2=h2; Heading 3=h3; Heading 4=h4; Heading 5=h5; Heading 6=h6; Preformatted=pre',
+    'valid_elements': 'p,br,strong,b,em,i,u,s,h1,h2,h3,h4,h5,h6,ul,ol,li,a[href],span[style]',
+    'forced_root_block': 'p',
+    'force_br_newlines': False,
+    'force_p_newlines': True,
+    'relative_urls': False,
+    'remove_script_host': False,
+    'convert_urls': True,
+}
