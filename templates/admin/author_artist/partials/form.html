@@ -9,7 +9,14 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                {{ form.as_p }}
+                <div class="mb-3">
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                </div>
+                <div class="mb-3">
+                    {{ form.pen_name.label_tag }}
+                    {{ form.pen_name }}
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-success">{% trans "Lưu" %}</button>
