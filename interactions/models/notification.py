@@ -1,10 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
-from novels.models import Novel
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from accounts.models import User
-from .comment import Comment
-from .review import Review
 from constants import (
     MAX_TYPE_LENGTH,
     MAX_TITLE_LENGTH,
@@ -15,43 +13,49 @@ from constants import (
 class Notification(models.Model):
     """Thông báo cho người dùng"""
     user = models.ForeignKey(
-        User, 
+        User,
         on_delete=models.RESTRICT,
         verbose_name=_("Người dùng"),
         related_name='notifications'
     )
+    
     type = models.CharField(
         max_length=MAX_TYPE_LENGTH,
         choices=NotificationTypeChoices.CHOICES,
         verbose_name=_("Loại thông báo")
     )
-    title = models.CharField(max_length=MAX_TITLE_LENGTH, verbose_name=_("Tiêu đề"))
-    content = models.TextField(verbose_name=_("Nội dung"))
-    is_read = models.BooleanField(default=False, verbose_name=_("Đã đọc"))
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Ngày tạo"))
     
-    # Các trường tham chiếu để biết thông báo liên quan đến đối tượng nào
-    related_comment = models.ForeignKey(
-        Comment,
+    title = models.CharField(
+        max_length=MAX_TITLE_LENGTH, 
+        verbose_name=_("Tiêu đề")
+    )
+    
+    content = models.TextField(verbose_name=_("Nội dung"))
+    
+    is_read = models.BooleanField(
+        default=False, 
+        verbose_name=_("Đã đọc")
+    )
+    
+    created_at = models.DateTimeField(
+        auto_now_add=True, 
+        verbose_name=_("Ngày tạo")
+    )
+    
+    # Generic relationship - thay thế cho các related_* fields
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
-        on_delete=models.CASCADE,
-        verbose_name=_("Bình luận liên quan")
+        verbose_name=_("Loại đối tượng")
     )
-    related_review = models.ForeignKey(
-        Review,
-        null=True,
+    object_id = models.PositiveIntegerField(
+        null=True, 
         blank=True,
-        on_delete=models.CASCADE,
-        verbose_name=_("Đánh giá liên quan")
+        verbose_name=_("ID đối tượng")
     )
-    related_novel = models.ForeignKey(
-        Novel,
-        null=True,
-        blank=True,
-        on_delete=models.CASCADE,
-        verbose_name=_("Tiểu thuyết liên quan")
-    )
+    related_object = GenericForeignKey('content_type', 'object_id')
 
     class Meta:
         verbose_name = _("Thông báo")
@@ -60,12 +64,20 @@ class Notification(models.Model):
         indexes = [
             models.Index(fields=['user', 'is_read', '-created_at']),
             models.Index(fields=['type', '-created_at']),
+            models.Index(fields=['content_type', 'object_id']),
         ]
 
     def __str__(self):
-        return f"{self.user} - {self.get_type_display()} - {self.created_at.strftime(DATE_FORMAT_DMY2)}"
+        return f"{self.title} - {self.user.username if self.user else 'Unknown'}"
 
     def mark_as_read(self):
         """Đánh dấu thông báo là đã đọc"""
         self.is_read = True
         self.save(update_fields=['is_read'])
+
+    @property
+    def related_object_name(self):
+        """Lấy tên của đối tượng liên quan"""
+        if self.related_object:
+            return str(self.related_object)
+        return None

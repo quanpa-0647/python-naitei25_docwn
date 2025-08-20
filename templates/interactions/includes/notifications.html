@@ -1,0 +1,71 @@
+{% load i18n %}
+{% load static %}
+<div style="display: none;">
+  {% csrf_token %}
+</div>
+
+{% block "head" %}
+    <link rel="stylesheet" href="{% static 'interactions/css/notifications.css' %}">
+{% endblock %}
+
+<div class="dropdown-menu dropdown-menu-end notification-menu">
+    <div class="dropdown-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">{% trans "Thông báo" %}</h6>
+        {% if unread_notification_count > 0 %}
+        <small class="text-muted">{{ unread_notification_count }} {% trans "chưa đọc" %}</small>
+        {% endif %}
+    </div>
+    <div class="dropdown-divider"></div>
+    
+    <div class="notification-list" id="notificationList">
+        {% if notifications %}
+        {% for notification in notifications %}
+        <div class="dropdown-item notification-item {% if not notification.is_read %}unread{% endif %}" 
+             data-notification-id="{{ notification.id }}">
+            <div class="d-flex align-items-start">
+                <div class="notification-icon me-2">
+                    <i class="bx bx-info-circle text-primary"></i>
+                </div>
+                <div class="notification-content flex-grow-1">
+                    <div class="notification-title fw-bold">{{ notification.title }}</div>
+                    <div class="notification-message text-muted small">{{ notification.content }}</div>
+                    <div class="notification-time text-muted small">
+                        <i class="bx bx-time"></i>
+                        {{ notification.created_at|timesince }} {% trans "trước" %}
+                    </div>
+                </div>
+                {% if not notification.is_read %}
+                <div class="unread-indicator">
+                    <span class="badge bg-primary rounded-pill">&nbsp;</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="dropdown-item-text text-center text-muted py-3">
+            <i class="bx bx-bell-off fs-1"></i>
+            <div class="mt-2">{% trans "Không có thông báo nào" %}</div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Loading indicator -->
+    <div class="text-center py-2 d-none" id="loadingIndicator">
+        <div class="spinner-border spinner-border-sm text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    
+    <div class="dropdown-divider"></div>
+    <div class="dropdown-item-text text-center">
+        <a href="#" class="text-decoration-none small">{% trans "Xem tất cả thông báo" %}</a>
+    </div>
+</div>
+
+{% block script %}
+    {% if user.is_authenticated %}
+        <script src="{% static 'interactions/js/notifications.js' %}"></script>
+    {% endif %}
+{% endblock %}
+

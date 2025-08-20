@@ -94,7 +94,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "common.utils.user_context"
+                "common.utils.user_context",
+                "interactions.context_processors.notifications_context"
             ],
         },
     },
@@ -225,6 +226,8 @@ else:
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+ASGI_APPLICATION = 'docwn.asgi.application'
 
 # Authentication
 AUTH_USER_MODEL = 'accounts.User'  # Thay 'accounts' bằng tên app của bạn

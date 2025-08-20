@@ -1,0 +1,91 @@
+.notification-dropdown .btn {
+  color: var(--bs-navbar-color);
+  border: none;
+  background: none;
+  padding: 0.5rem;
+}
+
+.notification-dropdown .btn:hover {
+  color: var(--bs-navbar-hover-color);
+}
+
+/* Dropdown container */
+.notification-menu {
+  width: 350px;
+  max-height: 400px;
+  border: 1px solid var(--bs-border-color);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive: nhỏ hơn tablet */
+@media (max-width: 991.98px) {
+  .notification-menu {
+    width: 300px !important;
+  }
+}
+
+/* Notification list */
+.notification-list {
+  max-height: 300px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Notification item */
+.notification-item {
+  border: none;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+
+.notification-item:hover {
+  background-color: var(--bs-gray-100);
+}
+
+.notification-item.unread {
+  background-color: rgba(13, 110, 253, 0.05);
+  border-left: 3px solid var(--bs-primary);
+}
+
+/* Content inside notification */
+.notification-content {
+  min-width: 0;
+}
+
+.notification-title {
+  font-size: 0.875rem;
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+  font-weight: bold;
+}
+
+.notification-message {
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  margin-bottom: 0.25rem;
+  color: #6c757d;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;       /* Giới hạn 2 dòng */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.notification-time {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+/* Unread indicator */
+.unread-indicator .badge {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+  padding: 0;
+}
+
+/* Navbar alignment */
+.navbar__last {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

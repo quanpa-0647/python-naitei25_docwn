@@ -1,4 +1,5 @@
 {% load i18n %}
+
 <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="#"> {% trans "DOCWN" %}</a>
@@ -76,6 +77,29 @@
             <i class="bx bx-search"></i>
           </button>
         </form>
+
+        <!-- Notifications Dropdown -->
+        {% if user.is_authenticated %}
+        <div class="dropdown notification-dropdown">
+          <button
+            class="btn btn-link position-relative"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            id="notificationBtn"
+          >
+            <i class="bx bx-bell fs-5"></i>
+            {% if unread_notification_count > 0 %}
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              {{ unread_notification_count }}
+              <span class="visually-hidden">unread notifications</span>
+            </span>
+            {% endif %}
+          </button>
+          {% include "interactions/includes/notifications.html" %}
+        </div>
+        {% endif %}
+
         <div class="dropdown">
           {% if user.is_authenticated %}
             <p
