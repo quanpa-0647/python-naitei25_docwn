@@ -17,12 +17,12 @@
   <h1>{% trans "DANH SÁCH TRUYỆN MỚI NHẤT"%}</h1>
 
   <div id="new_novels" class="new_novels">
-    {% for card in new_novels %} 
+    {% for card in page_obj %} 
     {% include 'novels/includes/card4.html' %} 
     {%endfor %}
   </div>
 
-  <div id="pagination" class="pagination"></div>
+  {% include 'novels/includes/pagnigation.html' %}
 </div>
 {% endblock %}
 <script>

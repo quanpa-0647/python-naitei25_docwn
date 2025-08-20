@@ -22,6 +22,10 @@ class NovelService:
     def get_trend_novels():
         """Get trending novels based on view count"""
         return NovelService.get_approved_novels().order_by('-view_count')[:MAX_TREND_NOVELS]
+    @staticmethod
+    def get_more_trend_novels():
+        """Get trending novels based on view count"""
+        return NovelService.get_approved_novels().order_by('-view_count')
     
     @staticmethod
     def get_new_novels():

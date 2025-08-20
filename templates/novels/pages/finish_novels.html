@@ -18,13 +18,13 @@
   <h1>{% trans "DANH SÁCH TIỂU THUYẾT ĐÃ HOÀN THÀNH" %}</h1>
   
   <div id="finish_novels" class="finish_novels">
-    {% for card in finish_novels %}
+    {% for card in page_obj.object_list %}
       {% include 'novels/includes/card2.html' %}
     {% endfor %}
   </div>
-
-  <div id="pagination" class="pagination"></div>
+  {% include 'novels/includes/pagnigation.html' %}
 </div>
+
 {% endblock %}
 <script>
   const images = [
@@ -34,6 +34,5 @@
   ];
 </script>
 <script src="{% static 'novels/js/banner.js' %}"></script>
-<script src="{% static 'novels/js/finish_novels_page.js' %}"></script>
 
 {% endblock %}
