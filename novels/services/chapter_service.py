@@ -1,6 +1,12 @@
 from django.shortcuts import get_object_or_404
 from django.http import Http404
+from django.core.paginator import Paginator
+from django.db.models import Q
 from novels.models import Chapter
+from constants import (
+    PAGINATOR_COMMON_LIST,
+    DEFAULT_PAGE_NUMBER,
+)
 
 class ChapterService:
     @staticmethod
@@ -75,3 +81,112 @@ class ChapterService:
             'max_chunk_words': max_chunk_words,
             'estimated_reading_time': estimated_reading_time
         }
+
+    @staticmethod
+    def get_pending_chapters_for_admin(search_query='', page=DEFAULT_PAGE_NUMBER):
+        """Get paginated list of chapters pending approval"""
+        chapters = Chapter.objects.filter(
+            approved=False,
+            is_hidden=False,
+            rejected_reason__isnull=True
+        ).select_related(
+            'volume__novel',  
+            'volume__novel__created_by'  
+        ).order_by('-created_at')
+        
+        # Add search functionality
+        if search_query:
+            chapters = chapters.filter(
+                Q(title__icontains=search_query) |
+                Q(volume__novel__name__icontains=search_query) |
+                Q(volume__novel__created_by__username__icontains=search_query)
+            )
+        
+        # Add pagination
+        paginator = Paginator(chapters, PAGINATOR_COMMON_LIST)
+        page_obj = paginator.get_page(page)
+        
+        return page_obj
+
+    @staticmethod
+    def get_chapter_by_slug(chapter_slug, for_review=False):
+        try:
+            chapter = Chapter.objects.select_related(
+                'volume__novel',
+                'volume__novel__created_by'
+            ).get(slug=chapter_slug)
+            return chapter
+        except Chapter.DoesNotExist:
+            return None
+        except Chapter.MultipleObjectsReturned:
+            if for_review:
+                chapter = Chapter.objects.filter(
+                    slug=chapter_slug,
+                    approved=False,
+                    rejected_reason__isnull=True,
+                    is_hidden=False
+                ).select_related(
+                    'volume__novel',
+                    'volume__novel__created_by'
+                ).order_by('-created_at').first()
+                
+                if not chapter:
+                    chapter = Chapter.objects.filter(
+                        slug=chapter_slug
+                    ).select_related(
+                        'volume__novel',
+                        'volume__novel__created_by'
+                    ).order_by('-created_at').first()
+                
+                return chapter
+            else:
+                chapter = Chapter.objects.filter(
+                    slug=chapter_slug,
+                    approved=False
+                ).select_related(
+                    'volume__novel',
+                    'volume__novel__created_by'
+                ).order_by('-created_at').first()
+                
+                return chapter
+
+    @staticmethod
+    def approve_chapter(chapter):
+        """Approve a chapter"""
+        chapter.approved = True
+        chapter.rejected_reason = None
+        chapter.save()
+        return chapter
+
+    @staticmethod
+    def reject_chapter(chapter, rejected_reason):
+        """Reject a chapter with reason"""
+        chapter.approved = False
+        chapter.rejected_reason = rejected_reason
+        chapter.save()
+        return chapter
+
+    @staticmethod
+    def get_chapter_review_context(chapter):
+        """Get complete context for chapter review"""
+        chunks = chapter.chunks.all().order_by('position')
+        navigation = ChapterService.get_chapter_navigation(chapter)
+        
+        return {
+            'chapter': chapter,
+            'novel': chapter.volume.novel,
+            'volume': chapter.volume,
+            'content': chapter.get_content(),
+            'next_chapter': navigation['next_chapter'],
+            'previous_chapter': navigation['prev_chapter'],
+            'chunks': chunks,
+        }
+        
+    @staticmethod
+    def get_earliest_unapproved_chapter():
+        return Chapter.objects.filter(
+            approved=False,
+            rejected_reason__isnull=True,
+            is_hidden=False,
+            deleted_at__isnull=True
+        ).order_by('created_at').first()

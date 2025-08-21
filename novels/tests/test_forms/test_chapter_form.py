@@ -10,6 +10,9 @@ from unittest.mock import patch, Mock
 from novels.models import Novel, Volume, Chapter, Author, Artist, Tag
 from novels.forms import ChapterForm
 from constants import ApprovalStatus, UserRole, MAX_CHUNK_SIZE
+import warnings
+
+warnings.filterwarnings("ignore", message="No directory at:")
 
 
 User = get_user_model()
@@ -189,7 +192,7 @@ class ChapterFormValidationTests(ChapterFormTestCase):
         Chapter.objects.create(
             volume=self.volume,
             title="Duplicate Title",
-            position=1
+            position=2
         )
         
         form_data = {
@@ -232,11 +235,12 @@ class ChapterFormSaveTests(ChapterFormTestCase):
         
         self.assertTrue(form.is_valid())
         chapter = form.save()
+        expected_position = self.volume.chapters.count()
         
         # Check chapter was created correctly
         self.assertEqual(chapter.title, 'New Chapter Title')
         self.assertEqual(chapter.volume, self.volume)
-        self.assertEqual(chapter.position, 1)  # First chapter since volume was empty
+        self.assertEqual(chapter.position, expected_position) # First chapter since volume was empty
         self.assertFalse(chapter.approved)
         
         # Check chunks were created

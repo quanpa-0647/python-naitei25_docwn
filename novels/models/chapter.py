@@ -2,6 +2,7 @@ from django.db import models
 from django.db import IntegrityError
 from django.utils.text import slugify
 from django.utils.crypto import get_random_string
+from django.db.models import Q
 from .volume import Volume
 from constants import (
     MAX_TITLE_LENGTH,
@@ -65,6 +66,8 @@ class Chapter(models.Model):
                         self.slug = f"{self.slug}-{rand}"
                     else:
                         raise
+        else:
+            return super().save(*args, **kwargs)
     
     @property
     def novel(self):
@@ -73,23 +76,48 @@ class Chapter(models.Model):
     def get_content(self):
         chunks = self.chunks.all().order_by('position')
         return '\n'.join([chunk.content for chunk in chunks])
-    
+
     def get_next_chapter(self):
-        return Chapter.objects.filter(
-            volume__novel=self.volume.novel,
-            volume__position__gte=self.volume.position,
+        next_in_volume = Chapter.objects.filter(
+            volume=self.volume,
             position__gt=self.position,
             approved=True,
             is_hidden=False,
             deleted_at__isnull=True
-        ).order_by('volume__position', 'position').first()
-    
-    def get_previous_chapter(self):
-        return Chapter.objects.filter(
+        ).order_by('position').first()
+        
+        if next_in_volume:
+            return next_in_volume
+        
+        next_chapter_in_next_volume = Chapter.objects.filter(
             volume__novel=self.volume.novel,
-            volume__position__lte=self.volume.position,
+            volume__position__gt=self.volume.position,
+            approved=True,
+            is_hidden=False,
+            deleted_at__isnull=True
+        ).order_by('volume__position', 'position').first()
+        
+        return next_chapter_in_next_volume
+
+    def get_previous_chapter(self):
+        prev_in_volume = Chapter.objects.filter(
+            volume=self.volume,
             position__lt=self.position,
             approved=True,
             is_hidden=False,
             deleted_at__isnull=True
+        ).order_by('-position').first()
+        
+        if prev_in_volume:
+            return prev_in_volume
+        
+        prev_chapter_in_prev_volume = Chapter.objects.filter(
+            volume__novel=self.volume.novel,
+            volume__position__lt=self.volume.position,
+            approved=True,
+            is_hidden=False,
+            deleted_at__isnull=True
         ).order_by('-volume__position', '-position').first()
+        
+        return prev_chapter_in_prev_volume
+

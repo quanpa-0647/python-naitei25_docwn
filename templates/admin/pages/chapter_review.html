@@ -15,32 +15,45 @@
 <div class="container">
     <!-- Chapter Header Card -->
     {% include "admin/includes/chapter_review_header.html" %}
-
-    {% if messages %}
+    
+    {% comment %} {% if messages %}
         <div class="messages">
             {% show_messages messages %}
         </div>
-    {% endif %}
-
+    {% endif %} {% endcomment %}
+    
     <!-- Rejection Reason -->
     {% if chapter.rejected_reason %}
-        <div class="rejection-card">
-            <div class="rejection-content">
-                <i class="fas fa-exclamation-triangle"></i>
-                <div>
-                    <h3 class="rejection-title">{% trans "Lý do từ chối" %}</h3>
-                    <p class="rejection-text">{{ chapter.rejected_reason }}</p>
-                </div>
+    <div class="rejection-card">
+        <div class="rejection-content">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+                <h3 class="rejection-title">{% trans "Lý do từ chối" %}</h3>
+                <p class="rejection-text">{{ chapter.rejected_reason }}</p>
             </div>
         </div>
+    </div>
     {% endif %}
-
+    
     <div class="grid xl:grid-cols-4 gap-8">
         <!-- Nội dung chương -->
         {% include "admin/includes/chapter_review_content.html" %}
-
+        
         <!-- Sidebar -->
-        {% if not chapter.approved and not chapter.rejected_reason %}
+        {% if unapproved_chapter_url %}
+            <div class="sidebar-warning">
+                <div class="warning-card">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <h3>{% trans "Thông báo" %}</h3>
+                        <p>{% trans "Bạn cần phải duyệt chương trước đó trước khi xét duyệt chương này." %}</p>
+                        <a href="{{ unapproved_chapter_url }}" class="btn btn-primary">
+                            {% trans "Đi đến chương chưa duyệt" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% elif not chapter.approved and not chapter.rejected_reason %}
             {% include "admin/includes/chapter_review_sidebar.html" %}
         {% endif %}
     </div>
@@ -61,7 +74,6 @@
         </div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block extra_js %}

@@ -8,6 +8,9 @@ from django.db import IntegrityError
 
 from novels.models import Novel, Author, Artist, Tag
 from constants import ApprovalStatus, ProgressStatus, UserRole
+import warnings
+
+warnings.filterwarnings("ignore", message="No directory at:")
 
 
 User = get_user_model()
