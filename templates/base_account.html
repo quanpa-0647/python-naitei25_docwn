@@ -13,6 +13,17 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body class="bg-body text-body">
+
+    <div class="header">
+        <a href="{% url 'home' %}" class="logo">{% trans "Bảng điều khiển" %}</a>
+        {% if not user.is_authenticated %}
+        <div class="nav-links">
+            <a href="{% url 'accounts:login' %}">{% trans "Đăng nhập" %}</a>
+            <a href="{% url 'accounts:register' %}">{% trans "Đăng ký" %}</a>
+        </div>
+        {% endif %}
+    </div>
+
     {% if messages %}
         <div class="container mt-3">
             {% show_messages messages dismissible=True show_icons=False %}
