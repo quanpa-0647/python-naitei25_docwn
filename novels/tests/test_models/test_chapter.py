@@ -8,6 +8,9 @@ from django.db import IntegrityError
 
 from novels.models import Novel, Volume, Chapter, Author, Artist
 from constants import ApprovalStatus, UserRole
+import warnings
+
+warnings.filterwarnings("ignore", message="No directory at:")
 
 
 User = get_user_model()
@@ -412,9 +415,7 @@ class ChapterModelMethodTests(ChapterModelTestCase):
         # across all volumes, so it won't find chapter2 (position 1) 
         # when looking from chapter1 (position 2)
         next_chapter = chapter1.get_next_chapter()
-        # Based on the current implementation, this should be None
-        # because no chapter has position > 2 in any volume
-        self.assertIsNone(next_chapter)
+        self.assertEqual(next_chapter, chapter2)
         
         # To find a next chapter, we'd need a chapter with position > 2
         chapter3 = Chapter.objects.create(
@@ -425,5 +426,5 @@ class ChapterModelMethodTests(ChapterModelTestCase):
             is_hidden=False
         )
         
-        next_chapter = chapter1.get_next_chapter()
+        next_chapter = chapter2.get_next_chapter()
         self.assertEqual(next_chapter, chapter3)

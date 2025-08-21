@@ -8,6 +8,9 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from novels.models import Novel, Author, Artist, Tag
 from novels.forms import NovelForm
 from constants import ApprovalStatus, UserRole
+import warnings
+
+warnings.filterwarnings("ignore", message="No directory at:")
 
 
 User = get_user_model()

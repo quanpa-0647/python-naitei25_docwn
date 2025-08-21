@@ -8,6 +8,9 @@ from unittest.mock import Mock, patch
 from novels.services.novel_service import NovelService
 from novels.models import Novel, Author, Artist, Category, Tag
 from constants import ApprovalStatus, UserRole
+import warnings
+
+warnings.filterwarnings("ignore", message="No directory at:")
 
 
 User = get_user_model()

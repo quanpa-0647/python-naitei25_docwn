@@ -8,6 +8,9 @@ from unittest.mock import Mock, patch, MagicMock
 from novels.services.chapter_service import ChapterService
 from novels.models import Novel, Volume, Chapter, Author, Chunk
 from constants import ApprovalStatus, UserRole
+import warnings
+
+warnings.filterwarnings("ignore", message="No directory at:")
 
 
 User = get_user_model()
