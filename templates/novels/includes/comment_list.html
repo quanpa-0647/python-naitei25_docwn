@@ -1,0 +1,117 @@
+{% load i18n %}
+
+<div class="comments-section mt-5">
+  <header class="sect-header border-bottom pb-2 mb-3">
+    <h5 class="fw-bold">
+      {% trans "Bình luận" %}
+      <span class="text-muted small">({{ comments.paginator.count }})</span>
+    </h5>
+  </header>
+
+  {% if user.is_authenticated %}
+    <form method="post" action="#" class="mb-4">
+      {% csrf_token %}
+      <div class="mb-2">
+        <textarea name="content" rows="3" class="form-control rounded-3 shadow-sm" placeholder="{% trans 'Nhập bình luận...'%}"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-sm px-4 rounded-pill">{% trans "Đăng" %}</button>
+    </form>
+  {% else %}
+    <div class="alert alert-info py-2">
+      {% trans "Bạn phải " %}<a href="{% url 'accounts:login' %}">{% trans "đăng nhập " %}</a>{% trans "hoặc" %}
+      <a href="{% url 'accounts:register' %}">{% trans " tạo tài khoản" %}</a>{% trans " để bình luận." %}
+    </div>
+  {% endif %}
+
+  {% if comments %}
+    <ul class="list-unstyled">
+      {% for comment in comments %}
+        <li class="mb-4">
+          <div class="d-flex">
+            <div class="flex-shrink-0">
+              <img src="{{ comment.user.profile.get_avatar }}" alt="Avatar" class="rounded-circle me-2" width="35" height="35">
+            </div>
+            <div class="flex-grow-1">
+              <div class="bg-body-secondary p-3 rounded shadow-sm">
+                <div class="d-flex justify-content-between">
+                  <strong>{{ comment.user.username }}</strong>
+                  <span class="text-muted small">{{ comment.created_at|date:"SHORT_DATETIME_FORMAT" }}</span>
+                </div>
+                <p class="mb-1">{{ comment.content }}</p>
+              </div>
+
+              {% if comment.get_replies %}
+                <ul class="list-unstyled ms-5 mt-2">
+                  {% for reply in comment.get_replies|slice:":2" %}
+                    <li class="mb-2">
+                      <div class="d-flex">
+                        <div class="flex-shrink-0">
+                          <img src="{{ comment.user.profile.get_avatar }}" alt="Avatar" class="rounded-circle me-2">
+                        </div>
+                        <div class="flex-grow-1">
+                          <div class="bg-body border p-2 rounded">
+                            <div class="d-flex justify-content-between">
+                              <strong>{{ reply.user.username }}</strong>
+                              <span class="text-muted small">{{ reply.created_at|date:"SHORT_DATETIME_FORMAT" }}</span>
+                            </div>
+                            <p class="mb-1">{{ reply.content }}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  {% endfor %}
+                  {% if comment.get_replies|length > 2 %}
+                    <button class="btn btn-link btn-sm text-decoration-none view-more-replies" 
+                            data-id="{{ comment.id }}"
+                            data-show-text="{% trans 'Xem thêm' %}"
+                            data-hide-text="{% trans 'Ẩn bớt' %}">
+                        <i class="fas fa-chevron-down"></i> 
+                        Xem thêm
+                    </button>
+                    <ul class="list-unstyled ms-4 d-none extra-replies-{{ comment.id }}">
+                        {% for reply in comment.get_replies|slice:"2:" %}
+                        <li class="mb-2">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                <img src="{{ comment.user.profile.get_avatar }}" alt="Avatar" class="rounded-circle me-2">
+                                </div>
+                                <div class="flex-grow-1">
+                                <div class="bg-body border p-2 rounded">
+                                    <div class="d-flex justify-content-between">
+                                    <strong>{{ reply.user.username }}</strong>
+                                    <span class="text-body-secondary small">{{ reply.created_at|date:"SHORT_DATETIME_FORMAT" }}</span>
+                                    </div>
+                                    <p class="mb-1">{{ reply.content }}</p>
+                                </div>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </ul>
+              {% endif %}
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted fst-italic">{% trans "Chưa có bình luận nào." %}</p>
+  {% endif %}
+    <div class="pagination-footer mt-3">
+        <div class="pagination_wrap">
+            {% if comments.has_previous %}
+                <a href="#" class="paging_item paging_prevnext prev" data-page="{{ comments.previous_page_number }}">{% trans "Trước" %}</a>
+            {% else %}
+                <a class="paging_item paging_prevnext prev disabled">{% trans "Trước" %}</a>
+            {% endif %}
+
+            {% if comments.has_next %}
+                <a href="#" class="paging_item paging_prevnext next" data-page="{{ comments.next_page_number }}">{% trans "Sau" %}</a>
+            {% else %}
+                <a class="paging_item paging_prevnext next disabled">{% trans "Sau" %}</a>
+            {% endif %}
+        </div>
+    </div>
+</div>

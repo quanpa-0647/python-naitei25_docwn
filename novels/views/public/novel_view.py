@@ -21,10 +21,10 @@ from common.decorators import require_active_novel
 def novel_detail(request, novel_slug):
     """Novel detail page using service"""
     novel_data = NovelService.get_novel_detail(novel_slug, request.user)
-    
+
     if not novel_data:
         return redirect("novels:home")
-    
+
     context = {
         'is_owner': novel_data['is_owner'],
         'novel_slug': novel_slug,
