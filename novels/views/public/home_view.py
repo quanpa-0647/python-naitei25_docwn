@@ -2,11 +2,16 @@ from django.shortcuts import render
 from novels.services import NovelService
 from novels.utils import format_comments_for_template
 from interactions.models import Comment
+from django.core.paginator import Paginator
+from django.shortcuts import render
+
 from constants import (
     ApprovalStatus,
     MAX_HOME_COMMENTS,
     MAX_MOST_READ_NOVELS,
-    MAX_NEW_NOVELS
+    MAX_NEW_NOVELS,
+    MAX_NEW_NOVELS_ROW,
+    MAX_FINISH_NOVELS
 )
 from ...fake_data import discussion_data, card_list
 
@@ -16,7 +21,7 @@ def Home(request):
     trend_novels = NovelService.get_trend_novels()
     new_novels = NovelService.get_new_novels()
     like_novels = NovelService.get_like_novels()
-    finish_novels = NovelService.get_finished_novels_with_chapters()
+    finish_novels = NovelService.get_finished_novels_with_chapters()[:MAX_FINISH_NOVELS]
     newupdate_novels = NovelService.get_recent_volumes_for_cards()
     
     # Get recent comments
@@ -44,22 +49,41 @@ def Home(request):
     return render(request, 'novels/pages/home.html', context)
 
 def most_read_novels(request):
-    """Most read novels page"""
-    novels = NovelService.get_approved_novels().order_by('-view_count')[:MAX_MOST_READ_NOVELS]
-    
-    context = {'novels': novels}
+    novels = NovelService.get_approved_novels().order_by('-view_count')
+
+    paginator = Paginator(novels, MAX_MOST_READ_NOVELS)  
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'novels': page_obj.object_list,
+    }
     return render(request, 'novels/pages/most_read_novels.html', context)
+
 
 def new_novels(request):
     """New novels page"""  
     new_novels = NovelService.get_approved_novels().order_by('-created_at')[:MAX_NEW_NOVELS]
-    
-    context = {'new_novels': new_novels}
+    paginator = Paginator(new_novels, MAX_NEW_NOVELS_ROW)  
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {
+        'new_novels': new_novels,
+        'page_obj': page_obj
+        }
     return render(request, 'novels/pages/new_novels.html', context)
 
 def finish_novels(request):
     """Finished novels page"""
     finish_novels = NovelService.get_finished_novels_with_chapters()
+    paginator = Paginator(finish_novels, MAX_NEW_NOVELS_ROW)  
     
-    context = {'finish_novels': finish_novels}
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {'finish_novels': finish_novels,
+               'page_obj': page_obj
+               }
     return render(request, 'novels/pages/finish_novels.html', context)
