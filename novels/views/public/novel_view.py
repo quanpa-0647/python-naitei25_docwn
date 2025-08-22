@@ -6,14 +6,14 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.http import Http404
 
-from novels.models import Novel
+from novels.models import Novel, Tag
 from novels.services import NovelService
 from novels.forms import NovelForm
 from constants import (
-    ApprovalStatus, DATE_FORMAT_DMY, MAX_CHAPTER_LIST,
-    MAX_CHAPTER_LIST_PLUS, DATE_FORMAT_DMYHI,
+    ApprovalStatus, ProgressStatus, DATE_FORMAT_DMY, MAX_CHAPTER_LIST,
+    MAX_CHAPTER_LIST_PLUS, DATE_FORMAT_DMYHI, SEARCH_RESULTS_LIMIT,
     MAX_TRUNCATED_REJECTED_REASON_LENGTH, PAGINATION_PAGE_RANGE,
-    SUMMARY_TRUNCATE_WORDS, DEFAULT_RATING_AVERAGE
+    SUMMARY_TRUNCATE_WORDS, DEFAULT_RATING_AVERAGE,
 )
 from common.decorators import require_active_novel
 
@@ -130,11 +130,56 @@ def novel_upload_rules(request):
 def search_novels(request):
     """Search novels using service"""
     query = request.GET.get('q', '').strip()
-    novels = NovelService.search_novels(query) if query else []
-    
+    tags_selected = request.GET.getlist('tags')
+    author = request.GET.get('author', '').strip()
+    artist = request.GET.get('artist', '').strip()
+    status = request.GET.get('status', '').strip()
+    sort = request.GET.get('sort', '').strip()
+
+    novels = Novel.objects.filter(
+    approval_status=ApprovalStatus.APPROVED.value,
+    deleted_at__isnull=True
+    )
+
+    if query:
+        novels = NovelService.search_novels(query)
+
+    if tags_selected:
+        for tag_slug in tags_selected:
+            novels = novels.filter(tags__slug=tag_slug)
+    if author:
+        novels = novels.filter(author__name__icontains=author)
+    if artist:
+        novels = novels.filter(artist__name__icontains=artist)
+    if status:
+        novels = novels.filter(progress_status=status)
+    if query:
+        if sort == 'updated':
+            novels = novels.order_by('-updated_at')
+        elif sort == 'rating':
+            novels = novels.order_by('-rating_avg')
+    else:
+        novels = novels.order_by('-view_count')
+
+    novels = novels.select_related('author', 'artist').prefetch_related('tags').distinct()
+
+    novels = novels[:SEARCH_RESULTS_LIMIT]
+
+    for novel in novels:
+        novel.tag_list = list(novel.tags.all())
+        novel.rating_display = getattr(novel, 'rating_avg', DEFAULT_RATING_AVERAGE) if hasattr(novel, 'rating_avg') and novel.rating_avg > 0 else DEFAULT_RATING_AVERAGE
+
+    all_tags = Tag.objects.all().order_by('name')
+
     context = {
         'novels': novels,
         'query': query,
+        'tags_selected': tags_selected,
+        'filter_author': author,
+        'filter_artist': artist,
+        'filter_status': status,
+        'all_tags': all_tags,
+        'filter_sort': sort,
         'total_results': len(novels),
         'SUMMARY_TRUNCATE_WORDS': SUMMARY_TRUNCATE_WORDS,
         'DEFAULT_RATING_AVERAGE': DEFAULT_RATING_AVERAGE,

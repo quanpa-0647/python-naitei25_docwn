@@ -205,7 +205,7 @@ class NovelService:
     def search_novels(query):
         """Search novels by multiple fields"""
         if not query:
-            return []
+            return Novel.objects.none()
             
         novels = Novel.objects.filter(
             Q(name__icontains=query) |
@@ -216,7 +216,7 @@ class NovelService:
             Q(tags__name__icontains=query),
             approval_status=ApprovalStatus.APPROVED.value,
             deleted_at__isnull=True
-        ).select_related('author', 'artist').prefetch_related('tags').distinct().order_by('-view_count')[:SEARCH_RESULTS_LIMIT]
+        ).select_related('author', 'artist').prefetch_related('tags').distinct().order_by('-view_count')
         
         # Process data for template
         for novel in novels:
