@@ -2,18 +2,64 @@
 {% load i18n %}
 {% load static %}
 {% load datetime_filters %}
+{% load admin_novels_filter %}
 {% block content %}
 <div class="container mt-5">
   <h4 class="mb-3">{% trans "Yêu cầu Up Tiểu Thuyết Mới" %}</h4>
   
-  <form method="get" class="mb-3">
-    <div class="d-flex">
-      <input class="form-control" name="q" type="text" placeholder="{% trans 'Lọc theo tên, tác giả, người gửi...' %}" value="{{ search_query|default:'' }}">
-      <button type="submit" class="btn btn-outline-secondary ms-2">{% trans "Tìm kiếm" %}</button>
-    </div>
-  </form>
+  <form method="get" class="row g-3 align-items-end">
 
-  <div class="table-responsive mb-5">
+    <div class="col-md-3">
+      <label class="form-label">{% trans "Tìm kiếm" %}</label>
+      <input type="text" name="q" class="form-control" placeholder="{% trans "Từ khóa..." %}" value="{{ search_query }}">
+    </div>
+  
+    <div class="col-md-3">
+      <label class="form-label">{% trans "Thể loại" %}</label>
+      <select name="tag" class="form-select">
+        <option value="">{% trans "-- Tất cả tag --" %}</option>
+        {% for t in tags %}
+          <option value="{{ t.id }}" {% if tag_id == t.id|stringformat:"s" %}selected{% endif %}>{{ t.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  
+    <!-- Lọc theo progress_status -->
+    <div class="col-md-2">
+      <label class="form-label">{% trans "Tiến độ" %}</label>
+      <select name="progress_status" class="form-select">
+        <option value="">{% trans "-- Tất cả --" %}</option>
+        {% for value, name in progress_choices %}
+          <option value="{{ value }}" {% if progress_status == value %}selected{% endif %}>
+            {{ name|status_display }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    
+    <div class="col-md-2">
+      <label class="form-label">{% trans "Trạng thái" %}</label>
+      <select name="approval_status" class="form-select">
+        <option value="">{% trans "-- Tất cả --" %}</option>
+        {% for value, name in approval_choices %}
+          <option value="{{ value }}" {% if approval_status == value %}selected{% endif %}>
+            {{ name|status_display }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    
+    
+  
+    <!-- Nút submit -->
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-primary w-100">{% trans "Lọc" %}</button>
+    </div>
+
+  </form>
+  
+
+  <div class="table-responsive mb-5 mt-3">
     <table class="table table-bordered table-striped align-middle">
       <thead class="table-light">
         <tr>
@@ -31,8 +77,8 @@
           <td class="text-center align-middle">{{ forloop.counter|add:page_obj.start_index|add:"-1" }}</td>
           <td class="text-center align-middle">{{ novel.name }}</td>
           <td class="text-center align-middle">
-            {% if novel.tag_list %}
-              {% for tag in novel.tag_list %}
+            {% if novel.tags.exists %}
+              {% for tag in novel.tags.all %}
                 <span class="badge bg-secondary">{{ tag.name }}</span>
               {% endfor %}
             {% else %}
