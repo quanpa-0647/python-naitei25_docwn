@@ -83,3 +83,44 @@ class PasswordService:
         user.save(update_fields=['password', 'password_reset_token', 'password_reset_expires'])
 
         return {'success': True, 'message': _('Đặt lại mật khẩu thành công!')}
+    
+    @staticmethod
+    def update_profile(request, form, profile):
+        try:
+            if form.is_valid():
+                # Lưu profile với avatar upload
+                updated_profile = form.save()
+                
+                # Thông báo thành công với thông tin cụ thể
+                if form.cleaned_data.get('avatar_upload'):
+                    messages.success(request, _('Cập nhật thông tin và ảnh đại diện thành công!'))
+                else:
+                    messages.success(request, _('Cập nhật thông tin thành công!'))
+                
+                return {
+                    'success': True,
+                    'message': _('Cập nhật thông tin thành công!'),
+                    'profile': updated_profile
+                }
+            else:
+                # Xử lý lỗi form validation
+                error_messages = []
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        error_messages.append(f"{field}: {error}")
+                
+                error_text = '; '.join(error_messages) if error_messages else _('Có lỗi xảy ra. Vui lòng kiểm tra lại.')
+                messages.error(request, error_text)
+                
+                return {
+                    'success': False,
+                    'message': error_text,
+                    'errors': form.errors
+                }
+        except Exception as e:
+            error_msg = _('Có lỗi xảy ra khi cập nhật: {}').format(str(e))
+            messages.error(request, error_msg)
+            return {
+                'success': False,
+                'message': error_msg
+            }

@@ -1,206 +1,160 @@
-{% extends "base_home.html" %}
-{% load i18n %}
+{% extends 'base_home.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block head %}
-    <link rel="stylesheet" href="{% static 'accounts/css/profile.css' %}" />
+    <link rel="stylesheet" href="{% static 'accounts/css/profile.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="profile-container">
-    <div class="profile-header">
-        <div class="profile-avatar-section">
-            <div class="avatar-preview">
-                <img src="{{ avatar_info.avatar_url }}" 
-                     alt="{% trans 'Ảnh đại diện' %}" 
-                     class="avatar-img"
-                     id="avatarPreview">
-            </div>
-            <div class="user-info">
-                <h2 class="user-name">{{ profile.get_name }}</h2>
-                <p class="user-email">{{ user.email }}</p>
-                <div class="user-badges">
-                    {% if user.is_email_verified %}
-                        <span class="badge badge-verified">✓ {% trans "Email đã xác thực" %}</span>
-                    {% else %}
-                        <span class="badge badge-unverified">! {% trans "Email chưa xác thực" %}</span>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <!-- Avatar Section -->
+            <div class="card">
+                <div class="card-body text-center">
+                    <img src="{{ avatar_info.avatar_url }}" 
+                         alt="Avatar" 
+                         class="profile-avatar">
+                    
+                    <h4 class="mb-1">{{ profile_data.display_name }}</h4>
+                    <p class="text-muted">@{{ profile_user.username }}</p>
+                    
+                    {% if profile_data.is_verified %}
+                    <span class="verified-badge">
+                        <i class="fas fa-check-circle"></i> {% trans "Đã xác thực" %}
+                    </span>
                     {% endif %}
-                    <span class="badge badge-role role-{{ user.role }}">{{ user.get_role_display }}</span>
+                    
+                    {% if can_edit %}
+                    <a href="{% url 'accounts:profile_edit' profile_user.username %}" 
+                       class="btn btn-primary btn-edit">
+                        <i class="fas fa-edit"></i> {% trans "Chỉnh sửa profile" %}
+                    </a>
+                    {% endif %}
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="profile-form-container">
-        <h3 class="form-title">
-            <i class="icon-edit"></i>
-            {% trans "Cập nhật thông tin cá nhân" %}
-        </h3>
-        
-        <form method="post" enctype="multipart/form-data" class="profile-form">
-            {% csrf_token %}
-            
-            <div class="form-grid">
-                <!-- Avatar Upload -->
-                <div class="form-group avatar-upload-group">
-                    <label class="form-label">
-                        <i class="icon-camera"></i>
-                        {% trans "Ảnh đại diện" %}
-                    </label>
-                    <div class="avatar-upload">
-                        {{ form.avatar_upload }}
-                        <label for="{{ form.avatar_upload.id_for_label }}" class="upload-btn {% if not image_service_status.available %}disabled{% endif %}">
-                            <i class="icon-upload"></i>
-                            {% if image_service_status.available %}
-                                {% trans "Chọn ảnh để upload" %}
+            <!-- Basic Info (Only visible to owner/admin) -->
+            {% if can_edit %}
+            <div class="card mt-3 private-info">
+                <div class="card-header private-header">
+                    <h6 class="mb-0">{% trans "Thông tin cá nhân" %}</h6>
+                </div>
+                <div class="card-body">
+                    {% for info in formatted_info.basic_info %}
+                    <div class="row mb-2">
+                        <div class="col-sm-4"><strong>{{ info.label }}:</strong></div>
+                        <div class="col-sm-8">
+                            {% if info.type == 'email' %}
+                                {{ info.value }}
+                                {% if info.verified %}
+                                <i class="fas fa-check-circle text-success ml-1" title="{% trans 'Email đã xác thực' %}"></i>
+                                {% else %}
+                                <i class="fas fa-exclamation-circle text-warning ml-1" title="{% trans 'Email chưa xác thực' %}"></i>
+                                {% endif %}
                             {% else %}
-                                {% trans "Dịch vụ không khả dụng" %}
+                                {{ info.value }}
                             {% endif %}
-                        </label>
+                        </div>
                     </div>
-                    {% if form.avatar_upload.help_text %}
-                        <small class="help-text">{{ form.avatar_upload.help_text }}</small>
-                    {% endif %}
-                    {% if form.avatar_upload.errors %}
-                        <div class="error-message">
-                            {% for error in form.avatar_upload.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
+                    {% endfor %}
+                    
+                    {% for info in formatted_info.system_info %}
+                    <div class="row mb-2">
+                        <div class="col-sm-4"><strong>{{ info.label }}:</strong></div>
+                        <div class="col-sm-8">
+                            {% if info.type == 'role' %}
+                                <span class="role-badge">{{ info.value }}</span>
+                            {% elif info.type == 'status' %}
+                                <span class="status-badge {% if info.status_code == 'active' %}active{% else %}blocked{% endif %}">
+                                    {{ info.value }}
+                                </span>
+                            {% elif info.type == 'datetime' %}
+                                {{ info.value|date:DATE_FORMAT_DMYHI }}
+                            {% else %}
+                                {{ info.value }}
+                            {% endif %}
                         </div>
-                    {% endif %}
-                </div>
-
-                <!-- Display Name -->
-                <div class="form-group">
-                    <label for="{{ form.display_name.id_for_label }}" class="form-label">
-                        <i class="icon-user"></i>
-                        {{ form.display_name.label }}
-                    </label>
-                    {{ form.display_name }}
-                    {% if form.display_name.help_text %}
-                        <small class="help-text">{{ form.display_name.help_text }}</small>
-                    {% endif %}
-                    {% if form.display_name.errors %}
-                        <div class="error-message">
-                            {% for error in form.display_name.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Gender -->
-                <div class="form-group">
-                    <label for="{{ form.gender.id_for_label }}" class="form-label">
-                        <i class="icon-gender"></i>
-                        {{ form.gender.label }}
-                    </label>
-                    <div class="select-wrapper">
-                        {{ form.gender }}
                     </div>
-                    {% if form.gender.errors %}
-                        <div class="error-message">
-                            {% for error in form.gender.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
+                    {% endfor %}
+                    {% if profile_data.status.is_locked %}
+                    <div class="row mb-2">
+                        <div class="col-sm-12">
+                            <span class="status-badge locked">{% trans "Profile bị khóa" %}</span>
                         </div>
+                    </div>
                     {% endif %}
                 </div>
-
-                <!-- Birthday -->
-                <div class="form-group">
-                    <label for="{{ form.birthday.id_for_label }}" class="form-label">
-                        <i class="icon-calendar"></i>
-                        {{ form.birthday.label }}
-                    </label>
-                    {{ form.birthday }}
-                    {% if form.birthday.errors %}
-                        <div class="error-message">
-                            {% for error in form.birthday.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-8">
+            <!-- Profile Info -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">{% trans "Thông tin profile" %}</h5>
                 </div>
-
-                <!-- Description -->
-                <div class="form-group full-width">
-                    <label for="{{ form.description.id_for_label }}" class="form-label">
-                        <i class="icon-info"></i>
-                        {{ form.description.label }}
-                    </label>
-                    {{ form.description }}
-                    {% if form.description.help_text %}
-                        <small class="help-text">{{ form.description.help_text }}</small>
-                    {% endif %}
-                    {% if form.description.errors %}
-                        <div class="error-message">
-                            {% for error in form.description.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
+                <div class="card-body">
+                    {% if formatted_info.personal_info %}
+                        {% for info in formatted_info.personal_info %}
+                        <div class="row mb-3">
+                            <div class="col-sm-3"><strong>{{ info.label }}:</strong></div>
+                            <div class="col-sm-9">
+                                {% if info.type == 'textarea' %}
+                                    <p class="mb-0">{{ info.value|linebreaksbr }}</p>
+                                {% elif info.type == 'date' %}
+                                    {{ info.value|date:DATE_FORMAT_DMY }}
+                                {% else %}
+                                    {{ info.value }}
+                                {% endif %}
+                            </div>
                         </div>
-                    {% endif %}
-                </div>
-
-                <!-- Interest -->
-                <div class="form-group full-width">
-                    <label for="{{ form.interest.id_for_label }}" class="form-label">
-                        <i class="icon-heart"></i>
-                        {{ form.interest.label }}
-                    </label>
-                    {{ form.interest }}
-                    {% if form.interest.help_text %}
-                        <small class="help-text">{{ form.interest.help_text }}</small>
-                    {% endif %}
-                    {% if form.interest.errors %}
-                        <div class="error-message">
-                            {% for error in form.interest.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center text-muted py-4">
+                            <p>{% trans "Người dùng chưa cập nhật thông tin profile." %}</p>
+                            {% if can_edit %}
+                            <a href="{% url 'accounts:profile_edit' profile_user.username %}" 
+                               class="btn btn-outline-primary">
+                                {% trans "Cập nhật thông tin" %}
+                            </a>
+                            {% endif %}
                         </div>
                     {% endif %}
                 </div>
             </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    <i class="icon-save"></i>
-                    {% trans "Cập nhật thông tin" %}
-                </button>
-                <button type="reset" class="btn btn-secondary">
-                    <i class="icon-refresh"></i>
-                    {% trans "Đặt lại" %}
-                </button>
+            <!-- Statistics (Only visible to owner/admin) -->
+            {% if can_edit %}
+            <div class="card mt-3 stats-card">
+                <div class="card-header">
+                    <h6 class="mb-0">{% trans "Thống kê hoạt động" %}</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center stats-row">
+                        <div class="col-md-4 stat-item">
+                            <h5 class="stat-number">0</h5>
+                            <p class="stat-label">{% trans "Bài viết" %}</p>
+                        </div>
+                        <div class="col-md-4 stat-item">
+                            <h5 class="stat-number">{{ profile_data.role_info.is_admin|yesno:"1,0" }}</h5>
+                            <p class="stat-label">{% trans "Quyền Admin" %}</p>
+                        </div>
+                        <div class="col-md-4 stat-item">
+                            <h5 class="stat-number">{{ profile_user.date_joined|timesince }}</h5>
+                            <p class="stat-label">{% trans "Tham gia" %}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </form>
-    </div>
-
-    <div class="profile-actions">
-        <div class="action-links">
-            <a href="{% url 'accounts:change_password' %}" class="action-link">
-                <i class="icon-lock"></i>
-                {% trans "Đổi mật khẩu" %}
-            </a>
-            <a href="{% url 'accounts:logout' %}" class="action-link logout">
-                <i class="icon-logout"></i>
-                {% trans "Đăng xuất" %}
-            </a>
+            {% endif %}
         </div>
     </div>
-
-    <!-- Service Status Info -->
-    {% if not image_service_status.available %}
-    <div class="service-notice warning">
-        <i class="icon-warning"></i>
-        <div>
-            <h4>{% trans "Dịch vụ upload ảnh tạm thời không khả dụng" %}</h4>
-            <p>{% trans "Bạn vẫn có thể cập nhật thông tin khác. Tính năng upload ảnh sẽ được khôi phục sớm." %}</p>
-        </div>
-    </div>
-    {% endif %}
 </div>
 {% endblock %}
 
 {% block script %}
     <script src="{% static 'accounts/js/profile.js' %}"></script>
-{% endblock script %}
+{% endblock %}
