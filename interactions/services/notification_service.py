@@ -4,6 +4,8 @@ from interactions.models import Notification
 from constants import (
     NotificationTypeChoices
 )
+from novels.models.novel import Novel
+from django.urls import reverse
 
 class NotificationService:
     @staticmethod
@@ -16,7 +18,7 @@ class NotificationService:
         title: str,
         content: str,
         notification_type: str,
-        related_object=NotificationTypeChoices,
+        related_object=None,
     ) -> Notification:
         """Tạo thông báo mới"""
         notification_data = {
@@ -33,3 +35,13 @@ class NotificationService:
             })
         
         return Notification.objects.create(**notification_data)
+
+    @staticmethod
+    def attach_link(notification):
+        obj = getattr(notification, 'related_object', None)
+
+        if obj:
+            if isinstance(obj, Novel):
+                return reverse("novels:novel_detail", kwargs={"novel_slug": obj.slug})
+
+        return "#"
