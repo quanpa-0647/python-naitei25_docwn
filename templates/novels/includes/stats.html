@@ -1,7 +1,21 @@
 {% load i18n %}
 
 <div class="stats section">
-  <div><i class="far fa-heart"></i> {% trans "Yêu thích" %}</div>
+  <form action="{% url 'novels:toggle_like' novel.slug %}" method="post">
+    {% csrf_token %}
+    {% if is_favorited %}
+      <a href="{% url 'novels:toggle_like' novel.slug %}" class="text-primary" title="Bỏ thích" >
+        <i class='bx bx-like mb-3'></i> {% trans "Đã thích" %}
+      </a>
+    {% else %}
+      <a href="{% url 'novels:toggle_like' novel.slug %}" >
+        <i class='bx bx-like mb-3'></i> 
+        {% trans "Thích" %} ({{ novel.favorites.count }})
+      </a>
+    {% endif %}
+  </form>
+
+  
   <div><i class="far fa-star"></i> {% trans "Đánh giá" %}</div>
   <div><a href="#" id="openTOC"><i class="fas fa-list"></i>{% trans " Mục lục" %}</a></div>
   <div><i class="fas fa-comments"></i> {% trans "Bàn luận" %}</div>

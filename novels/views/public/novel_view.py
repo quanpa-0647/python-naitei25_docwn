@@ -4,11 +4,13 @@ from django.views.generic.edit import CreateView
 from django.views.generic import ListView
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.http import Http404
-
-from novels.models import Novel, Tag
+from django.http import Http404, JsonResponse
+from django.contrib.auth.decorators import login_required
+from novels.models import Novel, Tag, novel
+from novels.models.reading_favorite import Favorite
 from novels.services import NovelService
 from novels.forms import NovelForm
+from django.core.paginator import Paginator
 from constants import (
     ApprovalStatus, ProgressStatus, DATE_FORMAT_DMY, MAX_CHAPTER_LIST,
     MAX_CHAPTER_LIST_PLUS, DATE_FORMAT_DMYHI, SEARCH_RESULTS_LIMIT,
@@ -16,6 +18,7 @@ from constants import (
     SUMMARY_TRUNCATE_WORDS, DEFAULT_RATING_AVERAGE,
 )
 from common.decorators import require_active_novel
+from novels.services.novel_service import FavoriteService, get_liked_novels
 
 @require_active_novel
 def novel_detail(request, novel_slug):
@@ -24,11 +27,16 @@ def novel_detail(request, novel_slug):
 
     if not novel_data:
         return redirect("novels:home")
-
+    novel = get_object_or_404(Novel, slug=novel_slug)
+    is_favorited = False
+    if request.user.is_authenticated:
+        is_favorited = Favorite.objects.filter(user=request.user, novel=novel).exists()
+    
     context = {
         'is_owner': novel_data['is_owner'],
         'novel_slug': novel_slug,
         'novel': novel_data['novel'],
+        "is_favorited": is_favorited,
         'tags': novel_data['tags'],
         'volumes': novel_data['volumes'],
         'can_add_chapter': novel_data['can_add_chapter'],
@@ -186,3 +194,21 @@ def search_novels(request):
     }
     
     return render(request, 'novels/pages/search_results.html', context)
+
+@login_required
+def toggle_like(request, novel_slug):
+    novel = get_object_or_404(Novel, slug=novel_slug)
+    liked = FavoriteService.toggle_like(request.user, novel)
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        return JsonResponse({"liked": liked, "count": novel.favorites.count()})
+    return redirect('novels:novel_detail', novel_slug=novel.slug)
+
+@login_required
+def liked_novels(request):
+    page_number = request.GET.get("page")
+    page_obj = get_liked_novels(request.user, page_number)
+
+    return render(request, "novels/pages/like_novels.html", {
+        "page_obj": page_obj,
+    })
+

@@ -42,6 +42,13 @@
             </a>
           </li>
           <li>
+            <a href="{% url 'novels:liked_novels' %}" class="menu-item">
+              <i class="bx bx-book"></i>
+              <span>{% trans "Tiểu thuyết yêu thích" %}</span>
+                <span class="badge">{{ user_like_novel_count }}</span>
+            </a>
+          </li>
+          <li>
             <a href="{% url 'novels:novel_create' %}" class="menu-item">
               <i class="bx bx-plus-circle"></i>
               <span>{% trans "Đăng tiểu thuyết" %}</span>

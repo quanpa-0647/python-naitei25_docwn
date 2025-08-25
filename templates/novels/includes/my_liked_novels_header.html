@@ -1,0 +1,22 @@
+{% load i18n %}
+
+<div class="d-flex align-items-center mb-3">
+    <nav aria-label="breadcrumb" class="flex-grow-1">
+        <ul class="breadcrumb p-2 rounded mb-0 d-flex align-items-center gap-2">
+            <li class="breadcrumb-item mb-0">
+              <a href="{% url 'novels:home' %}"  class="text-body text-decoration-none">
+                <i class="fas fa-home"></i>{% trans "Trang chủ" %}
+              </a>
+            </li>
+          
+            <i class='bx bx-chevron-up bx-rotate-90'></i>
+          
+            <li >
+              <i class="fas fa-user-edit"></i> {% trans "Tiểu thuyết yêu thích" %}
+            </li>
+          </ul>
+          
+    </nav>
+  </div>
+  
+  <h2 class="fw-bold text-dark mt-5">{% trans "DANH SÁCH TIỂU THUYẾT YÊU THÍCH" %}</h2>

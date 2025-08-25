@@ -1,11 +1,13 @@
 from constants import UserRole
+from novels.models.reading_favorite import Favorite
 
 def user_context(request):
     context = {}
     
     if request.user.is_authenticated:
         user_profile = getattr(request.user, 'profile', None)
-        
+        favorites = Favorite.objects.filter(user=request.user).select_related("novel")
+        user_like_novel_count = favorites.count()
         # Get user's novel count
         novel_count = 0
         if hasattr(request.user, 'created_novels'):
@@ -18,6 +20,7 @@ def user_context(request):
             'is_admin': request.user.role == UserRole.SYSTEM_ADMIN.value,
             'is_staff': request.user.role in [UserRole.WEBSITE_ADMIN.value, UserRole.SYSTEM_ADMIN.value],
             'user_novel_count': novel_count,
+            'user_like_novel_count' : user_like_novel_count
         })
     
     return context
