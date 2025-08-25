@@ -1,0 +1,25 @@
+{% load i18n %}
+
+<!-- Reading Statistics Section -->
+<div class="reading-stats-section">
+    <div class="row">
+        <div class="col-12">
+            <div class="stats-container">
+                <div class="stats-card">
+                    <div class="stats-number">{{ stats.total_novels }}</div>
+                    <div class="stats-label">{% trans "Tiểu thuyết đã đọc" %}</div>
+                </div>
+                <div class="stats-card">
+                    <div class="stats-number">{{ stats.total_chapters }}</div>
+                    <div class="stats-label">{% trans "Chương đã đọc" %}</div>
+                </div>
+                {% if stats.most_read_genre %}
+                <div class="stats-card">
+                    <div class="stats-number">{{ stats.most_read_genre|truncatechars:20 }}</div>
+                    <div class="stats-label">{% trans "Thể loại yêu thích" %}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

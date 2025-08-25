@@ -1,0 +1,92 @@
+{% load i18n %}
+{% load static %}
+
+<form method="get" class="novel-filter-form">
+
+    <!-- Search input (luôn hiển thị) -->
+    <div class="mb-2">
+        <input type="text" name="search" class="form-control"
+               placeholder="{% trans 'Tên, tác giả, nghệ sĩ, tóm tắt...' %}"
+               value="{{ search_query }}">
+    </div>
+
+    <!-- Sort option (luôn hiển thị) -->
+    <div class="mb-2">
+        <label for="sort-select" class="form-label">{% trans "Sắp xếp:" %}</label>
+        <select name="sort" id="sort-select" class="form-select">
+            <option value="last_read" {% if sort_option == "last_read" %}selected{% endif %}>{% trans "Mới đọc nhất" %}</option>
+            <option value="created" {% if sort_option == "created" %}selected{% endif %}>{% trans "Ngày tạo mới nhất" %}</option>
+            <option value="updated" {% if sort_option == "updated" %}selected{% endif %}>{% trans "Cập nhật mới nhất" %}</option>
+            <option value="rating" {% if sort_option == "rating" %}selected{% endif %}>{% trans "Điểm đánh giá cao" %}</option>
+            <option value="name" {% if sort_option == "name" %}selected{% endif %}>{% trans "Tên (A-Z)" %}</option>
+            <option value="name_desc" {% if sort_option == "name_desc" %}selected{% endif %}>{% trans "Tên (Z-A)" %}</option>
+        </select>
+    </div>
+
+    <!-- Toggle advanced search -->
+    <span class="search-advance_toggle" id="toggle-advanced-search">
+        <i class="fas fa-filter"></i> {% trans "Tìm kiếm nâng cao" %}
+    </span>
+
+    <!-- Advanced filters (hidden by default) -->
+    <div id="advanced-filters" style="display:none; margin-top:10px;">
+
+        <!-- Tags -->
+        <div class="mb-2">
+            <label class="form-label">{% trans "Thể loại:" %}</label>
+            <div class="row g-2">
+                {% for tag in tags %}
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="tags" value="{{ tag.slug }}"
+                               id="tag_{{ tag.id }}"
+                               {% if tag.slug in tag_slugs %}checked{% endif %}>
+                        <label class="form-check-label" for="tag_{{ tag.id }}">
+                            {{ tag.name }}
+                        </label>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Author -->
+        <div class="mb-2">
+            <label class="form-label">{% trans "Tác giả:" %}</label>
+            <input type="text" name="author" class="form-control" 
+                   placeholder="{% trans 'Nhập tên tác giả' %}" 
+                   value="{{ author_selected }}">
+        </div>
+
+        <!-- Artist -->
+        <div class="mb-2">
+            <label class="form-label">{% trans "Họa sĩ:" %}</label>
+            <input type="text" name="artist" class="form-control" 
+                   placeholder="{% trans 'Nhập tên họa sĩ' %}" 
+                   value="{{ artist_selected }}">
+        </div>
+
+        <!-- Progress Status -->
+        <div class="mb-2">
+            <label class="form-label">{% trans "Tình trạng:" %}</label>
+            <select name="progress_status" class="form-select">
+                <option value="">{% trans "Tất cả" %}</option>
+                {% for status in progress_statuses %}
+                    <option value="{{ status.0 }}" {% if status.0 == progress_status_selected %}selected{% endif %}>
+                        {{ status.1 }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+    </div>
+
+    <!-- Submit / Reset -->
+    <div class="mb-2 mt-2">
+        <button type="submit" class="btn btn-primary">{% trans "Lọc" %}</button>
+        <a href="?" class="btn btn-secondary">{% trans "Đặt lại" %}</a>
+    </div>
+
+</form>
+
+<script src="{% static 'novels/js/novel_filter.js' %}"></script>
