@@ -1,0 +1,152 @@
+{% extends 'base_home.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'accounts/css/profile_edit.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Header -->
+            <div class="edit-header mb-4">
+                <h2>{% trans "Chỉnh sửa profile" %}</h2>
+                <p class="text-muted">{% trans "Cập nhật thông tin cá nhân của bạn" %}</p>
+                <a href="{% url 'accounts:profile' profile_user.username %}" 
+                   class="btn btn-outline-secondary btn-back">
+                    <i class="fas fa-arrow-left"></i> {% trans "Quay lại profile" %}
+                </a>
+            </div>
+
+            <!-- Form -->
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" id="profile-form">
+                        {% csrf_token %}
+                        
+                        <!-- Avatar Section -->
+                        <div class="avatar-section mb-4">
+                            <h5 class="form-section-title">{% trans "Ảnh đại diện" %}</h5>
+                            <div class="current-avatar-wrapper">
+                                <img src="{{ avatar_info.avatar_url }}" 
+                                     alt="Current Avatar" 
+                                     class="current-avatar"
+                                     id="current-avatar">
+                                <div class="avatar-overlay">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="avatar-upload-controls mt-3">
+                                {{ form.avatar_upload.label_tag }}
+                                {{ form.avatar_upload }}
+                                {% if form.avatar_upload.help_text %}
+                                <small class="form-text text-muted">{{ form.avatar_upload.help_text }}</small>
+                                {% endif %}
+                                {% if form.avatar_upload.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.avatar_upload.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            {% if not image_service_status.available %}
+                            <div class="alert alert-warning mt-3">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {% trans "Dịch vụ upload ảnh hiện không khả dụng. Vui lòng thử lại sau." %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <hr>
+
+                        <!-- Basic Info Section -->
+                        <div class="basic-info-section mb-4">
+                            <h5 class="form-section-title">{% trans "Thông tin cơ bản" %}</h5>
+                            
+                            <div class="form-group">
+                                {{ form.display_name.label_tag }}
+                                {{ form.display_name }}
+                                {% if form.display_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.display_name.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ form.gender.label_tag }}
+                                        {{ form.gender }}
+                                        {% if form.gender.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.gender.errors }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ form.birthday.label_tag }}
+                                        {{ form.birthday }}
+                                        {% if form.birthday.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.birthday.errors }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Detail Info Section -->
+                        <div class="detail-info-section mb-4">
+                            <h5 class="form-section-title">{% trans "Thông tin chi tiết" %}</h5>
+                            
+                            <div class="form-group">
+                                {{ form.description.label_tag }}
+                                {{ form.description }}
+                                {% if form.description.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.description.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form.interest.label_tag }}
+                                {{ form.interest }}
+                                {% if form.interest.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.interest.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-save">
+                                <i class="fas fa-save"></i> {% trans "Lưu thay đổi" %}
+                            </button>
+                            <a href="{% url 'accounts:profile' profile_user.username %}" 
+                               class="btn btn-secondary">
+                                {% trans "Hủy" %}
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'accounts/js/profile_edit.js' %}"></script>
+{% endblock %}

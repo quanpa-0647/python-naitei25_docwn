@@ -65,7 +65,7 @@ def require_owner_or_admin(get_object_func):
             if user.role in [UserRole.SYSTEM_ADMIN.value, UserRole.WEBSITE_ADMIN.value]:
                 return view_func(request, *args, **kwargs)
 
-            if hasattr(obj, 'user') and obj.user == user:
+            if hasattr(obj, 'email') and obj == user:
                 return view_func(request, *args, **kwargs)
             if hasattr(obj, 'created_by') and obj.created_by == user:
                 return view_func(request, *args, **kwargs)

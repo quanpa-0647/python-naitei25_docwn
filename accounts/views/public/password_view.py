@@ -25,7 +25,7 @@ def change_password_view(request):
                 redirect_url = result.get('redirect_url')
                 if redirect_url:
                     return redirect(redirect_url)
-                return redirect('accounts:profile')
+                return redirect('home')
             else:
                 messages.error(request, result.get('message'))
     else:

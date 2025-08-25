@@ -123,5 +123,56 @@ class ProfileService:
                     'value': profile.birthday,
                     'type': 'date'
                 })
+            
+            if profile.description:
+                formatted_info['personal_info'].append({
+                    'label': _('Mô tả'),
+                    'value': profile.description,
+                    'type': 'textarea'
+                })
+            
+            if profile.interest:
+                formatted_info['personal_info'].append({
+                    'label': _('Sở thích'),
+                    'value': profile.interest,
+                    'type': 'textarea'
+                })
         
         return formatted_info
+    
+    @staticmethod
+    def update_profile(request, form, profile):
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, _('Cập nhật profile thành công!'))
+                return {'success': True}
+            except Exception as e:
+                messages.error(request, _('Có lỗi xảy ra khi cập nhật profile: {}').format(str(e)))
+                return {'success': False, 'errors': {'form': str(e)}}
+        else:
+            return {'success': False, 'errors': form.errors}
+    
+    @staticmethod
+    def can_edit_profile(current_user, profile_user):
+        if not current_user.is_authenticated:
+            return False
+        
+        if current_user.is_website_admin():
+            return True
+        
+        if current_user == profile_user:
+            return True
+        
+        return False
+    
+    @staticmethod
+    def can_view_profile(current_user, profile_user):
+        if hasattr(profile_user, 'profile') and profile_user.profile and profile_user.profile.is_locked:
+            if not current_user.is_authenticated:
+                return False
+            if current_user.is_website_admin() or current_user == profile_user:
+                return True
+            return False
+        
+        return profile_user.is_active
