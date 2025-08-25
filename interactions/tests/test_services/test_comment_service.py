@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 
 from novels.models import Novel
 from interactions.models import Comment
-from novels.services.novel_service import NovelService
+from interactions.services.comment_service import CommentService
 from constants import PAGINATOR_COMMENT_LIST
 
 from django.contrib.auth import get_user_model
@@ -25,12 +25,12 @@ class NovelServiceTest(TestCase):
             )
 
     def test_get_novel_comments_returns_page_obj(self):
-        page_obj = NovelService.get_novel_comments(self.novel, page=1)
+        page_obj = CommentService.get_novel_comments(self.novel, page=1)
         self.assertEqual(page_obj.number, 1)
         self.assertLessEqual(len(page_obj.object_list), PAGINATOR_COMMENT_LIST)
         self.assertEqual(page_obj.paginator.count, self.total_comments)
 
     def test_get_novel_comments_second_page(self):
         if self.total_comments > PAGINATOR_COMMENT_LIST:
-            page2 = NovelService.get_novel_comments(self.novel, page=2)
+            page2 = CommentService.get_novel_comments(self.novel, page=2)
             self.assertEqual(page2.number, 2)
