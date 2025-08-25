@@ -230,43 +230,82 @@ class NovelService:
         return novels
 
     @staticmethod
-    def get_admin_novels_paginated(search_query=None, page=1):
-        """Get paginated novels for admin with search"""
-        novels = Novel.objects.filter(
-            approval_status=ApprovalStatus.APPROVED.value,
+    def get_admin_novels_paginated(search_query=None, progress_status=None, tag_id=None, approval_status=None, page=1):
+        if not approval_status:  
+            novels = Novel.objects.filter(deleted_at__isnull=True)
+        else:
+            novels = Novel.objects.filter(
+            approval_status=approval_status,
             deleted_at__isnull=True
-        ).select_related('author').prefetch_related('tags').order_by('-created_at')
-        
-        # Add search functionality
+             )
+        novels = novels.select_related('author').prefetch_related('tags').order_by('-created_at')
+
+    # Search filter
         if search_query:
             novels = novels.filter(
-                Q(name__icontains=search_query) |
-                Q(author__name__icontains=search_query) |
-                Q(tags__name__icontains=search_query)
-            ).distinct()
-        
-        # Add pagination
+            Q(name__icontains=search_query) |
+            Q(author__name__icontains=search_query) |
+            Q(tags__name__icontains=search_query)
+        ).distinct()
+
+    # Filter progress_status nếu có
+        if progress_status:
+            novels = novels.filter(progress_status=progress_status)
+
+    # Filter theo tag nếu có
+        if tag_id:
+            try:
+                tag = Tag.objects.get(id=tag_id)   
+                novels = novels.filter(tags=tag)
+            except Tag.DoesNotExist:
+                novels = novels.none()
+
+    # Pagination
         paginator = Paginator(novels, PAGINATOR_COMMON_LIST)
         return paginator.get_page(page)
+
+ 
 
     @staticmethod
-    def get_pending_novels_paginated(search_query=None, page=1):
-        """Get paginated pending novels for admin with search"""
-        novels = Novel.objects.filter(
-            approval_status=ApprovalStatus.PENDING.value 
-        ).select_related('author', 'created_by').prefetch_related('tags').order_by('-created_at')
+    def get_pending_novels_paginated(search_query=None, progress_status=None, tag_id=None, approval_status=None, page=1):
+        if not approval_status:  
+            novels = Novel.objects.filter(
+            approval_status=ApprovalStatus.PENDING.value,
+            deleted_at__isnull=True)
+        else:
+        
+            novels = Novel.objects.filter(
+            approval_status=approval_status,
+            deleted_at__isnull=True
+        )
 
-        # Add search functionality
+    # Thêm select_related, prefetch_related và order
+        novels = novels.select_related('author').prefetch_related('tags').order_by('-created_at')
+
+    # Search filter
         if search_query:
             novels = novels.filter(
-                Q(name__icontains=search_query) |
-                Q(author__name__icontains=search_query) |
-                Q(created_by__username__icontains=search_query)
-            ).distinct()
-        
-        # Add pagination
+            Q(name__icontains=search_query) |
+            Q(author__name__icontains=search_query) |
+            Q(tags__name__icontains=search_query)
+        ).distinct()
+
+    # Filter progress_status nếu có
+        if progress_status:
+            novels = novels.filter(progress_status=progress_status)
+
+    # Filter theo tag nếu có
+        if tag_id:
+            try:
+                tag = Tag.objects.get(id=tag_id)   
+                novels = novels.filter(tags=tag)
+            except Tag.DoesNotExist:
+                novels = novels.none()
+
+    # Pagination
         paginator = Paginator(novels, PAGINATOR_COMMON_LIST)
         return paginator.get_page(page)
+
 
     @staticmethod
     def get_admin_novel_detail(slug):
