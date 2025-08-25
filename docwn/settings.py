@@ -292,6 +292,15 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 IMGBB_API_KEY = os.getenv('IMGBB_API_KEY')
 
+# Avatar settings
+AVATAR_UPLOAD_SETTINGS = {
+    'ALLOWED_EXTENSIONS': ['jpg', 'jpeg', 'png', 'gif'],
+    'ALLOWED_CONTENT_TYPES': ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'],
+}
+
+# Default avatar URL
+DEFAULT_AVATAR_URL = '/static/novels/images/avatar.png'
+
 # Environment-specific security settings
 if IS_HEROKU or IS_PRODUCTION:
     

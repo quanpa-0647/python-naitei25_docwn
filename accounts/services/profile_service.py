@@ -1,5 +1,7 @@
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
+from common.utils import ExternalAPIManager
+from django.conf import settings
 
 
 class ProfileService:
@@ -8,17 +10,118 @@ class ProfileService:
         return getattr(user, 'profile', None)
     
     @staticmethod
-    def update_profile(request, form, profile):
-        if form.is_valid():
-            form.save()
-            messages.success(request, _('Cập nhật thông tin thành công!'))
+    def get_avatar_info(profile):
+        """Lấy thông tin về avatar của profile"""
+        if not profile:
             return {
-                'success': True,
-                'message': _('Cập nhật thông tin thành công!')
+                'has_avatar': False,
+                'avatar_url': settings.DEFAULT_AVATAR_URL,
+                'is_external': False
             }
-        else:
-            messages.error(request, _('Có lỗi xảy ra. Vui lòng kiểm tra lại.'))
-            return {
-                'success': False,
-                'message': _('Có lỗi xảy ra. Vui lòng kiểm tra lại.')
+        
+        return {
+            'has_avatar': bool(profile.avatar_url),
+            'avatar_url': profile.get_avatar(),
+            'is_external': profile.has_external_avatar()
+        }
+    
+    @staticmethod
+    def check_image_service_status():
+        """Kiểm tra trạng thái dịch vụ upload ảnh"""
+        return {
+            'available': ExternalAPIManager.is_image_service_available(),
+            'service': 'ImgBB'
+        }
+    
+    @staticmethod
+    def get_profile_display_data(user, profile):
+        if not profile:
+            return None
+            
+        return {
+            'user': user,
+            'profile': profile,
+            'display_name': profile.get_name(),
+            'avatar_url': profile.get_avatar(),
+            'is_verified': user.is_email_verified,
+            'status': {
+                'is_active': user.is_active,
+                'is_blocked': user.is_blocked,
+                'is_locked': profile.is_locked if profile else False,
+            },
+            'role_info': {
+                'role': user.role,
+                'role_display': user.get_role_display(),
+                'is_admin': user.is_website_admin(),
+                'is_staff': user.is_staff,
             }
+        }
+    
+    @staticmethod
+    def format_profile_info(profile_data):
+        """Format thông tin profile để hiển thị"""
+        if not profile_data:
+            return {}
+            
+        user = profile_data['user']
+        profile = profile_data['profile']
+        
+        formatted_info = {
+            'basic_info': [
+                {
+                    'label': _('Tên đăng nhập'),
+                    'value': user.username,
+                    'type': 'text'
+                },
+                {
+                    'label': _('Email'),
+                    'value': user.email,
+                    'type': 'email',
+                    'verified': user.is_email_verified
+                },
+            ],
+            'personal_info': [],
+            'system_info': [
+                {
+                    'label': _('Vai trò'),
+                    'value': user.get_role_display(),
+                    'type': 'role',
+                    'role_code': user.role
+                },
+                {
+                    'label': _('Ngày tham gia'),
+                    'value': user.date_joined,
+                    'type': 'datetime'
+                },
+                {
+                    'label': _('Trạng thái'),
+                    'value': _('Hoạt động') if user.is_active and not user.is_blocked else _('Bị khóa'),
+                    'type': 'status',
+                    'status_code': 'active' if user.is_active and not user.is_blocked else 'blocked'
+                }
+            ]
+        }
+        
+        if profile:
+            if profile.display_name:
+                formatted_info['personal_info'].append({
+                    'label': _('Tên hiển thị'),
+                    'value': profile.display_name,
+                    'type': 'text'
+                })
+            
+            if profile.gender:
+                formatted_info['personal_info'].append({
+                    'label': _('Giới tính'),
+                    'value': profile.get_gender_display(),
+                    'type': 'text'
+                })
+            
+            if profile.birthday:
+                formatted_info['personal_info'].append({
+                    'label': _('Ngày sinh'),
+                    'value': profile.birthday,
+                    'type': 'date'
+                })
+        
+        return formatted_info

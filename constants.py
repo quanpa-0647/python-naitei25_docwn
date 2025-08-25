@@ -20,7 +20,11 @@ class Gender(Enum):
 
     @classmethod
     def choices(cls):
-        return [(i.value, i.name) for i in cls]
+        return [
+            (cls.MALE.value, _("Nam")),
+            (cls.FEMALE.value, _("Nữ")),
+            (cls.OTHER.value, _("Khác")),
+        ]
 
 
 class ProgressStatus(Enum):
@@ -128,6 +132,8 @@ MAX_RANDOM_STRING_LENGTH = 10
 MAX_SESSION_REMEMBER = 2592000  # 30 days
 MAX_TIME_RETRY_CONNECTION = 30
 MAX_QUEUE_SIZE = 1000
+MAX_IMAGE_SIZE = 16 * 1024 * 1024  # 16MB
+MAX_IMAGE_SIZE_MB = 16  # 16MB
 
 # Constants for min_length
 MIN_RATE = 0

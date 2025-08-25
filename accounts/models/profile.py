@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .user import User
+from django.conf import settings
 
 from constants import (
     MAX_NAME_LENGTH,
@@ -32,13 +33,14 @@ class UserProfile(models.Model):
         verbose_name=_("Giới tính")
     )
     birthday = models.DateField(null=True, blank=True, verbose_name=_("Ngày sinh"))
-    avatar = models.ImageField(
-        upload_to='avatars/',
+    
+    avatar_url = models.URLField(
         null=True, 
         blank=True,
-        help_text=_("Ảnh đại diện của người dùng"),
-        verbose_name=_("Ảnh đại diện")
+        help_text=_("URL ảnh đại diện từ ImgBB"),
+        verbose_name=_("URL Ảnh đại diện")
     )
+    
     description = models.TextField(
         null=True, 
         blank=True,
@@ -70,11 +72,21 @@ class UserProfile(models.Model):
         return self.display_name or self.user.username
     
     def get_avatar(self):
-        if self.avatar:
-            return self.avatar.url
+        if self.avatar_url:
+            return self.avatar_url
         else:
-            return '/static/images/default-avatar.png'
+            return settings.DEFAULT_AVATAR_URL
+        
+    def get_gender_display(self):
+        mapping = {
+            Gender.MALE.value: _("Nam"),
+            Gender.FEMALE.value: _("Nữ"),
+            Gender.OTHER.value: _("Khác"),
+        }
+        return mapping.get(self.gender, _("Không xác định"))
     
+    def has_external_avatar(self):
+        return bool(self.avatar_url)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
