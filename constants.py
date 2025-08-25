@@ -153,6 +153,7 @@ MAX_NOVEL_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
 
 # PAGINATOR
 PAGINATOR_TAG_LIST = 10  # Increased for better consistency
+PAGINATOR_COMMENT_LIST = 7
 PAGINATOR_COMMON_LIST = 10  # Increased for better consistency
 DEFAULT_PAGE_NUMBER = 1
 
