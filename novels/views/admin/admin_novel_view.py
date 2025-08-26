@@ -14,8 +14,12 @@ from constants import (
     ApprovalStatus,
     PAGINATION_PAGE_RANGE,
     DEFAULT_PAGE_NUMBER,
-    ProgressStatus
+    ProgressStatus,
+    NotificationTypeChoices
 )
+from interactions.services.notification_service import NotificationService
+from common.utils import send_notification_to_user
+from asgiref.sync import async_to_sync
 
 @website_admin_required
 def Novels(request):  
@@ -125,12 +129,26 @@ def novel_request_detail(request, slug):
 @website_admin_required
 def admin_approve_novel(request, slug):
     """Approve novel using service"""
-    success = NovelService.approve_novel(slug)
-    if success:
+    novel = NovelService.approve_novel(slug)
+    if novel:
+        notification = NotificationService.create_notification(
+            user=novel.created_by,
+            title=_("Truyện của bạn đã được duyệt"),
+            content=_("Truyện '%(title)s' của bạn đã được duyệt.") % {"title": novel.name},
+            notification_type=NotificationTypeChoices.SYSTEM,
+            related_object=novel,
+        )
+
+        async_to_sync(send_notification_to_user)(
+            user_id=novel.created_by.id,
+            notification=notification,
+            redirect_url=NotificationService.attach_link(notification)
+        )
+
         messages.success(request, _("Tiểu thuyết đã được phê duyệt thành công."))
     else:
         messages.error(request, _("Không thể phê duyệt tiểu thuyết này."))
-    
+        
     return redirect('admin:upload_novel_requests')
 
 @require_POST
@@ -138,9 +156,23 @@ def admin_approve_novel(request, slug):
 def admin_reject_novel(request, slug):
     """Reject novel using service"""
     reason = request.POST.get('reason')
-    success = NovelService.reject_novel(slug, reason)
-    
-    if success:
+    novel = NovelService.reject_novel(slug, reason)
+
+    reason_text = _("Lý do: %(reason)s") % {"reason": reason} if reason else ""
+    if novel:
+        notification = NotificationService.create_notification(
+            user=novel.created_by,
+            title=_("Truyện của bạn bị từ chối"),
+            content=_("Truyện '%(title)s' của bạn đã bị từ chối. '%(reason_text)s'") % {"title": novel.name, "reason_text": reason_text},
+            notification_type=NotificationTypeChoices.SYSTEM,
+            related_object=novel,
+        )
+
+        async_to_sync(send_notification_to_user)(
+            user_id=novel.created_by.id,
+            notification=notification,
+            redirect_url=NotificationService.attach_link(notification)
+        )
         messages.success(request, _("Tiểu thuyết đã được từ chối."))
     else:
         messages.error(request, _("Không thể từ chối tiểu thuyết này."))

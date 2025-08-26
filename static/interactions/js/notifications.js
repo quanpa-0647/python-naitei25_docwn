@@ -5,6 +5,7 @@ class SSENotificationManager {
         this.maxReconnectAttempts = 5;
         this.reconnectDelay = 5000;
         this.notificationSound = null;
+        this.keepAliveInterval = null;
         
         this.init();
     }
@@ -32,6 +33,7 @@ class SSENotificationManager {
                 // console.log('✅ SSE Connected');
                 this.reconnectAttempts = 0;
                 this.hideConnectionStatus();
+                this.startKeepAlive();
             };
             
             this.eventSource.onmessage = (event) => {
@@ -46,6 +48,7 @@ class SSENotificationManager {
             this.eventSource.onerror = (error) => {
                 // console.error('❌ SSE Error:', error);
                 // this.showConnectionStatus(gettext('Mất kết nối, đang thử kết nối lại...'));
+                this.stopKeepAlive();
                 this.handleReconnection();
             };
             
@@ -55,17 +58,47 @@ class SSENotificationManager {
         }
     }
     
+    startKeepAlive() {
+        // Send a keep-alive ping every 30 seconds to maintain connection
+        this.keepAliveInterval = setInterval(() => {
+            if (this.eventSource && this.eventSource.readyState === EventSource.OPEN) {
+                // Send a lightweight request to keep connection alive
+                fetch('/interactions/sse/ping/', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': this.getCSRFToken(),
+                    }
+                }).catch(() => {
+                    // If ping fails, connection might be lost
+                    if (this.eventSource.readyState === EventSource.CLOSED) {
+                        this.handleReconnection();
+                    }
+                });
+            }
+        }, 30000);
+    }
+    
+    stopKeepAlive() {
+        if (this.keepAliveInterval) {
+            clearInterval(this.keepAliveInterval);
+            this.keepAliveInterval = null;
+        }
+    }
+    
     handleReconnection() {
         if (this.eventSource) {
             this.eventSource.close();
             this.eventSource = null;
         }
         
+        this.stopKeepAlive();
+        
         if (this.reconnectAttempts < this.maxReconnectAttempts) {
             this.reconnectAttempts++;
             const delay = this.reconnectDelay * Math.pow(1.5, this.reconnectAttempts - 1);
             
-            // console.log(`🔄 Reconnecting in ${delay/1000}s (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+            // console.log(🔄 Reconnecting in ${delay/1000}s (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts}));
             
             setTimeout(() => {
                 this.connectSSE();
@@ -256,26 +289,63 @@ class SSENotificationManager {
     }
     
     setupEventListeners() {
-        // Handle page visibility change
+        // Enhanced visibility change handler - only reconnect if truly disconnected
         document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible' && 
-                (!this.eventSource || this.eventSource.readyState === EventSource.CLOSED)) {
+            if (document.visibilityState === 'visible') {
+                // Only reconnect if connection is actually closed/failed
+                if (!this.eventSource || this.eventSource.readyState === EventSource.CLOSED) {
+                    console.log('Page became visible, reconnecting SSE...');
+                    this.connectSSE();
+                }
+            }
+            // Remove the disconnect logic when page becomes hidden
+            // This allows SSE to continue running in background tabs
+        });
+        
+        // Enhanced beforeunload handler
+        window.addEventListener('beforeunload', () => {
+            this.disconnect();
+        });
+        
+        // Handle online/offline events
+        window.addEventListener('online', () => {
+            if (!this.eventSource || this.eventSource.readyState === EventSource.CLOSED) {
+                console.log('Connection restored, reconnecting SSE...');
                 this.connectSSE();
             }
         });
         
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', () => {
-            this.disconnect();
+        // Optional: Handle focus/blur for additional reliability
+        window.addEventListener('focus', () => {
+            // Check connection health when window gets focus
+            if (this.eventSource && this.eventSource.readyState === EventSource.CONNECTING) {
+                // If stuck in connecting state, force reconnect
+                setTimeout(() => {
+                    if (this.eventSource && this.eventSource.readyState === EventSource.CONNECTING) {
+                        this.handleReconnection();
+                    }
+                }, 5000);
+            }
         });
     }
     
     disconnect() {
+        this.stopKeepAlive();
         if (this.eventSource) {
             this.eventSource.close();
             this.eventSource = null;
             // console.log('🔌 SSE Disconnected');
         }
+    }
+    
+    getCSRFToken() {
+        const meta = document.querySelector('meta[name="csrf-token"]');
+        if (meta) {
+            return meta.getAttribute('content');
+        }
+        
+        const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+        return csrfInput ? csrfInput.value : '';
     }
     
     escapeHtml(text) {
@@ -675,3 +745,4 @@ if (document.readyState === 'loading') {
 } else {
     initializeManagers();
 }
+

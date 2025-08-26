@@ -14,7 +14,10 @@ def notifications_context(request):
         unread_notification_count = request.user.notifications.filter(is_read=False).count()
         return {
             "notifications": [
-                format_notification(notification)
+                {
+                    **format_notification(notification),
+                    "link": NotificationService.attach_link(notification)
+                }
                 for notification in notifications
             ],
             "unread_notification_count": unread_notification_count

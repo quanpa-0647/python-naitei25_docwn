@@ -8,8 +8,12 @@ from constants import (
     MAX_LIKE_NOVELS, MAX_FINISH_NOVELS, MAX_NEWUPDATE_NOVELS,
     MAX_LATEST_CHAPTER, NOVEL_PER_PAGE, PAGINATOR_COMMON_LIST,
     SEARCH_RESULTS_LIMIT, SUMMARY_TRUNCATE_WORDS, DEFAULT_RATING_AVERAGE,
-    MAX_CHAPTER_LIST,MAX_LIKE_NOVELS_PAGE
+    MAX_CHAPTER_LIST,MAX_LIKE_NOVELS_PAGE, NotificationTypeChoices
 )
+from interactions.services.notification_service import NotificationService
+from django.utils.translation import gettext_lazy as _
+from common.utils.sse import SSEManager
+from asgiref.sync import async_to_sync
 
 class NovelService:
     @staticmethod
@@ -345,7 +349,8 @@ class NovelService:
             novel = Novel.objects.get(slug=slug, approval_status=ApprovalStatus.PENDING.value)
             novel.approval_status = ApprovalStatus.APPROVED.value
             novel.save()
-            return True
+
+            return novel
         except Novel.DoesNotExist:
             return False
 
@@ -358,7 +363,8 @@ class NovelService:
             if reason:
                 novel.rejected_reason = reason
             novel.save()
-            return True
+
+            return novel
         except Novel.DoesNotExist:
             return False
 
