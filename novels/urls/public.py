@@ -10,6 +10,7 @@ urlpatterns = [
     path('upload-rules/novel/', novel_upload_rules, name='novel_upload_rules'),
     path('upload-rules/chapter/', chapter_upload_rules, name='chapter_upload_rules'),
     path('search/', search_novels, name='search_novels'),
+    path('like_novel/', liked_novels, name='liked_novels'),
     
     # Novel and chapter routes
     path('<slug:novel_slug>/', novel_detail, name='novel_detail'),
@@ -17,4 +18,5 @@ urlpatterns = [
     path('<slug:novel_slug>/add-chapter/', chapter_add_view, name='chapter_add'),
     path('<slug:novel_slug>/chapter/<slug:chapter_slug>/', chapter_detail_view, name='chapter_detail'),
     path('<slug:novel_slug>/chapter/<slug:chapter_slug>/delete/', chapter_delete_view, name='chapter_delete'),
+    path('<slug:novel_slug>/like/', toggle_like, name='toggle_like'),
 ]

@@ -1,12 +1,14 @@
 from django.db.models import OuterRef, Subquery, Q, Prefetch
 from django.core.paginator import Paginator
-from novels.models import Novel, Volume, Chapter, Tag
+from novels.models import Novel, Volume, Chapter, Tag, Favorite
+from django.db import IntegrityError
+from django.db import transaction
 from constants import (
     ApprovalStatus, ProgressStatus, MAX_TREND_NOVELS, 
     MAX_LIKE_NOVELS, MAX_FINISH_NOVELS, MAX_NEWUPDATE_NOVELS,
     MAX_LATEST_CHAPTER, NOVEL_PER_PAGE, PAGINATOR_COMMON_LIST,
     SEARCH_RESULTS_LIMIT, SUMMARY_TRUNCATE_WORDS, DEFAULT_RATING_AVERAGE,
-    MAX_CHAPTER_LIST
+    MAX_CHAPTER_LIST,MAX_LIKE_NOVELS_PAGE
 )
 
 class NovelService:
@@ -359,3 +361,22 @@ class NovelService:
             return True
         except Novel.DoesNotExist:
             return False
+
+class FavoriteService:
+    @staticmethod
+    @transaction.atomic
+    def toggle_like(user, novel):
+        fav = Favorite.objects.filter(user=user, novel=novel).first()
+        if fav:
+            fav.delete()
+            return False
+        else:
+            Favorite.objects.create(user=user, novel=novel)
+            return True
+
+def get_liked_novels(user, page_number, per_page=MAX_LIKE_NOVELS_PAGE):
+    favorites = Favorite.objects.filter(user=user).select_related("novel")
+    novels = [f.novel for f in favorites]
+
+    paginator = Paginator(novels, per_page)
+    return paginator.get_page(page_number)
