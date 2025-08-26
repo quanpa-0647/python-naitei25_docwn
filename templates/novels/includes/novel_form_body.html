@@ -94,20 +94,31 @@
                 <label class="form-label" for="{{ form.image_file.id_for_label }}">
                     {{ form.image_file.label }}
                 </label>
-                <div class="form-input">
-                    <div class="file-input-wrapper">
-                        {{ form.image_file }}
-                        <div class="file-input-display" id="file-display" 
-                             data-default-text="{% trans 'Choose cover image file...' %}"
-                             data-error-type="{% trans 'Please select a valid image file (JPEG, PNG, GIF, WebP)' %}"
-                             data-error-size="{% trans 'File size must be less than 5MB' %}">
-                            {% trans "Choose cover image file..." %}
-                        </div>
+                
+                <div class="image-column">
+                    {% if is_update and form.instance.image_url %}
+                    <div class="current-image-display">
+                        <p class="current-image-label">{% trans "Ảnh bìa hiện tại:" %}</p>
+                        <img src="{{ form.instance.image_url }}" alt="{% trans 'Ảnh bìa hiện tại' %}" class="current-cover-image">
+                        <p class="image-note">{% trans "Tải lên ảnh mới để thay thế ảnh hiện tại" %}</p>
                     </div>
-                    {% if form.image_file.help_text %}
-                        <div class="helptext">{{ form.image_file.help_text }}</div>
                     {% endif %}
-                    {{ form.image_file.errors }}
+                    
+                    <div class="form-input">
+                        <div class="file-input-wrapper">
+                            {{ form.image_file }}
+                            <div class="file-input-display" id="file-display" 
+                                 data-default-text="{% trans 'Choose cover image file...' %}"
+                                 data-error-type="{% trans 'Please select a valid image file (JPEG, PNG, GIF, WebP)' %}"
+                                 data-error-size="{% trans 'File size must be less than 5MB' %}">
+                                {% trans "Choose cover image file..." %}
+                            </div>
+                        </div>
+                        {% if form.image_file.help_text %}
+                            <div class="helptext">{{ form.image_file.help_text }}</div>
+                        {% endif %}
+                        {{ form.image_file.errors }}
+                    </div>
                 </div>
             </div>
 
@@ -152,6 +163,7 @@
             </div>
 
             <!-- Anonymous Upload -->
+            {% if not is_update %}
             <div class="form-group">
                 <div class="anonymous-upload">
                     {{ form.upload_anonymously }}
@@ -170,13 +182,25 @@
                     {% endif %}
                 </div>
             </div>
+            {% endif %}
 
             <div class="submit-btn-container">
-                <button type="submit" class="submit-btn" 
-                        data-loading-text="{% trans 'Đang tạo tiểu thuyết...' %}"
-                        data-default-text="{% trans 'Tạo tiểu thuyết' %}">
-                    {% trans "Đăng tiểu thuyết" %}
-                </button>
+                {% if is_update %}
+                    <button type="submit" class="submit-btn" 
+                            data-loading-text="{% trans 'Đang cập nhật...' %}"
+                            data-default-text="{% trans 'Cập nhật tiểu thuyết' %}">
+                        {% trans "Cập nhật tiểu thuyết" %}
+                    </button>
+                    <a href="{% url 'novels:novel_detail' novel_slug=form.instance.slug %}" class="cancel-btn">
+                        {% trans "Hủy bỏ" %}
+                    </a>
+                {% else %}
+                    <button type="submit" class="submit-btn" 
+                            data-loading-text="{% trans 'Đang tạo tiểu thuyết...' %}"
+                            data-default-text="{% trans 'Tạo tiểu thuyết' %}">
+                        {% trans "Đăng tiểu thuyết" %}
+                    </button>
+                {% endif %}
             </div>
         </form>
     </div>

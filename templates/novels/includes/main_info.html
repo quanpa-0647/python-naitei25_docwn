@@ -11,7 +11,20 @@
     {% endif %}
   </div>
   <div class="right">
-    <h1>{{ novel.name }}</h1>
+    <div class="novel-header">
+      <h1>{{ novel.name }}</h1>
+      {% if is_owner %}
+        <div class="owner-actions">
+          <a href="{% url 'novels:novel_update' novel_slug=novel.slug %}" 
+             class="btn btn-edit" 
+             title="{% trans 'Chỉnh sửa tiểu thuyết' %}">
+            <i class="fas fa-edit"></i>
+            {% trans "Chỉnh sửa" %}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+    
     <div class="tags">
       {% for tag in tags %}<span>{{ tag.name }} </span>{% endfor %}
     </div>

@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from django.db.models import OuterRef, Subquery, Q, Prefetch
 from django.core.paginator import Paginator
 from novels.models import Novel, Volume, Chapter, Tag, Favorite
@@ -367,6 +369,87 @@ class NovelService:
             return novel
         except Novel.DoesNotExist:
             return False
+        
+    @staticmethod
+    def get_novel_for_update(novel_slug, user):
+        """Get novel for update if user is the owner"""
+        try:
+            novel = Novel.objects.select_related('author', 'artist', 'created_by').prefetch_related('tags').get(
+                slug=novel_slug,
+                created_by=user,
+                deleted_at__isnull=True
+            )
+            return novel
+        except Novel.DoesNotExist:
+            return None
+
+    @staticmethod
+    def can_user_update_novel(novel, user):
+        """Check if user can update the novel"""
+        if not user or not user.is_authenticated:
+            return False
+        
+        if novel.created_by != user:
+            return False
+            
+        # Owner can update novel regardless of status, but only certain fields
+        # when it's approved and has chapters
+        return True
+
+    @staticmethod
+    def update_novel_by_owner(novel, form, user):
+        """Update novel with proper business logic and validation"""
+        try:
+            # Basic permission check
+            if not user or not user.is_authenticated:
+                return False, _("Bạn cần đăng nhập để thực hiện thao tác này.")
+            
+            if not novel:
+                return False, _("Tiểu thuyết không tồn tại.")
+            
+            if novel.created_by != user:
+                return False, _("Bạn không có quyền chỉnh sửa tiểu thuyết này.")
+            
+            if novel.deleted_at is not None:
+                return False, _("Không thể chỉnh sửa tiểu thuyết đã bị xóa.")
+            
+            # Check for duplicate name
+            new_name = form.cleaned_data.get('name')
+            if new_name and new_name != novel.name:
+                existing_novel = Novel.objects.filter(
+                    name__iexact=new_name.strip(),
+                    deleted_at__isnull=True
+                ).exclude(id=novel.id).first()
+                
+                if existing_novel:
+                    return False, _("Đã tồn tại tiểu thuyết với tên '{name}'. Vui lòng chọn tên khác.").format(
+                        name=new_name.strip()
+                    )
+            
+            with transaction.atomic():
+                # Save the form with commit=False to get the object
+                updated_novel = form.save(commit=False)
+                
+                # Change approval status to pending when updated
+                updated_novel.approval_status = ApprovalStatus.PENDING.value
+                
+                # Update timestamp manually to ensure it changes
+                updated_novel.updated_at = timezone.now()
+                
+                # Save the novel first to get the primary key
+                updated_novel.save()
+                
+                # Handle tags manually
+                tags = form.cleaned_data.get('tags')
+    
+                if tags is not None:  # Check for None to allow empty selection
+                    updated_novel.tags.set(tags)
+                
+                return True, _("Tiểu thuyết đã được cập nhật thành công.")
+                
+        except Exception as e:
+            return False, _("Có lỗi xảy ra khi cập nhật tiểu thuyết: {error}").format(error=str(e))
+
 
 class FavoriteService:
     @staticmethod
@@ -379,6 +462,7 @@ class FavoriteService:
         else:
             Favorite.objects.create(user=user, novel=novel)
             return True
+
 
 def get_liked_novels(user, page_number, per_page=MAX_LIKE_NOVELS_PAGE):
     favorites = Favorite.objects.filter(user=user).select_related("novel")

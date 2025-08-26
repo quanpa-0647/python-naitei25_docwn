@@ -204,6 +204,17 @@ class NovelForm(forms.ModelForm):
 
         self.fields["artist"].choices = artist_choices
 
+        # Set initial values for update mode
+        if self.instance and self.instance.pk:
+            # For update mode, set initial values from the instance
+            if self.instance.author:
+                self.initial['author'] = self.instance.author.pk
+            if self.instance.artist:
+                self.initial['artist'] = self.instance.artist.pk
+            # Set initial tags
+            if self.instance.tags.exists():
+                self.initial['tags'] = list(self.instance.tags.values_list('pk', flat=True))
+
     def clean(self):
         cleaned_data = super().clean()
 

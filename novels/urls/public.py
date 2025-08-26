@@ -15,6 +15,7 @@ urlpatterns = [
     
     # Novel and chapter routes
     path('<slug:novel_slug>/', novel_detail, name='novel_detail'),
+    path('<slug:novel_slug>/edit/', NovelUpdateView.as_view(), name='novel_update'),
     path('<slug:novel_slug>/chapters/', chapter_list_view, name='chapter_list'),
     path('<slug:novel_slug>/add-chapter/', chapter_add_view, name='chapter_add'),
     path('<slug:novel_slug>/chapter/<slug:chapter_slug>/', chapter_detail_view, name='chapter_detail'),

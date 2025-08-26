@@ -4,10 +4,17 @@
 <div class="container my-4">
     <div class="header">
         <div class="series-info">
-            <div class="series-title">{% trans "Đăng truyện" %}</div>
-            <div class="series-rules">
-                <div><a href="{% url 'novels:novel_upload_rules' %}" class="guide-link">{% trans "Cần đọc Hướng dẫn đăng truyện" %}</a></div>
-            </div>
+            {% if is_update %}
+                <div class="series-title">{% trans "Chỉnh sửa tiểu thuyết" %}</div>
+                <div class="series-rules">
+                    <div><a href="{% url 'novels:novel_detail' novel_slug=form.instance.slug %}" class="guide-link">{% trans "Quay lại trang tiểu thuyết" %}</a></div>
+                </div>
+            {% else %}
+                <div class="series-title">{% trans "Đăng truyện" %}</div>
+                <div class="series-rules">
+                    <div><a href="{% url 'novels:novel_upload_rules' %}" class="guide-link">{% trans "Cần đọc Hướng dẫn đăng truyện" %}</a></div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

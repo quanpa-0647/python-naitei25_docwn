@@ -1,11 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.http import Http404, JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from novels.models import Novel, Tag, novel
 from novels.models.reading_favorite import Favorite
 from novels.services import NovelService
@@ -96,6 +97,62 @@ class NovelCreateView(LoginRequiredMixin, CreateView):
             self.object.tags.set(tags)
 
         return response
+
+
+class NovelUpdateView(LoginRequiredMixin, UpdateView):
+    """Update novel view for owners"""
+    model = Novel
+    form_class = NovelForm
+    template_name = "novels/pages/novel_form.html"
+    login_url = reverse_lazy("accounts:login")
+    permission_denied_message = _("Bạn cần đăng nhập để chỉnh sửa tiểu thuyết.")
+    slug_field = 'slug'
+    slug_url_kwarg = 'novel_slug'
+
+    def get_object(self, queryset=None):
+        """Get the novel object and check permissions"""
+        novel = NovelService.get_novel_for_update(
+            novel_slug=self.kwargs['novel_slug'],
+            user=self.request.user
+        )
+        
+        if not novel:
+            messages.error(self.request, _("Tiểu thuyết không tồn tại hoặc bạn không có quyền chỉnh sửa."))
+            raise Http404(_("Tiểu thuyết không tồn tại hoặc bạn không có quyền chỉnh sửa."))
+        
+        return novel
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page_title"] = _("Chỉnh sửa tiểu thuyết: {title}").format(title=self.object.name)
+        context["is_update"] = True
+        context["novel"] = self.object  # Add novel to context for template
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        kwargs["request"] = self.request
+        return kwargs
+
+    def form_valid(self, form):
+        """Handle form validation and save using service"""
+        success, message = NovelService.update_novel_by_owner(
+            novel=self.object,
+            form=form,
+            user=self.request.user
+        )
+        
+        if success:
+            messages.success(self.request, message)
+            return redirect('novels:novel_detail', novel_slug=self.object.slug)
+        else:
+            messages.error(self.request, message)
+            return self.form_invalid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('novels:novel_detail', kwargs={'novel_slug': self.object.slug})
+
 
 class MyNovelsView(LoginRequiredMixin, ListView):
     """User's novels management page using service"""

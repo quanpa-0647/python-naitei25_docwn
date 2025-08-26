@@ -355,7 +355,8 @@ function resetForm() {
 window.NovelForm = {
     reset: resetForm,
     validate: validateForm,
-    showModal: showSaveDraftModal
+    showModal: showSaveDraftModal,
+    showUnsavedChangesModal: showUnsavedChangesModal
 };
 
 /**
@@ -426,7 +427,26 @@ function setupUnsavedChangesDetection() {
         if (hasUnsavedChanges && hasFormData() && !isSubmitting) {
             e.preventDefault();
             e.stopPropagation();
-            showSaveDraftModal(href);
+            
+            // Check if this is update mode by looking for the unsaved changes modal
+            if ($('#unsavedChangesModal').length > 0) {
+                showUnsavedChangesModal(href);
+            } else {
+                showSaveDraftModal(href);
+            }
+            return false;
+        }
+    });
+    
+    // Handle cancel button specifically
+    $(document).on('click.unsaved', 'a.cancel-btn', function(e) {
+        const $this = $(this);
+        const href = $this.attr('href');
+        
+        if (hasUnsavedChanges && hasFormData() && !isSubmitting) {
+            e.preventDefault();
+            e.stopPropagation();
+            showUnsavedChangesModal(href);
             return false;
         }
     });
@@ -439,7 +459,13 @@ function setupUnsavedChangesDetection() {
         if (hasUnsavedChanges && hasFormData() && !isSubmitting) {
             e.preventDefault();
             e.stopPropagation();
-            showSaveDraftModal(href);
+            
+            // Check if this is update mode by looking for the unsaved changes modal
+            if ($('#unsavedChangesModal').length > 0) {
+                showUnsavedChangesModal(href);
+            } else {
+                showSaveDraftModal(href);
+            }
             return false;
         }
     });
@@ -449,6 +475,59 @@ function setupUnsavedChangesDetection() {
         hasUnsavedChanges = false;
         isSubmitting = true;
     };
+    
+    // Handle browser navigation (back/forward/refresh/close)
+    $(window).on('beforeunload.unsaved', function(e) {
+        if (hasUnsavedChanges && hasFormData() && !isSubmitting) {
+            // Standard message for browser dialogs
+            const message = gettext('Bạn có thay đổi chưa được lưu. Bạn có chắc chắn muốn rời khỏi trang này không?');
+            e.returnValue = message; // For Chrome
+            return message; // For other browsers
+        }
+    });
+}
+
+/**
+ * Show unsaved changes confirmation modal (for update mode)
+ */
+function showUnsavedChangesModal(redirectUrl) {
+    // Show the existing modal by removing hidden class and setting display
+    $('#unsavedChangesModal').removeClass('hidden').css('display', 'flex');
+    
+    // Remove any existing event handlers to prevent duplication
+    $('#stayBtn, #leaveBtn').off('click.unsavedChangesModal');
+    
+    // Handle button clicks
+    $('#stayBtn').on('click.unsavedChangesModal', function() {
+        // User chose to stay - just hide the modal
+        $('#unsavedChangesModal').addClass('hidden').css('display', 'none');
+        $(document).off('keydown.unsavedChangesModal');
+    });
+    
+    $('#leaveBtn').on('click.unsavedChangesModal', function() {
+        // User chose to leave - discard changes and navigate
+        discardChanges(redirectUrl);
+    });
+    
+    // Handle background click to close modal
+    $('#unsavedChangesModal').off('click.unsavedChangesModal').on('click.unsavedChangesModal', function(e) {
+        if (e.target === this) {
+            $(this).addClass('hidden').css('display', 'none');
+        }
+    });
+    
+    // Handle ESC key
+    $(document).off('keydown.unsavedChangesModal').on('keydown.unsavedChangesModal', function(e) {
+        if (e.keyCode === 27) { // ESC key
+            $('#unsavedChangesModal').addClass('hidden').css('display', 'none');
+            $(document).off('keydown.unsavedChangesModal');
+        }
+    });
+    
+    // Prevent modal content clicks from closing modal
+    $('.save-draft-modal-content').off('click.unsavedChangesModal').on('click.unsavedChangesModal', function(e) {
+        e.stopPropagation();
+    });
 }
 
 /**
