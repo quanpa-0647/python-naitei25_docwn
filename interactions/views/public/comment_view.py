@@ -34,7 +34,6 @@ def novel_comments(request, novel_slug):
 
 @login_required
 def add_comment(request, novel_slug):
-    print("POST data:", request.POST)
     novel = get_object_or_404(Novel, slug=novel_slug)
     
     if request.method == 'POST':

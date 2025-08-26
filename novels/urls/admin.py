@@ -10,6 +10,7 @@ urlpatterns = [
     path("requests/novel/<slug:slug>/", novel_request_detail, name="novel_request_detail"),
     path("requests/novel/<slug:slug>/approve/", admin_approve_novel, name="admin_approve_novel"),
     path("requests/novel/<slug:slug>/reject/", admin_reject_novel, name="admin_reject_novel"),
+    path("requests/novel/<slug:slug>/delete/", admin_delete_novel, name="admin_delete_novel"),
     path("requests/chapter/", request_chapter_admin, name="upload_chapter_requests"),
     path("requests/chapter/<slug:chapter_slug>/", chapter_review, name="chapter_review"),
     path("requests/chapter/<slug:chapter_slug>/approve/", approve_chapter_view, name="approve_chapter"),

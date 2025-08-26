@@ -20,6 +20,7 @@ from constants import (
 from interactions.services.notification_service import NotificationService
 from common.utils import send_notification_to_user
 from asgiref.sync import async_to_sync
+from django.utils import timezone
 
 @website_admin_required
 def Novels(request):  
@@ -178,3 +179,29 @@ def admin_reject_novel(request, slug):
         messages.error(request, _("Không thể từ chối tiểu thuyết này."))
     
     return redirect('admin:upload_novel_requests')
+
+@require_POST
+@website_admin_required
+def admin_delete_novel(request, slug):
+    """Soft delete novel by setting deleted_at"""
+    novel = NovelService.delete_novel(slug)
+    if novel:
+
+        # Tạo notification cho tác giả
+        notification = NotificationService.create_notification(
+            user=novel.created_by,
+            title=_("Truyện của bạn đã bị xóa"),
+            content=_("Truyện '%(title)s' của bạn đã bị xóa bởi admin.") % {"title": novel.name},
+            notification_type=NotificationTypeChoices.SYSTEM,
+        )
+
+        async_to_sync(send_notification_to_user)(
+            user_id=novel.created_by.id,
+            notification=notification
+        )
+
+        messages.success(request, _("Tiểu thuyết đã được xóa thành công."))
+    else:
+        messages.error(request, _("Tiểu thuyết không tồn tại hoặc đã bị xóa."))
+
+    return redirect('admin:admin_novels')

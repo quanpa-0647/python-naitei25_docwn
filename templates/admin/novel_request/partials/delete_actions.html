@@ -1,0 +1,16 @@
+{% load i18n %}
+{% if novel.approval_status == APPROVAL_STATUS.APPROVED %}
+<div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+  <form 
+        action="{% url 'admin:admin_delete_novel' novel.slug %}"
+        method="post"
+        class="d-inline"
+        onsubmit="return confirm('{% blocktrans %}Bạn có chắc muốn xóa truyện này?{% endblocktrans %}')"
+        >
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-check-circle me-1"></i> {% trans "Xóa" %}
+        </button>
+    </form>
+</div>
+{% endif %}
