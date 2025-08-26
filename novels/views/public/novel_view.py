@@ -11,11 +11,13 @@ from novels.models.reading_favorite import Favorite
 from novels.services import NovelService
 from novels.forms import NovelForm
 from django.core.paginator import Paginator
+from interactions.services import ReviewService
 from constants import (
     ApprovalStatus, ProgressStatus, DATE_FORMAT_DMY, MAX_CHAPTER_LIST,
     MAX_CHAPTER_LIST_PLUS, DATE_FORMAT_DMYHI, SEARCH_RESULTS_LIMIT,
     MAX_TRUNCATED_REJECTED_REASON_LENGTH, PAGINATION_PAGE_RANGE,
-    SUMMARY_TRUNCATE_WORDS, DEFAULT_RATING_AVERAGE, MIN_RATE, MAX_RATE
+    SUMMARY_TRUNCATE_WORDS, DEFAULT_RATING_AVERAGE, MIN_RATE, MAX_RATE,
+    MAX_LENGTH_REVIEW_CONTENT
 )
 from common.decorators import require_active_novel
 from novels.services.novel_service import FavoriteService, get_liked_novels
@@ -32,6 +34,11 @@ def novel_detail(request, novel_slug):
     if request.user.is_authenticated:
         is_favorited = Favorite.objects.filter(user=request.user, novel=novel).exists()
     
+    
+    user_has_reviewed = False
+    if request.user.is_authenticated:
+        user_has_reviewed = ReviewService.has_user_reviewed_novel(request.user, novel_data['novel'])
+
     context = {
         'is_owner': novel_data['is_owner'],
         'novel_slug': novel_slug,
@@ -44,6 +51,8 @@ def novel_detail(request, novel_slug):
         'MAX_CHAPTER_LIST': MAX_CHAPTER_LIST,
         'MAX_CHAPTER_LIST_PLUS': MAX_CHAPTER_LIST_PLUS,
         'rating_stars': range(MIN_RATE + 1, MAX_RATE + 1),
+        'user_has_reviewed': user_has_reviewed,
+        'MAX_LENGTH_REVIEW_CONTENT': MAX_LENGTH_REVIEW_CONTENT,
     }
     return render(request, "novels/pages/novel_detail.html", context)
 
