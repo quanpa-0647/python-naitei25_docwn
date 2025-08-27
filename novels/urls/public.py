@@ -7,6 +7,7 @@ urlpatterns = [
     path("finished/", finish_novels, name="finish_novels"),
     path("create/", NovelCreateView.as_view(), name="novel_create"),
     path("my-novels/", MyNovelsView.as_view(), name="my_novels"),
+    path("reading-history/", reading_history_view, name="reading_history"),
     path('upload-rules/novel/', novel_upload_rules, name='novel_upload_rules'),
     path('upload-rules/chapter/', chapter_upload_rules, name='chapter_upload_rules'),
     path('search/', search_novels, name='search_novels'),

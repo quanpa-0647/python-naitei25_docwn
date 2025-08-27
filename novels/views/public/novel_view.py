@@ -17,7 +17,7 @@ from constants import (
     MAX_CHAPTER_LIST_PLUS, DATE_FORMAT_DMYHI, SEARCH_RESULTS_LIMIT,
     MAX_TRUNCATED_REJECTED_REASON_LENGTH, PAGINATION_PAGE_RANGE,
     SUMMARY_TRUNCATE_WORDS, DEFAULT_RATING_AVERAGE, MIN_RATE, MAX_RATE,
-    MAX_LENGTH_REVIEW_CONTENT
+    MAX_LENGTH_REVIEW_CONTENT, NOVEL_PER_PAGE, DEFAULT_PAGE_NUMBER
 )
 from common.decorators import require_active_novel
 from novels.services.novel_service import FavoriteService, get_liked_novels
@@ -105,7 +105,7 @@ class MyNovelsView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         status_filter = self.request.GET.get('status')
-        page = self.request.GET.get('page', 1)
+        page = self.request.GET.get('page', DEFAULT_PAGE_NUMBER)
         return NovelService.get_user_novels_paginated(
             user=self.request.user,
             status_filter=status_filter,
@@ -153,6 +153,7 @@ def search_novels(request):
     artist = request.GET.get('artist', '').strip()
     status = request.GET.get('status', '').strip()
     sort = request.GET.get('sort', '').strip()
+    page = request.GET.get('page', DEFAULT_PAGE_NUMBER)
 
     novels = Novel.objects.filter(
     approval_status=ApprovalStatus.APPROVED.value,
@@ -181,16 +182,28 @@ def search_novels(request):
 
     novels = novels.select_related('author', 'artist').prefetch_related('tags').distinct()
 
-    novels = novels[:SEARCH_RESULTS_LIMIT]
+    # Add pagination
+    from django.core.paginator import Paginator
+    paginator = Paginator(novels, NOVEL_PER_PAGE)
+    page_obj = paginator.get_page(page)
 
-    for novel in novels:
+    for novel in page_obj:
         novel.tag_list = list(novel.tags.all())
         novel.rating_display = getattr(novel, 'rating_avg', DEFAULT_RATING_AVERAGE) if hasattr(novel, 'rating_avg') and novel.rating_avg > 0 else DEFAULT_RATING_AVERAGE
 
     all_tags = Tag.objects.all().order_by('name')
 
+    # Calculate pagination range
+    pagination_start = None
+    pagination_end = None
+    if page_obj:
+        current_page = page_obj.number
+        pagination_start = current_page - PAGINATION_PAGE_RANGE
+        pagination_end = current_page + PAGINATION_PAGE_RANGE
+
     context = {
-        'novels': novels,
+        'novels': page_obj.object_list,
+        'page_obj': page_obj,
         'query': query,
         'tags_selected': tags_selected,
         'filter_author': author,
@@ -198,9 +211,12 @@ def search_novels(request):
         'filter_status': status,
         'all_tags': all_tags,
         'filter_sort': sort,
-        'total_results': len(novels),
+        'total_results': paginator.count if page_obj else 0,
         'SUMMARY_TRUNCATE_WORDS': SUMMARY_TRUNCATE_WORDS,
         'DEFAULT_RATING_AVERAGE': DEFAULT_RATING_AVERAGE,
+        'PAGINATION_PAGE_RANGE': PAGINATION_PAGE_RANGE,
+        'pagination_start': pagination_start,
+        'pagination_end': pagination_end,
     }
     
     return render(request, 'novels/pages/search_results.html', context)

@@ -1,4 +1,4 @@
-from constants import UserRole
+from constants import UserRole, DATE_FORMAT_DMY, DATE_FORMAT_DMYHI
 from novels.models.reading_favorite import Favorite
 
 def user_context(request):
@@ -20,7 +20,9 @@ def user_context(request):
             'is_admin': request.user.role == UserRole.SYSTEM_ADMIN.value,
             'is_staff': request.user.role in [UserRole.WEBSITE_ADMIN.value, UserRole.SYSTEM_ADMIN.value],
             'user_novel_count': novel_count,
-            'user_like_novel_count' : user_like_novel_count
+            'user_like_novel_count' : user_like_novel_count,
+            'DATE_FORMAT_DMY': DATE_FORMAT_DMY,
+            'DATE_FORMAT_DMYHI': DATE_FORMAT_DMYHI,
         })
     
     return context

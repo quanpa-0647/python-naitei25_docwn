@@ -61,6 +61,11 @@
         <i class="fas fa-user-edit"></i>
         {% trans "Tiểu thuyết của tôi" %}
       </li>
+    {% elif request.resolver_match.url_name == 'reading_history' %}
+      <li class="breadcrumb-item active" aria-current="page">
+        <i class="fas fa-history"></i>
+        {% trans "Lịch sử đọc" %}
+      </li>
     {% elif request.resolver_match.url_name == 'novel_create' %}
       <li class="breadcrumb-item">
         <a href="{% url 'novels:my_novels' %}">
