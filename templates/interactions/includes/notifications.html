@@ -27,9 +27,9 @@
                     <i class="bx bx-info-circle text-primary"></i>
                 </div>
                 <div class="notification-content flex-grow-1">
-                    <div class="notification-title fw-bold"><a href="{{ notification.link }}">{{ notification.title }}</a></div>
-                    <div class="notification-message text-muted small">{{ notification.content }}</div>
-                    <div class="notification-time text-muted small">
+                    <div class="notification-title"><a href="{{ notification.link }}">{{ notification.title }}</a></div>
+                    <div class="notification-message">{{ notification.content }}</div>
+                    <div class="notification-time">
                         <i class="bx bx-time"></i>
                         {{ notification.created_at|timesince }} {% trans "trước" %}
                     </div>
@@ -43,7 +43,7 @@
         </div>
         {% endfor %}
         {% else %}
-        <div class="dropdown-item-text text-center text-muted py-3">
+        <div class="dropdown-item-text text-center text-muted">
             <i class="bx bx-bell-off fs-1"></i>
             <div class="mt-2">{% trans "Không có thông báo nào" %}</div>
         </div>
@@ -51,15 +51,10 @@
     </div>
     
     <!-- Loading indicator -->
-    <div class="text-center py-2 d-none" id="loadingIndicator">
+    <div class="text-center d-none" id="loadingIndicator">
         <div class="spinner-border spinner-border-sm text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+            <span class="visually-hidden">{% trans "Loading..." %}</span>
         </div>
-    </div>
-    
-    <div class="dropdown-divider"></div>
-    <div class="dropdown-item-text text-center">
-        <a href="#" class="text-decoration-none small">{% trans "Xem tất cả thông báo" %}</a>
     </div>
 </div>
 
@@ -68,4 +63,3 @@
         <script src="{% static 'interactions/js/notifications.js' %}"></script>
     {% endif %}
 {% endblock %}
-

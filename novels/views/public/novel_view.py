@@ -55,6 +55,7 @@ def novel_detail(request, novel_slug):
         'user_has_reviewed': user_has_reviewed,
         'MAX_LENGTH_REVIEW_CONTENT': MAX_LENGTH_REVIEW_CONTENT,
     }
+
     return render(request, "novels/pages/novel_detail.html", context)
 
 class NovelCreateView(LoginRequiredMixin, CreateView):

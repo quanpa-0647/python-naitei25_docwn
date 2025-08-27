@@ -19,7 +19,7 @@
             {% for novel in top_novels %}
             <tr>
               <td>{{ forloop.counter }}</td>
-              <td>{{ novel.title }}</td>
+              <td>{{ novel.name }}</td>
               <td>{{ novel.views }}</td>
             </tr>
             {% endfor %}
@@ -44,7 +44,7 @@
             {% for novel in new_novels %}
             <tr>
               <td>{{ forloop.counter }}</td>
-              <td>{{ novel.title }}</td>
+              <td>{{ novel.name }}</td>
               <td>{{ novel.date }}</td>
             </tr>
             {% endfor %}

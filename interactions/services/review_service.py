@@ -108,7 +108,7 @@ class ReviewService:
         novel = get_object_or_404(Novel, slug=novel_slug, deleted_at__isnull=True)
 
         # kiểm tra duplicate
-        if Review.objects.filter(user=user, novel=novel).exists():
+        if Review.objects.filter(user=user, novel=novel, is_active=True).exists():
             raise IntegrityError("duplicate")
 
         form = ReviewForm(data, user=user, novel=novel)
@@ -149,9 +149,8 @@ class ReviewService:
     def delete_review(novel_slug, review_id):
         novel = get_object_or_404(Novel, slug=novel_slug, deleted_at__isnull=True)
         review = get_object_or_404(Review, pk=review_id, novel=novel, is_active=True)
-        review.is_active = False
-        review.save()
-        return review
+        review.delete()
+        return True
     
     @staticmethod
     def has_user_reviewed_novel(user, novel):

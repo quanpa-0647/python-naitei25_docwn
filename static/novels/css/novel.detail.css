@@ -40,6 +40,7 @@
 
 .right {
   flex: 1;
+  position: relative;
 }
 
 /* Novel header with edit button */
@@ -631,4 +632,250 @@ hr {
 .novel-image-placeholder.admin-thumbnail-placeholder {
   height: 250px;
   font-size: 3rem;
+}
+
+.status-corner {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.novel-status {
+    background: #007bff;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.status-draft {
+    background-color: #f7fafc;
+    color: #4a5568;
+    border: 1px solid #e2e8f0;
+}
+
+.status-pending {
+    background-color: #fef5e7;
+    color: #d69e2e;
+    border: 1px solid #f6e05e;
+}
+
+.status-approved {
+    background-color: #f0fff4;
+    color: #38a169;
+    border: 1px solid #9ae6b4;
+}
+
+.status-rejected {
+    background-color: #fed7d7;
+    color: #e53e3e;
+    border: 1px solid #feb2b2;
+}
+
+.rejection-box {
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.rejection-header {
+    background: #fed7d7;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rejection-title {
+    font-weight: 600;
+    color: #c53030;
+}
+
+.rejection-body {
+    padding: 15px;
+}
+
+.rejection-reason {
+    color: #2d3748;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.rejection-date {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.chapter-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.chapter-date {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.chapter-status {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.status-approved {
+    background-color: #f0fff4;
+    color: #38a169;
+    border: 1px solid #9ae6b4;
+}
+
+.status-pending {
+    background-color: #fef5e7;
+    color: #d69e2e;
+    border: 1px solid #f6e05e;
+}
+
+.status-rejected {
+    background-color: #fed7d7;
+    color: #e53e3e;
+    border: 1px solid #feb2b2;
+}
+
+.chapter-link-disabled {
+    color: #9ca3af;
+    text-decoration: none;
+    cursor: not-allowed;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+}
+
+.chapter-link-disabled:hover {
+    color: #6b7280;
+}
+
+.chapter-link-disabled i {
+    font-size: 14px;
+}
+
+/* Tắt tooltip mặc định của browser */
+.chapter-link-disabled[data-tooltip] {
+    position: relative;
+}
+
+/* Tooltip styling với kích thước linh hoạt */
+.chapter-link-disabled[data-tooltip]:hover::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1f2937;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+    z-index: 1000;
+    
+    /* Kích thước linh hoạt */
+    min-width: 200px;
+    max-width: 400px;
+    width: max-content;
+    
+    /* Text formatting */
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    text-align: left;
+    
+    /* Animation */
+    opacity: 0;
+    animation: tooltipFadeIn 0.2s ease-out forwards;
+    
+    /* Shadow cho đẹp */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Mũi tên tooltip */
+.chapter-link-disabled[data-tooltip]:hover::after {
+    content: "";
+    position: absolute;
+    bottom: calc(100% + 2px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #1f2937;
+    z-index: 1001;
+    opacity: 0;
+    animation: tooltipFadeIn 0.2s ease-out forwards;
+}
+
+/* Animation cho tooltip */
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Responsive cho tooltip */
+@media (max-width: 768px) {
+    .chapter-link-disabled[title]:hover::before {
+        min-width: 150px;
+        max-width: 280px;
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+}
+
+/* Đảm bảo tooltip không bị cắt ở cạnh màn hình */
+.chapter-list {
+    position: relative;
+    overflow: visible;
+}
+
+.chapter-item {
+    position: relative;
+}
+
+/* Tooltip positioning cho các item ở cạnh trái */
+.chapter-item:first-child .chapter-link-disabled[title]:hover::before,
+.chapter-item:nth-child(2) .chapter-link-disabled[title]:hover::before {
+    left: 0;
+    transform: translateX(0);
+}
+
+.chapter-item:first-child .chapter-link-disabled[title]:hover::after,
+.chapter-item:nth-child(2) .chapter-link-disabled[title]:hover::after {
+    left: 20px;
+    transform: translateX(0);
+}
+
+/* Tooltip positioning cho các item ở cạnh phải */
+.chapter-item:last-child .chapter-link-disabled[title]:hover::before,
+.chapter-item:nth-last-child(2) .chapter-link-disabled[title]:hover::before {
+    right: 0;
+    left: auto;
+    transform: translateX(0);
+}
+
+.chapter-item:last-child .chapter-link-disabled[title]:hover::after,
+.chapter-item:nth-last-child(2) .chapter-link-disabled[title]:hover::after {
+    right: 20px;
+    left: auto;
+    transform: translateX(0);
 }

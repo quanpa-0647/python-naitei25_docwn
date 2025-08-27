@@ -480,22 +480,41 @@ class NovelReviews {
             const data = await response.json();
 
             if (data.success) {
+                // Get review info before removing
+                const reviewItem = $(`.review-item[data-review-id="${reviewId}"]`);
+                const reviewUserId = reviewItem.data('user-id') || 
+                                    reviewItem.find('.user-profile-link').data('user-id');
+                
                 // Remove the review item from DOM
-                $(`.review-item[data-review-id="${reviewId}"]`).fadeOut(300, function() {
-                    $(this).remove();
+                reviewItem.fadeOut(300, () => {
+                    reviewItem.remove();
+                    
+                    // Check if there are any reviews left after removal
+                    const remainingReviews = $('.review-item').length;
+                    
+                    if (remainingReviews === 0) {
+                        // Show empty state
+                        $('.reviews-list').hide();
+                        $('.reviews-empty').show();
+                        
+                        // Hide load more button container
+                        $('.load-more-container').hide();
+                    }
                 });
                 
                 // Update review count
                 const currentCount = parseInt($('.review-count').text().replace(/[()]/g, ''));
-                $('.review-count').text(`(${currentCount - 1})`);
+                const newCount = Math.max(0, currentCount - 1);
+                $('.review-count').text(`(${newCount})`);
                 
                 // If this was the current user's review, re-enable add review button
-                const reviewItem = $(`.review-item[data-review-id="${reviewId}"]`);
-                const reviewUserId = reviewItem.data('user-id');
-                if (this.currentUser && reviewUserId === this.currentUser.id) {
+                if (this.currentUser && 
+                    (reviewUserId === this.currentUser.id || 
+                    reviewItem.find(`[data-username="${this.currentUser.username}"]`).length > 0)) {
                     this.userHasReviewed = false;
                     $('#add-review-btn')
                         .prop('disabled', false)
+                        .removeClass('disabled')
                         .attr('title', gettext('Thêm đánh giá của bạn'));
                 }
                 

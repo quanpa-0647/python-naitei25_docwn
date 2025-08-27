@@ -16,7 +16,7 @@
       <div class="group-header">
         <img src="{{ novel.created_by.profile.get_avatar }}" alt="Avatar">
         <span class="group-user">
-          {{ novel.created_by }}
+          {{ novel.created_by.username }}
           {% if novel.is_anonymous %}
             <span class="badge badge-secondary ms-1" title="{% trans 'Tiểu thuyết này đăng ẩn người đăng' %}">
               <i class="bx bx-hide"></i> {% trans "Ẩn danh" %}
@@ -27,7 +27,7 @@
       <div class="group-body">
         <p class="group-label">{% trans "Người đăng" %}</p>
         <p class="group-name">
-          {{ novel.created_by }}
+          {{ novel.created_by.username }}
           {% if novel.is_anonymous %}
             <small class="text-muted d-block">
               <i class="bx bx-info-circle"></i> {% trans "Hiển thị ẩn danh với người khác" %}
@@ -37,12 +37,22 @@
       </div>
     {% endif %}
   </div>
-  <div class="custom-box">
-    <p class="box-title">{% trans "Chú thích thêm" %}</p>
-    <ul class="note-links">
-      <li><a href="#">Eng</a></li>
-      <li><a href="#">Jap</a></li>
-    </ul>
-    <button class="post-btn">{% trans "+ Tạo bài viết" %}</button>
-  </div>
+
+  {% if novel.rejected_reason and is_owner %}
+    <div class="rejection-box">
+      <div class="rejection-header">
+        <i class="bx bx-x-circle text-danger"></i>
+        <span class="rejection-title">{% trans "Lý do từ chối" %}</span>
+      </div>
+      <div class="rejection-body">
+        <p class="rejection-reason">{{ novel.rejected_reason }}</p>
+        {% if novel.rejected_at %}
+          <small class="rejection-date text-muted">
+            <i class="bx bx-time"></i>
+            {% trans "Từ chối lúc:" %} {{ novel.rejected_at|date:DATE_FROMAT_DMY }}
+          </small>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
 </div>
