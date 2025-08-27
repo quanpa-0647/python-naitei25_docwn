@@ -18,10 +18,15 @@ from constants import (
     MAX_CHAPTER_LIST_PLUS, DATE_FORMAT_DMYHI, SEARCH_RESULTS_LIMIT,
     MAX_TRUNCATED_REJECTED_REASON_LENGTH, PAGINATION_PAGE_RANGE,
     SUMMARY_TRUNCATE_WORDS, DEFAULT_RATING_AVERAGE, MIN_RATE, MAX_RATE,
-    MAX_LENGTH_REVIEW_CONTENT, NOVEL_PER_PAGE, DEFAULT_PAGE_NUMBER
+    MAX_LENGTH_REVIEW_CONTENT, NOVEL_PER_PAGE, DEFAULT_PAGE_NUMBER,
+    NotificationTypeChoices, UserRole
 )
 from common.decorators import require_active_novel
 from novels.services.novel_service import FavoriteService, get_liked_novels
+from interactions.services.notification_service import NotificationService
+from common.utils import send_notification_to_user
+from asgiref.sync import async_to_sync
+from accounts.models.user import User
 
 @require_active_novel
 def novel_detail(request, novel_slug):
@@ -96,6 +101,29 @@ class NovelCreateView(LoginRequiredMixin, CreateView):
         tags = form.cleaned_data.get("tags")
         if tags:
             self.object.tags.set(tags)
+
+        if form.instance.approval_status == ApprovalStatus.PENDING.value:
+            admins = User.objects.filter(role=UserRole.WEBSITE_ADMIN.value)
+            for admin in admins:
+                # Tạo notification trong DB và gán related_object
+                notification = NotificationService.create_notification(
+                    user=admin,
+                    title=_("Có tiểu thuyết mới cần duyệt"),
+                    content=_("Người dùng %(username)s đã đăng tiểu thuyết '%(title)s'.") % {
+                        "username": self.request.user.username,
+                        "title": self.object.name,
+                    },
+                    notification_type=NotificationTypeChoices.SYSTEM,
+                )
+                # Gán đối tượng liên quan để attach_link có thể xử lý
+                notification.related_object = self.object
+
+                # Gửi SSE
+                async_to_sync(send_notification_to_user)(
+                    user_id=admin.id,
+                    notification=notification
+                )
+
 
         return response
 
