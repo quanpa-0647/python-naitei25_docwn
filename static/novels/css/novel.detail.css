@@ -42,6 +42,64 @@
   flex: 1;
 }
 
+/* Novel header with edit button */
+.novel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.novel-header h1 {
+  margin: 0;
+  flex: 1;
+  font-size: 27px;
+}
+
+.owner-actions {
+  margin-left: 20px;
+  flex-shrink: 0;
+}
+
+.btn-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-edit:hover {
+  background-color: #0056b3;
+  color: white;
+  text-decoration: none;
+}
+
+.btn-edit i {
+  font-size: 12px;
+}
+
+/* Responsive design for edit button */
+@media (max-width: 768px) {
+  .novel-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .owner-actions {
+    margin-left: 0;
+    align-self: flex-start;
+  }
+}
+
 .sub {
   color: var(--bs-secondary-color);
   margin-bottom: 10px;
@@ -127,6 +185,12 @@
 }
 
 .right h1 {
+  font-size: 27px;
+  margin-bottom: 5px;
+}
+
+/* Override for novels with headers */
+.novel-header h1 {
   font-size: 27px;
   margin-bottom: 5px;
 }

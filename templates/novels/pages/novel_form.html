@@ -27,7 +27,15 @@
     <!-- Include Image Preview Template -->
     {% include "novels/includes/image_preview_template.html" %}
     
-    <!-- Include Save Draft Modal -->
-    {% include "novels/includes/save_draft_modal.html" %}
+    <!-- Include Save Draft Modal (only for create mode) -->
+    {% if not is_update %}
+        {% include "novels/includes/save_draft_modal.html" %}
+    {% else %}
+        {% include "novels/includes/unsaved_changes_modal.html" %}
+    {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'novels/js/novel_form.js' %}" defer></script>
 {% endblock %}
