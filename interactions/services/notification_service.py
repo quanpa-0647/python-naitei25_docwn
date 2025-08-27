@@ -4,6 +4,7 @@ from interactions.models import Notification
 from constants import (
     NotificationTypeChoices
 )
+from novels.models.chapter import Chapter
 from novels.models.novel import Novel
 from django.urls import reverse
 
@@ -43,5 +44,12 @@ class NotificationService:
         if obj:
             if isinstance(obj, Novel):
                 return reverse("novels:novel_detail", kwargs={"novel_slug": obj.slug})
-
+            if isinstance(obj, Chapter):
+                return reverse(
+                    "novels:chapter_detail",
+                    kwargs={
+                        "novel_slug": obj.volume.novel.slug, 
+                        "chapter_slug": obj.slug,
+                    }
+                )
         return "#"

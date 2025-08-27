@@ -22,12 +22,12 @@
         {% for notification in notifications %}
         <div class="dropdown-item notification-item {% if not notification.is_read %}unread{% endif %}" 
              data-notification-id="{{ notification.id }}">
-            <div class="d-flex align-items-start">
+            <a href="{{ notification.link }}" class="d-flex align-items-start">
                 <div class="notification-icon me-2">
                     <i class="bx bx-info-circle text-primary"></i>
                 </div>
                 <div class="notification-content flex-grow-1">
-                    <div class="notification-title"><a href="{{ notification.link }}">{{ notification.title }}</a></div>
+                    <div class="notification-title">{{ notification.title }}</div>
                     <div class="notification-message">{{ notification.content }}</div>
                     <div class="notification-time">
                         <i class="bx bx-time"></i>
@@ -39,7 +39,7 @@
                     <span class="badge bg-primary rounded-pill">&nbsp;</span>
                 </div>
                 {% endif %}
-            </div>
+            </a>
         </div>
         {% endfor %}
         {% else %}

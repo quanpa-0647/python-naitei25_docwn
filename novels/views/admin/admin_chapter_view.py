@@ -16,6 +16,7 @@ from constants import (
     DEFAULT_PAGE_NUMBER,
     DATE_FORMAT_DMY,
 )
+from novels.views.public.chapter_view import notify_favorites_chapter_approved
 
 @website_admin_required
 def request_chapter_admin(request):
@@ -76,7 +77,11 @@ def approve_chapter_view(request, chapter_slug):
         messages.warning(request, _('Chương này đã được duyệt rồi.'))
         return redirect('admin:chapter_review', chapter_slug=chapter.slug)
     
+    was_approved = chapter.approved
+    
     ChapterService.approve_chapter(chapter)
+    if not was_approved and chapter.approved:
+        notify_favorites_chapter_approved(chapter)
 
     messages.success(request, _('Chương "%(title)s" đã được duyệt thành công!') % {'title': chapter.title})
     return redirect('admin:chapter_review', chapter_slug=chapter.slug)
