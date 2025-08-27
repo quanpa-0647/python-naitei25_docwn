@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load status_filters %}
 
 {% for volume in volumes %}
   {% if volume.chapter_list %}
@@ -22,15 +23,30 @@
             {% if forloop.counter <= MAX_CHAPTER_LIST %}
               <div class="chapter-item">
                 <div class="chapter-content">
-                  <a href="{% url 'novels:chapter_detail' novel_slug=novel.slug chapter_slug=chapter.slug %}">
-                    {{ chapter.title }}
-                    {% if not chapter.approved %}
-                      <span class="badge badge-warning">{% trans "Chờ duyệt" %}</span>
-                    {% elif chapter.is_hidden %}
-                      <span class="badge badge-secondary">{% trans "Ẩn" %}</span>
+                  {% if chapter.rejected_reason %}
+                    <span class="chapter-link-disabled" data-tooltip="{% trans 'Lý do từ chối:' %} {{ chapter.rejected_reason }}">
+                      {{ chapter.title }}
+                      <i class="bx bx-lock text-muted"></i>
+                    </span>
+                  {% else %}
+                    <a href="{% url 'novels:chapter_detail' novel_slug=novel.slug chapter_slug=chapter.slug %}">
+                      {{ chapter.title }}
+                      {% if not chapter.approved %}
+                        <span class="badge badge-warning">{% trans "Chờ duyệt" %}</span>
+                      {% elif chapter.is_hidden %}
+                        <span class="badge badge-secondary">{% trans "Ẩn" %}</span>
+                      {% endif %}
+                    </a>
+                  {% endif %}
+                  <div class="chapter-meta">
+                    <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
+                    {% if is_owner %}
+                      <span class="chapter-status {{ chapter|chapter_status_class }}">
+                        <i class="bx {{ chapter|chapter_status_icon }}"></i>
+                        {{ chapter|chapter_status_label }}
+                      </span>
                     {% endif %}
-                  </a>
-                  <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
+                  </div>
                 </div>
                 {% if is_owner %}
                   <div class="chapter-actions">
@@ -49,15 +65,30 @@
               <div id="extraChapters{{ volume.id }}" class="chapter-extra hidden">
                 <div class="chapter-item">
                   <div class="chapter-content">
-                    <a href="{% url 'novels:chapter_detail' novel_slug=novel.slug chapter_slug=chapter.slug %}">
-                      {{ chapter.title }}
-                      {% if not chapter.approved %}
-                        <span class="badge badge-warning">{% trans "Chờ duyệt" %}</span>
-                      {% elif chapter.is_hidden %}
-                        <span class="badge badge-secondary">{% trans "Ẩn" %}</span>
+                    {% if chapter.rejected_reason %}
+                      <span class="chapter-link-disabled" data-tooltip="{% trans 'Lý do từ chối:' %} {{ chapter.rejected_reason }}">
+                        {{ chapter.title }}
+                        <i class="bx bx-lock text-muted"></i>
+                      </span>
+                    {% else %}
+                      <a href="{% url 'novels:chapter_detail' novel_slug=novel.slug chapter_slug=chapter.slug %}">
+                        {{ chapter.title }}
+                        {% if not chapter.approved %}
+                          <span class="badge badge-warning">{% trans "Chờ duyệt" %}</span>
+                        {% elif chapter.is_hidden %}
+                          <span class="badge badge-secondary">{% trans "Ẩn" %}</span>
+                        {% endif %}
+                      </a>
+                    {% endif %}
+                    <div class="chapter-meta">
+                      <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
+                      {% if is_owner %}
+                        <span class="chapter-status {{ chapter|chapter_status_class }}">
+                          <i class="bx {{ chapter|chapter_status_icon }}"></i>
+                          {{ chapter|chapter_status_label }}
+                        </span>
                       {% endif %}
-                    </a>
-                    <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
+                    </div>
                   </div>
                   {% if is_owner %}
                     <div class="chapter-actions">
@@ -75,15 +106,30 @@
             {% else %}
                 <div class="chapter-item">
                   <div class="chapter-content">
-                    <a href="{% url 'novels:chapter_detail' novel_slug=novel.slug chapter_slug=chapter.slug %}">
-                      {{ chapter.title }}
-                      {% if not chapter.approved %}
-                        <span class="badge badge-warning">{% trans "Chờ duyệt" %}</span>
-                      {% elif chapter.is_hidden %}
-                        <span class="badge badge-secondary">{% trans "Ẩn" %}</span>
+                    {% if chapter.rejected_reason %}
+                      <span class="chapter-link-disabled" data-tooltip="{% trans 'Lý do từ chối:' %} {{ chapter.rejected_reason }}">
+                        {{ chapter.title }}
+                        <i class="bx bx-lock text-muted"></i>
+                      </span>
+                    {% else %}
+                      <a href="{% url 'novels:chapter_detail' novel_slug=novel.slug chapter_slug=chapter.slug %}">
+                        {{ chapter.title }}
+                        {% if not chapter.approved %}
+                          <span class="badge badge-warning">{% trans "Chờ duyệt" %}</span>
+                        {% elif chapter.is_hidden %}
+                          <span class="badge badge-secondary">{% trans "Ẩn" %}</span>
+                        {% endif %}
+                      </a>
+                    {% endif %}
+                    <div class="chapter-meta">
+                      <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
+                      {% if is_owner %}
+                        <span class="chapter-status {{ chapter|chapter_status_class }}">
+                          <i class="bx {{ chapter|chapter_status_icon }}"></i>
+                          {{ chapter|chapter_status_label }}
+                        </span>
                       {% endif %}
-                    </a>
-                    <span class="chapter-date">{{ chapter.created_at|date:DATE_FORMAT_DMY }}</span>
+                    </div>
                   </div>
                   {% if is_owner %}
                     <div class="chapter-actions">

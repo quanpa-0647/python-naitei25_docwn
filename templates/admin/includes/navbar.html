@@ -24,12 +24,24 @@
           <input type="text" class="search-input" id="searchInput" placeholder="Tìm kiếm..." />
           <i class="bx bx-search search-icon" id="searchIcon"></i>
         </div> {% endcomment %}
-         
-  <i class="bx bx-bell bx-flip-horizontal bx-tada "></i>
-      <button id="toggleThemeBtn" class="btn btn-outline-secondary d-flex align-items-center gap-2 text-white">
-        <i class="bx bx-moon-star"></i>
-        <span>{% trans "Dark" %}</span>
-      </button>
+        <div class="dropdown notification-dropdown">
+          <button
+            class="btn btn-link position-relative text-body"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            id="notificationBtn"
+          >
+            <i class="bx bx-bell bx-flip-horizontal bx-tada fs-2"></i>
+            {% if unread_notification_count > 0 %}
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              {{ unread_notification_count }}
+              <span class="visually-hidden">u{% trans "Unread Notifications" %}</span>
+            </span>
+            {% endif %}
+          </button>
+          {% include "interactions/includes/notifications.html" %}
+        </div>
     </div>
     </div>
   </div>

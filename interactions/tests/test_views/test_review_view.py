@@ -202,7 +202,7 @@ class TestCreateReviewView(TestCase):
         # Mock novel
         self.mock_novel = Mock(spec=Novel)
         self.mock_novel.slug = self.novel_slug
-        self.mock_novel.title = 'Test Novel'
+        self.mock_novel.name = 'Test Novel'
         self.mock_novel.created_by = self.user
         
         # Mock review

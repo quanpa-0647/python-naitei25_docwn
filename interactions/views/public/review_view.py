@@ -80,7 +80,7 @@ def create_review(request, novel_slug):
         notification = NotificationService.create_notification(
             user=novel.created_by,
             title=_("Đánh giá mới"),
-            content=_("Tiểu thuyết của bạn '%s' vừa nhận được đánh giá mới.") % novel.title,
+            content=_("Tiểu thuyết của bạn '%s' vừa nhận được đánh giá mới.") % novel.name,
             notification_type=NotificationTypeChoices.REVIEW,
             related_object=review
         )
@@ -106,11 +106,18 @@ def create_review(request, novel_slug):
                 },
             },
         })
-    except IntegrityError:
-        return JsonResponse({
-            "success": False,
-            "message": _("Bạn đã đánh giá cuốn tiểu thuyết này rồi."),
-        })
+    except IntegrityError as e:
+        print(e)
+        if str(e) == "duplicate":
+            return JsonResponse({
+                "success": False,
+                "message": _("Bạn đã đánh giá cuốn tiểu thuyết này rồi."),
+            })
+        else:
+            return JsonResponse({
+                "success": False,
+                "message": _("Có lỗi xảy ra khi thêm đánh giá."),
+            }, status=HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
 @require_http_methods(["POST"])

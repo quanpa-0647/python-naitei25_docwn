@@ -138,15 +138,15 @@ class SSENotificationManager {
             top: 80px; 
             right: 20px; 
             z-index: 9999;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; 
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0fff0 100%);
+            color: #2d5016; 
             padding: 16px 20px;
             border-radius: 12px; 
             max-width: 380px; 
             min-width: 280px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 32px rgba(45, 80, 22, 0.15);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(144, 238, 144, 0.3);
             animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             transition: all 0.3s ease;
@@ -155,12 +155,12 @@ class SSENotificationManager {
         popup.innerHTML = `
             <div style="display: flex; align-items: start; gap: 12px;">
                 <div style="
-                    background: rgba(255,255,255,0.2); 
+                    background: rgba(144, 238, 144, 0.3); 
                     border-radius: 50%; 
                     padding: 8px; 
                     flex-shrink: 0;
                 ">
-                    <i class="bx bx-bell" style="font-size: 18px;"></i>
+                    <i class="bx bx-bell" style="font-size: 18px; color: #4a7c59;"></i>
                 </div>
                 <div style="flex-grow: 1; min-width: 0;">
                     <div style="
@@ -168,29 +168,32 @@ class SSENotificationManager {
                         margin-bottom: 6px; 
                         font-size: 15px;
                         line-height: 1.3;
+                        color: #2d5016;
                     ">${this.escapeHtml(notification.title)}</div>
                     <div style="
                         font-size: 13px; 
                         line-height: 1.4; 
-                        opacity: 0.9;
+                        opacity: 0.8;
+                        color: #4a7c59;
                         word-wrap: break-word;
                     ">${this.escapeHtml(notification.content)}</div>
                     <div style="
                         font-size: 11px; 
-                        opacity: 0.7; 
+                        opacity: 0.6; 
                         margin-top: 6px;
                         display: flex;
                         align-items: center;
                         gap: 4px;
+                        color: #6b8e23;
                     ">
                         <i class="bx bx-time"></i>
                         ${gettext("Vừa xong")}
                     </div>
                 </div>
                 <button onclick="this.parentElement.parentElement.remove()" style="
-                    background: rgba(255,255,255,0.2); 
+                    background: rgba(144, 238, 144, 0.2); 
                     border: none; 
-                    color: white;
+                    color: #4a7c59;
                     cursor: pointer; 
                     font-size: 16px;
                     border-radius: 50%;
@@ -201,20 +204,20 @@ class SSENotificationManager {
                     justify-content: center;
                     flex-shrink: 0;
                     transition: all 0.2s ease;
-                " onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
-                   onmouseout="this.style.background='rgba(255,255,255,0.2)'">×</button>
+                " onmouseover="this.style.background='rgba(144, 238, 144, 0.4)'" 
+                   onmouseout="this.style.background='rgba(144, 238, 144, 0.2)'">×</button>
             </div>
         `;
         
         // Add hover effects
         popup.addEventListener('mouseenter', () => {
             popup.style.transform = 'translateY(-2px)';
-            popup.style.boxShadow = '0 12px 40px rgba(0,0,0,0.4)';
+            popup.style.boxShadow = '0 12px 40px rgba(45, 80, 22, 0.2)';
         });
         
         popup.addEventListener('mouseleave', () => {
             popup.style.transform = 'translateY(0)';
-            popup.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3)';
+            popup.style.boxShadow = '0 8px 32px rgba(45, 80, 22, 0.15)';
         });
         
         // Click to dismiss
@@ -439,6 +442,7 @@ class NotificationListManager {
         })
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             if (data.success && data.notifications.length > 0) {
                 this.offset += data.notifications.length;
                 this.appendNotifications(data.notifications);

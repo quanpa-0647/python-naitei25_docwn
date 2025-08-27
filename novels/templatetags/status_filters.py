@@ -30,3 +30,39 @@ def status_class(status):
         ApprovalStatus.APPROVED.value: "status-approved", 
         ApprovalStatus.REJECTED.value: "status-rejected",
     }.get(status, "status-unknown")
+    
+@register.filter(name="chapter_status_label")
+def chapter_status_label(chapter):
+    if chapter.approved:
+        return _("Đã duyệt")
+    elif chapter.rejected_reason:
+        return _("Bị từ chối")
+    else:
+        return _("Chờ duyệt")
+
+@register.filter(name="chapter_status_icon")
+def chapter_status_icon(chapter):
+    if chapter.approved:
+        return "bx-check"
+    elif chapter.rejected_reason:
+        return "bx-x"
+    else:
+        return "bx-time"
+
+@register.filter(name="chapter_status_class")
+def chapter_status_class(chapter):
+    if chapter.approved:
+        return "status-approved"
+    elif chapter.rejected_reason:
+        return "status-rejected"
+    else:
+        return "status-pending"
+
+@register.filter(name="chapter_status_type")
+def chapter_status_type(chapter):
+    if chapter.approved:
+        return "approved"
+    elif chapter.rejected_reason:
+        return "rejected"
+    else:
+        return "pending"

@@ -39,13 +39,15 @@
           {% include "novels/includes/summary.html" %}
         </div>
 
-        {% include "novels/includes/volume_list.html" %}
-        
-        {% include "interactions/includes/reviews.html" %}
-        
-        <div id="comment-container"
-        data-url="{% url 'interactions:novel_comments' novel.slug %}">
-        </div>
+        {% if not novel.rejected_reason %}
+          {% include "novels/includes/volume_list.html" %}
+          
+          {% include "interactions/includes/reviews.html" %}
+          
+          <div id="comment-container"
+          data-url="{% url 'interactions:novel_comments' novel.slug %}">
+          </div>
+        {% endif %}
       </div>
 
       {% include "novels/includes/sidebar.html" %}
