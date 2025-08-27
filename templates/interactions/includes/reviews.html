@@ -2,10 +2,72 @@
 
 <div class="reviews-section" data-novel-slug="{{ novel.slug }}">
     <div class="reviews-header">
-        <h3 class="reviews-title">
-            {% trans "Đánh giá" %}
-            <span class="review-count">({{ novel.total_reviews }})</span>
-        </h3>
+        <div class="reviews-title-section">
+            <h3 class="reviews-title">
+                {% trans "Đánh giá" %}
+                <span class="review-count">({{ novel.total_reviews }})</span>
+            </h3>
+            
+            <!-- Add Review Button -->
+            <div class="add-review-container">
+                <button id="add-review-btn" class="add-review-btn" 
+                        {% if not user.is_authenticated %}
+                            disabled 
+                            title="{% trans 'Cần đăng nhập để bình luận' %}"
+                        {% elif user_has_reviewed %}
+                            disabled
+                            title="{% trans 'Bạn đã đánh giá cuốn tiểu thuyết này rồi' %}"
+                        {% else %}
+                            title="{% trans 'Thêm đánh giá của bạn' %}"
+                        {% endif %}>
+                    <i class="fas fa-plus"></i>
+                    {% trans "Thêm đánh giá" %}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Review Form -->
+    <div class="add-review-form" id="add-review-form" style="display: none;">
+        <div class="review-form-container">
+            <h4 class="form-title">{% trans "Thêm đánh giá của bạn" %}</h4>
+            
+            <form id="review-form">
+                <div class="form-group">
+                    <label for="review-rating" class="form-label">{% trans "Đánh giá" %}</label>
+                    <select id="review-rating" class="form-select rating-select" required>
+                        <option value="">{% trans "Chọn số sao" %}</option>
+                        {% for rating in rating_stars %}
+                        <option value="{{ rating }}">{{ rating }} {% trans "sao" %}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="review-content" class="form-label">{% trans "Nội dung đánh giá" %}</label>
+                    <textarea id="review-content" 
+                              class="form-control" 
+                              rows="5" 
+                              maxlength="{{ MAX_LENGTH_REVIEW_CONTENT }}"
+                              placeholder="{% trans 'Chia sẻ cảm nhận của bạn về cuốn tiểu thuyết này...' %}" 
+                              required></textarea>
+                    <div class="char-counter">
+                        <span id="char-count">0</span>/{{ MAX_LENGTH_REVIEW_CONTENT }} {% trans "ký tự" %}
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        {% trans "Đăng đánh giá" %}
+                    </button>
+                    <button type="button" class="btn btn-secondary cancel-form-btn">
+                        <i class="fas fa-times"></i>
+                        {% trans "Hủy" %}
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Rating Filter -->
@@ -50,3 +112,20 @@
         <p>{% trans "Hãy là người đầu tiên chia sẻ cảm nhận về cuốn tiểu thuyết này!" %}</p>
     </div>
 </div>
+
+<!-- Include user data for JavaScript -->
+<script>
+    // Set current user data for JavaScript access
+    window.currentUser = {% if user.is_authenticated %}
+        {
+            id: {{ user.id }},
+            username: "{{ user.username|escapejs }}",
+            avatar_url: "{{ user.profile.get_avatar|escapejs }}"
+        }
+    {% else %}
+        null
+    {% endif %};
+    
+    window.isAdmin = {% if user.is_staff %}true{% else %}false{% endif %};
+    window.userHasReviewed = {% if user_has_reviewed %}true{% else %}false{% endif %};
+</script>
