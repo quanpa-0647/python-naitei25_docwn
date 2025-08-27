@@ -20,6 +20,10 @@
         </div>
     </div>
     
+    {% if novel.approval_status == APPROVAL_STATUS.APPROVED %}
+        {% include 'admin/novel_request/partials/delete_actions.html' %}
+    {% endif %}
+    
     <a href="{% url 'admin:admin_novels' %}" class="btn btn-secondary mt-3">
       <i class="fas fa-arrow-left me-1"></i> {% trans "Quay lại danh sách" %}
     </a>

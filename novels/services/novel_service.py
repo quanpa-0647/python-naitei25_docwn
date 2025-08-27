@@ -16,6 +16,7 @@ from interactions.services.notification_service import NotificationService
 from django.utils.translation import gettext_lazy as _
 from common.utils.sse import SSEManager
 from asgiref.sync import async_to_sync
+from django.utils import timezone
 
 class NovelService:
     @staticmethod
@@ -371,6 +372,21 @@ class NovelService:
             return False
         
     @staticmethod
+    def delete_novel(slug):
+        try:
+            novel = Novel.objects.get(
+                slug=slug,
+                approval_status=ApprovalStatus.APPROVED.value,
+                deleted_at__isnull=True
+            )
+            novel.deleted_at = timezone.now()
+            novel.save()
+        
+            return novel
+        except Novel.DoesNotExist:
+            return False
+
+    @staticmethod
     def get_novel_for_update(novel_slug, user):
         """Get novel for update if user is the owner"""
         try:
@@ -449,8 +465,7 @@ class NovelService:
                 
         except Exception as e:
             return False, _("Có lỗi xảy ra khi cập nhật tiểu thuyết: {error}").format(error=str(e))
-
-
+        
 class FavoriteService:
     @staticmethod
     @transaction.atomic
