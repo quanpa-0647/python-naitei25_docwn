@@ -155,17 +155,29 @@ class NovelUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class MyNovelsView(LoginRequiredMixin, ListView):
-    """User's novels management page using service"""
+    """User's novels management page with enhanced filtering"""
     template_name = "novels/pages/my_novels.html"
     context_object_name = "page_obj"
     login_url = reverse_lazy("accounts:login")
 
     def get_queryset(self):
+        # Get filter parameters
         status_filter = self.request.GET.get('status')
+        search_query = self.request.GET.get('q', '').strip() or None
+        tag_slugs = self.request.GET.getlist('tags') or None  
+        author = self.request.GET.get('author')
+        artist = self.request.GET.get('artist')
+        sort_by = self.request.GET.get('sort', 'created')
         page = self.request.GET.get('page', DEFAULT_PAGE_NUMBER)
+        
         return NovelService.get_user_novels_paginated(
             user=self.request.user,
             status_filter=status_filter,
+            search_query=search_query,
+            tag_slugs=tag_slugs,
+            author=author,
+            artist=artist,
+            sort_by=sort_by,
             page=page
         )
 
@@ -179,6 +191,14 @@ class MyNovelsView(LoginRequiredMixin, ListView):
         stats = NovelService.get_user_novels_with_stats(self.request.user)
         context.update(stats)
         
+        # Add novels to context (the template expects 'novels')
+        if 'page_obj' in context and context['page_obj']:
+            context['novels'] = context['page_obj'].object_list
+            context['is_paginated'] = context['page_obj'].has_other_pages()
+        else:
+            context['novels'] = []
+            context['is_paginated'] = False
+        
         # Add status constants
         context.update({
             "DRAFT": ApprovalStatus.DRAFT.value,
@@ -188,6 +208,15 @@ class MyNovelsView(LoginRequiredMixin, ListView):
             "MAX_TRUNCATED_REJECTED_REASON_LENGTH": MAX_TRUNCATED_REJECTED_REASON_LENGTH,
             "PAGINATION_PAGE_RANGE": PAGINATION_PAGE_RANGE,
             "current_filter": self.request.GET.get('status', 'all')
+        })
+        
+        # Add filter parameters to context
+        context.update({
+            'search_query': self.request.GET.get('q', '').strip(),
+            'tag_slugs': self.request.GET.getlist('tags'),
+            'author_selected': self.request.GET.get('author'),
+            'artist_selected': self.request.GET.get('artist'),
+            'sort_option': self.request.GET.get('sort', 'created'),
         })
         
         # Calculate pagination range

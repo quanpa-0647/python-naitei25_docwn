@@ -24,6 +24,10 @@
     <!-- Statistics Section -->
     {% include 'novels/includes/my_novels_statistics.html' %}
 
+    <!-- Novel Filter Section -->
+    {% load novel_tags %}
+    {% render_novel_filter %}
+
     <!-- Novel List Section -->
     {% include 'novels/includes/my_novels_list.html' %}
 </div>

@@ -182,8 +182,9 @@ class NovelService:
         }
 
     @staticmethod
-    def get_user_novels_paginated(user, status_filter=None, page=1):
-        """Get paginated user novels with filtering"""
+    def get_user_novels_paginated(user, status_filter=None, search_query=None, tag_slugs=None, 
+                                 author=None, artist=None, sort_by='created', page=1):
+        """Get paginated user novels with enhanced filtering"""
         queryset = Novel.objects.filter(
             created_by=user,
             deleted_at__isnull=True
@@ -194,7 +195,16 @@ class NovelService:
         if status_filter and status_filter in valid_statuses:
             queryset = queryset.filter(approval_status=status_filter)
         
-        queryset = queryset.order_by('-created_at')
+        # Apply additional filters using NovelFilterService
+        from novels.services.novel_filter_service import NovelFilterService
+        queryset = NovelFilterService.filter_and_sort(
+            novels_queryset=queryset,
+            search_query=search_query,
+            tag_slugs=tag_slugs,
+            author=author,
+            artist=artist,
+            sort_by=sort_by
+        )
         
         # Paginate
         paginator = Paginator(queryset, NOVEL_PER_PAGE)

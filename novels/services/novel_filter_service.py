@@ -67,6 +67,13 @@ class NovelFilterService:
             novels_queryset = novels_queryset.order_by('name')
         elif sort_by == "name_desc":
             novels_queryset = novels_queryset.order_by('-name')
+        elif sort_by == "view_count":
+            novels_queryset = novels_queryset.order_by('-view_count')
+        elif sort_by == "favorite_count":
+            novels_queryset = novels_queryset.order_by('-favorite_count')
+        else:
+            # Default sorting
+            novels_queryset = novels_queryset.order_by('-created_at')
     
         return novels_queryset
 
