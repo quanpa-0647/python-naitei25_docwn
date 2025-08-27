@@ -25,4 +25,6 @@ urlpatterns = [
         views.create_review,
         name='create_review'
     ),
+    path('novel/<slug:novel_slug>/comment/', views.add_comment, name='add_comment'),
+    path('comment/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
 ]

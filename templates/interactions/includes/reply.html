@@ -1,0 +1,25 @@
+{% load i18n %}
+<li id="comment-{{ comment.id }}" class="mb-2">
+  <div class="d-flex">
+    <div class="flex-shrink-0">
+      <img src="{{ comment.user.profile.get_avatar }}" alt="Avatar" class="rounded-circle me-2">
+    </div>
+    <div class="flex-grow-1">
+      <div class="bg-body border p-2 rounded shadow-sm">
+        <div class="d-flex justify-content-between">
+          <strong>{{ comment.user.username }}</strong>
+          <span class="text-muted small">{{ comment.created_at|date:"SHORT_DATETIME_FORMAT" }}</span>
+        </div>
+        <p class="mb-1">{{ comment.content }}</p>
+        {% if comment.user == user %}
+          <button type="button"
+                  data-id="{{ comment.id }}"
+                  data-url="{% url 'interactions:delete_comment' comment.id %}" 
+                  class="btn btn-link btn-sm text-danger delete-btn">
+            {% trans "Xóa" %}
+          </button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</li>

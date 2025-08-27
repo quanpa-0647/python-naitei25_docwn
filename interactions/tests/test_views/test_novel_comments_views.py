@@ -30,7 +30,7 @@ class NovelCommentsViewTest(TestCase):
     def test_novel_comments_returns_json_authenticated(self):
         """Test view trả về JSON đúng khi user đã login"""
         self.client.login(username='testuser', password='12345')
-        url = reverse('novels:novel_comments', kwargs={'novel_slug': self.novel.slug})
+        url = reverse('interactions:novel_comments', kwargs={'novel_slug': self.novel.slug})
         response = self.client.get(url, {'page': 1})
 
         self.assertEqual(response.status_code, 200)
@@ -42,7 +42,7 @@ class NovelCommentsViewTest(TestCase):
 
     def test_novel_comments_returns_json_anonymous(self):
         """Test view trả về JSON đúng khi user chưa login"""
-        url = reverse('novels:novel_comments', kwargs={'novel_slug': self.novel.slug})
+        url = reverse('interactions:novel_comments', kwargs={'novel_slug': self.novel.slug})
         response = self.client.get(url, {'page': 1})
 
         self.assertEqual(response.status_code, 200)
@@ -58,7 +58,7 @@ class NovelCommentsViewTest(TestCase):
             ).order_by("-created_at"),
             PAGINATOR_COMMENT_LIST
         )
-        url = reverse('novels:novel_comments', kwargs={'novel_slug': self.novel.slug})
+        url = reverse('interactions:novel_comments', kwargs={'novel_slug': self.novel.slug})
         response = self.client.get(url, {'page': 1})
         data = response.json()
 
