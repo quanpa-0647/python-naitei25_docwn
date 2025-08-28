@@ -1,0 +1,38 @@
+{% load i18n %}
+
+<button type="button"
+        class="btn btn-link btn-sm text-warning ms-2"
+        data-bs-toggle="modal"
+        data-bs-target="#reportModal{{ comment.id }}">
+    {% trans "Báo cáo" %}
+</button>
+
+<!-- Modal báo cáo -->
+<div class="modal fade" id="reportModal{{ comment.id }}" tabindex="-1">
+    <div class="modal-dialog">
+    <div class="modal-content bg-body text-body">
+        <form class="report-form"
+            id="reportForm-{{ comment.id }}"
+            method="post"
+            data-comment-id="{{ comment.id }}"
+            data-url="{% url 'interactions:report_comment' comment.id %}">
+        {% csrf_token %}
+        <div class="modal-header border-bottom">
+            <h5 class="modal-title">{% trans "Báo cáo bình luận" %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="mb-3">
+            {{ report_form.reason.label_tag }}
+            {{ report_form.reason }}
+        </div>
+        <div class="mb-3">
+            {{ report_form.description.label_tag }}
+            {{ report_form.description }}
+        </div>
+        <div class="modal-footer border-top">
+            <button type="submit" class="btn btn-danger">{% trans "Gửi báo cáo" %}</button>
+        </div>
+        </form>
+    </div>
+    </div>
+</div>

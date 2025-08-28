@@ -27,4 +27,5 @@ urlpatterns = [
     ),
     path('novel/<slug:novel_slug>/comment/', views.add_comment, name='add_comment'),
     path('comment/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
+    path('report/comment/<int:comment_id>/', views.report_comment, name="report_comment"),
 ]
