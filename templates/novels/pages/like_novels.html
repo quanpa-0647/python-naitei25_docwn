@@ -1,39 +1,34 @@
-{% extends "base_home.html" %} {% load static %} 
+{% extends "base_home.html" %}
+{% load static %}
 {% load i18n %}
-{% block head %}
-<link rel="stylesheet" href="{% static 'novels/css/most_read_novels.css' %}" />
-{% endblock %}
-{% block content %}
-<div class="container my-4">
-  <img
-    id="slideshow-banner"
-    src="{% static 'novels/images/banner1.jpg' %}"
-    class="img-fluid w-100 rounded"
-    alt="Banner"
-  />
-</div>
 
-{% block main %}
-<div class="main__container">
-      {% include 'novels/includes/my_liked_novels_header.html' %}
-      <div id="novelsWrapper" class="most_read_novels">
-        {% for card in page_obj %}
-          {% include 'novels/includes/card4.html' %}
-          {% empty %}
-          <h4 class="list-group-item text-muted">{% trans "Bạn chưa thích tiểu thuyết nào." %}</h4>
-        {% endfor %}
-      </div>
-     
-      {% include 'novels/includes/pagnigation.html' %}
+{% block title %}{% trans "Tiểu thuyết yêu thích" %}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'novels/css/fontawesome.all.min.css' %}" />
+<link rel="stylesheet" href="{% static 'novels/css/novel.detail.css' %}" />
+<link rel="stylesheet" href="{% static 'novels/css/home.css' %}" />
+<link rel="stylesheet" href="{% static 'novels/css/my_novels.css' %}" />
+<link rel="stylesheet" href="{% static 'novels/css/like_novels.css' %}" />
+<link rel="stylesheet" href="{% static 'novels/css/novel_filter.css' %}" />
 {% endblock %}
-<script>
-  const images = [
-    "{% static 'novels/images/banner1.jpg' %}",
-    "{% static 'novels/images/banner2.png' %}",
-    "{% static 'novels/images/banner3.png' %}",
-  ];
-</script>
-<script src="{% static 'novels/js/banner.js' %}"></script>
-<script src="{% static 'novels/js/most_read_novels.js' %}"></script>
+
+{% block content %}
+<div class="container-fluid like-novels-container">
+    <!-- Breadcrumb Navigation -->
+    <div class="breadcrumb-wrapper">
+        {% include "novels/includes/breadcrumb.html" %}
+    </div>
+    
+    <!-- Main Header -->
+    {% include 'novels/includes/my_liked_novels_header.html' %}
+
+    <!-- Novel Filter Section -->
+    {% load novel_tags %}
+    {% render_novel_filter %}
+
+    <!-- Like Novels List Section -->
+    {% include 'novels/includes/like_novels_list.html' %}
+</div>
 
 {% endblock %}

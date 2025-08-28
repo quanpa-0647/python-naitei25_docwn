@@ -54,8 +54,10 @@ class HtmlChunker:
     
     def _normalize_html_content(self, content: str) -> str:
         """Normalize HTML content for proper chunking."""
-        # Remove excessive whitespace between tags
-        content = re.sub(r'>\s+<', '><', content)
+        # Remove excessive whitespace between tags but preserve single spaces and line breaks
+        # that might be important for word separation
+        content = re.sub(r'>\s*\n\s*<', '> <', content)  # Replace newlines between tags with single space
+        content = re.sub(r'>\s{2,}<', '> <', content)  # Replace multiple spaces between tags with single space
         
         # Normalize line breaks in text content
         content = re.sub(r'\n\s*\n\s*\n+', '\n\n', content)
@@ -73,12 +75,10 @@ class HtmlChunker:
         
         for element in elements:
             if isinstance(element, NavigableString):
-                # Skip whitespace-only text nodes
-                if element.strip():
-                    element_html = str(element).strip()
-                    element_size = len(element_html)
-                else:
-                    continue
+                # Include all NavigableString elements, even whitespace-only ones,
+                # as they may be important for word separation
+                element_html = str(element)
+                element_size = len(element_html)
             else:
                 element_html = str(element)
                 element_size = len(element_html)

@@ -6,7 +6,10 @@ $(document).ready(function() {
 
     // Toggle advanced filters với hiệu ứng slide
     if ($toggleBtn.length && $advancedFilters.length) {
-        $toggleBtn.on("click", function() {
+        $toggleBtn.on("click", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
             if ($advancedFilters.is(':hidden')) {
                 $advancedFilters.slideDown(200);
                 $(this).html('<i class="fas fa-filter"></i> ' + gettext("Ẩn tìm kiếm nâng cao"));

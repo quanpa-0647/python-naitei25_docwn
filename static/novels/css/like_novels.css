@@ -1,50 +1,63 @@
-#slideshow-banner{
-    height: 200px; object-fit: cover
-  }
+/* Like Novels Page Specific Styles */
+.like-novels-container {
+    padding: 20px 0;
+}
 
-.pagination {
+.like-novels-container .breadcrumb-wrapper {
+    margin-bottom: 20px;
+}
+
+.like-novels-container .main-content {
+    margin: 20px 0;
+}
+
+/* Novels Grid Layout */
+.novels-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 35px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+/* Empty state styling */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+}
+
+.empty-state h4 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+/* Pagination styling */
+.pagination-wrapper {
+    margin-top: 30px;
     display: flex;
     justify-content: center;
-    margin-top: 20px;
-    gap: 5px;
-}
-  
-.pagination button {
-    padding: 8px 16px;
-    border: 1px solid #ddd;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  
-.pagination button.active {
-    background-color: #2196F3;
-    color: white;
-  }
-#novelsWrapper{
-    margin-top: 80px;
-
-}
-.main__container h1{
-    margin-left: 10px;
-    margin-top: 50px;
 }
 
 /* Dark theme support */
+[data-bs-theme="dark"] .like-novels-container {
+    color: #e2e8f0;
+}
+
+[data-bs-theme="dark"] .empty-state {
+    color: #a0aec0;
+}
+
 [data-bs-theme="dark"] .card1,
 [data-bs-theme="dark"] .card-custom1 {
-  background: #2d2d2d;
-  border-color: #495057;
+    background: #2d2d2d;
+    border-color: #495057;
 }
 
 [data-bs-theme="dark"] .card2-container {
-  color: #f8f9fa;
+    color: #f8f9fa;
 }
 
 [data-bs-theme="dark"] .card2-title {
-  color: #f8f9fa;
-}
-
-[data-bs-theme="dark"] .main__container h1 {
-  color: #f8f9fa;
+    color: #f8f9fa;
 }

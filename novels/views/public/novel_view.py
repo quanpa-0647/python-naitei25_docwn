@@ -346,10 +346,50 @@ def toggle_like(request, novel_slug):
 
 @login_required
 def liked_novels(request):
-    page_number = request.GET.get("page")
-    page_obj = get_liked_novels(request.user, page_number)
+    """User's liked novels page with filtering support"""
+    # Get filter parameters similar to MyNovelsView
+    search_query = request.GET.get('q', '').strip() or None
+    tag_slugs = request.GET.getlist('tags') or None  
+    author = request.GET.get('author')
+    artist = request.GET.get('artist')
+    sort_by = request.GET.get('sort', 'created')
+    page = request.GET.get('page', DEFAULT_PAGE_NUMBER)
+    
+    # Use the new filtered service function
+    from novels.services.novel_service import get_liked_novels_filtered
+    page_obj = get_liked_novels_filtered(
+        user=request.user,
+        search_query=search_query,
+        tag_slugs=tag_slugs,
+        author=author,
+        artist=artist,
+        sort_by=sort_by,
+        page=page
+    )
+    
+    # Add pagination range calculation
+    pagination_start = None
+    pagination_end = None
+    if page_obj:
+        current_page = page_obj.number
+        pagination_start = current_page - PAGINATION_PAGE_RANGE
+        pagination_end = current_page + PAGINATION_PAGE_RANGE
 
-    return render(request, "novels/pages/like_novels.html", {
+    context = {
         "page_obj": page_obj,
-    })
+        "page_title": _("Tiểu thuyết yêu thích"),
+        # Add filter parameters to context for template
+        'search_query': request.GET.get('q', '').strip(),
+        'tag_slugs': request.GET.getlist('tags'),
+        'author_selected': request.GET.get('author'),
+        'artist_selected': request.GET.get('artist'),
+        'sort_option': request.GET.get('sort', 'created'),
+        "PAGINATION_PAGE_RANGE": PAGINATION_PAGE_RANGE,
+        "pagination_start": pagination_start,
+        "pagination_end": pagination_end,
+        # Add pagination support
+        'is_paginated': page_obj.has_other_pages() if page_obj else False,
+    }
+
+    return render(request, "novels/pages/like_novels.html", context)
 
