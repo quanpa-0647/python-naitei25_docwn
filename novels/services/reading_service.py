@@ -5,7 +5,7 @@ class ReadingService:
     @staticmethod
     def get_or_create_reading_history(user, chapter):
         """Get or create reading history for user and chapter"""
-        if not user.is_authenticated:
+        if not user or not user.is_authenticated:
             return None
         
         reading_history, created = ReadingHistory.objects.get_or_create(
@@ -24,6 +24,9 @@ class ReadingService:
         from django.shortcuts import get_object_or_404
         from novels.models import Chapter
         
+        if not user or not user.is_authenticated:
+            return None
+        
         chapter = get_object_or_404(Chapter, id=chapter_id)
         
         reading_history, created = ReadingHistory.objects.get_or_create(
@@ -33,7 +36,6 @@ class ReadingService:
         )
         
         reading_history.reading_progress = reading_progress
-        reading_history.current_chunk_position = chunk_position
         reading_history.save()
         
         return reading_history

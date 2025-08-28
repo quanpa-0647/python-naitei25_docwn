@@ -2,10 +2,15 @@
 {% load static %}
 
 <form method="get" class="novel-filter-form">
+    
+    <!-- Preserve status filter if it exists (from statistics cards) -->
+    {% if request.GET.status %}
+        <input type="hidden" name="status" value="{{ request.GET.status }}">
+    {% endif %}
 
     <!-- Search input (luôn hiển thị) -->
     <div class="mb-2">
-        <input type="text" name="search" class="form-control"
+        <input type="text" name="q" class="form-control"
                placeholder="{% trans 'Tên, tác giả, nghệ sĩ, tóm tắt...' %}"
                value="{{ search_query }}">
     </div>
@@ -14,12 +19,12 @@
     <div class="mb-2">
         <label for="sort-select" class="form-label">{% trans "Sắp xếp:" %}</label>
         <select name="sort" id="sort-select" class="form-select">
-            <option value="last_read" {% if sort_option == "last_read" %}selected{% endif %}>{% trans "Mới đọc nhất" %}</option>
             <option value="created" {% if sort_option == "created" %}selected{% endif %}>{% trans "Ngày tạo mới nhất" %}</option>
             <option value="updated" {% if sort_option == "updated" %}selected{% endif %}>{% trans "Cập nhật mới nhất" %}</option>
-            <option value="rating" {% if sort_option == "rating" %}selected{% endif %}>{% trans "Điểm đánh giá cao" %}</option>
             <option value="name" {% if sort_option == "name" %}selected{% endif %}>{% trans "Tên (A-Z)" %}</option>
             <option value="name_desc" {% if sort_option == "name_desc" %}selected{% endif %}>{% trans "Tên (Z-A)" %}</option>
+            <option value="view_count" {% if sort_option == "view_count" %}selected{% endif %}>{% trans "Lượt xem cao" %}</option>
+            <option value="favorite_count" {% if sort_option == "favorite_count" %}selected{% endif %}>{% trans "Yêu thích nhiều" %}</option>
         </select>
     </div>
 
@@ -32,6 +37,7 @@
     <div id="advanced-filters" style="display:none; margin-top:10px;">
 
         <!-- Tags -->
+        {% if tags %}
         <div class="mb-2">
             <label class="form-label">{% trans "Thể loại:" %}</label>
             <div class="row g-2">
@@ -49,6 +55,7 @@
                 {% endfor %}
             </div>
         </div>
+        {% endif %}
 
         <!-- Author -->
         <div class="mb-2">
@@ -83,8 +90,8 @@
 
     <!-- Submit / Reset -->
     <div class="mb-2 mt-2">
-        <button type="submit" class="btn btn-primary">{% trans "Lọc" %}</button>
-        <a href="?" class="btn btn-secondary">{% trans "Đặt lại" %}</a>
+        <button type="submit" class="btn btn-primary" id="filter-submit-btn">{% trans "Lọc" %}</button>
+        <a href="{% if request.GET.status %}?status={{ request.GET.status }}{% else %}?{% endif %}" class="btn btn-secondary">{% trans "Đặt lại" %}</a>
     </div>
 
 </form>
