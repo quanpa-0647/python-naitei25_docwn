@@ -1,0 +1,27 @@
+{% load i18n %}
+
+<!-- Like Novels List Section -->
+<div class="novels-list-section">
+    <div class="row">
+        <div class="col-12">
+            <div class="novels-grid" id="novelsWrapper">
+                {% for novel in page_obj %}
+                    {% include 'novels/includes/card4.html' with card=novel %}
+                {% empty %}
+                    <div class="empty-state">
+                        <h4>{% trans "Bạn chưa thích tiểu thuyết nào." %}</h4>
+                        <p class="mt-2">{% trans "Hãy khám phá và thêm những tiểu thuyết yêu thích của bạn!" %}</p>
+                        <a href="{% url 'novels:home' %}" class="btn btn-primary mt-3">
+                            <i class="bx bx-search"></i> {% trans "Khám phá tiểu thuyết" %}
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pagination -->
+<div class="pagination-wrapper">
+    {% include 'novels/includes/_generic_pagination.html' with pagination_label="tiểu thuyết yêu thích" object_name="tiểu thuyết" %}
+</div>

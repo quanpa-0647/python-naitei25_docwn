@@ -1,0 +1,129 @@
+/* Novel Filter Form Styling */
+.novel-filter-form {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    border: 1px solid #dee2e6;
+    display: block;
+    width: 100%;
+}
+
+.search-advance_toggle {
+    display: inline-block;
+    cursor: pointer;
+    color: #007bff;
+    font-weight: 500;
+    margin: 10px 0;
+    padding: 8px 12px;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    background: transparent;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    outline: none;
+    user-select: none;
+}
+
+.search-advance_toggle:hover {
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+}
+
+.search-advance_toggle:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.search-advance-form {
+    margin-top: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.search-advance-form .row {
+    margin-bottom: 15px;
+}
+
+.search-advance-form .form-group {
+    margin-bottom: 15px;
+}
+
+.search-advance-form label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+.search-advance-form .form-control,
+.search-advance-form .form-select {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.search-advance-form .form-control:focus,
+.search-advance-form .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+.search-advance-form .btn {
+    padding: 8px 20px;
+    font-weight: 500;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.search-advance-form .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.search-advance-form .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+/* Dark theme support */
+[data-bs-theme="dark"] .novel-filter-form {
+    background: #2d3748;
+    border-color: #4a5568;
+}
+
+[data-bs-theme="dark"] .search-advance-form {
+    background: #1a202c;
+    border-color: #4a5568;
+}
+
+[data-bs-theme="dark"] .search-advance-form label {
+    color: #e2e8f0;
+}
+
+[data-bs-theme="dark"] .search-advance-form .form-control,
+[data-bs-theme="dark"] .search-advance-form .form-select {
+    background-color: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+}
+
+[data-bs-theme="dark"] .search-advance_toggle {
+    color: #63b3ed;
+    border-color: #63b3ed;
+}
+
+[data-bs-theme="dark"] .search-advance_toggle:hover {
+    background-color: #63b3ed;
+    color: #1a202c;
+}
+
+/* Advanced filters section */
+#advanced-filters {
+    display: none;
+    margin-top: 10px;
+}

@@ -29,12 +29,12 @@
     </div>
 
     <!-- Toggle advanced search -->
-    <span class="search-advance_toggle" id="toggle-advanced-search">
+    <button type="button" class="search-advance_toggle" id="toggle-advanced-search">
         <i class="fas fa-filter"></i> {% trans "Tìm kiếm nâng cao" %}
-    </span>
+    </button>
 
     <!-- Advanced filters (hidden by default) -->
-    <div id="advanced-filters" style="display:none; margin-top:10px;">
+    <div id="advanced-filters">
 
         <!-- Tags -->
         {% if tags %}

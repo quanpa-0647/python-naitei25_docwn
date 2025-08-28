@@ -495,3 +495,41 @@ def get_liked_novels(user, page_number, per_page=MAX_LIKE_NOVELS_PAGE):
 
     paginator = Paginator(novels, per_page)
     return paginator.get_page(page_number)
+
+
+def get_liked_novels_filtered(user, search_query=None, tag_slugs=None, author=None, 
+                              artist=None, sort_by="created", page=1, per_page=MAX_LIKE_NOVELS_PAGE):
+    """Get paginated liked novels with filtering support"""
+    # Get novels from user's favorites
+    favorites_queryset = Favorite.objects.filter(user=user).select_related("novel")
+    novel_ids = favorites_queryset.values_list('novel_id', flat=True)
+    
+    # Start with novels that are in user's favorites
+    novels_queryset = Novel.objects.filter(
+        id__in=novel_ids,
+        deleted_at__isnull=True
+    ).select_related('author', 'artist').prefetch_related('tags')
+    
+    # Apply filters using NovelFilterService
+    from novels.services.novel_filter_service import NovelFilterService
+    novels_queryset = NovelFilterService.filter_and_sort(
+        novels_queryset=novels_queryset,
+        search_query=search_query,
+        tag_slugs=tag_slugs,
+        author=author,
+        artist=artist,
+        sort_by=sort_by,
+        user=user
+    )
+    
+    # Paginate
+    paginator = Paginator(novels_queryset, per_page)
+    page_obj = paginator.get_page(page)
+    
+    # Process novels data similar to other views
+    for novel in page_obj:
+        novel.tag_list = list(novel.tags.all())
+        novel.author_name = novel.author.name if novel.author and not novel.is_anonymous else None
+        novel.rating_display = novel.rating_avg if hasattr(novel, 'rating_avg') and novel.rating_avg > 0 else None
+    
+    return page_obj
