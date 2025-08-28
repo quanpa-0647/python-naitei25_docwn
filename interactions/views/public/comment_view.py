@@ -2,14 +2,16 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+from asgiref.sync import async_to_sync
 from interactions.models import Comment
 from interactions.forms.comment_form import CommentForm
 
+from common.utils import send_notification_to_user
 from novels.models import Novel
-from interactions.services.comment_service import CommentService
+from interactions.services import CommentService, NotificationService
 from django.http import JsonResponse, HttpResponseNotAllowed
 from django.template.loader import render_to_string
-from constants import DEFAULT_PAGE_NUMBER
+from constants import DEFAULT_PAGE_NUMBER, NotificationTypeChoices, UserRole
 from django.urls import reverse
 from interactions.forms.report_form import ReportForm
 from django.core.paginator import Paginator
@@ -51,6 +53,8 @@ def add_comment(request, novel_slug):
                 content=form.cleaned_data['content'],
                 parent_comment=parent_comment
             )
+            
+            redirect_url = reverse("novels:novel_detail", kwargs={"novel_slug": novel.slug}) + f"#comment-container"
 
             comments_page = CommentService.get_novel_comments(novel, page=DEFAULT_PAGE_NUMBER)
             report_form = ReportForm()
@@ -59,6 +63,23 @@ def add_comment(request, novel_slug):
                 "report_form": report_form,
                 "novel_slug": novel_slug
             }, request=request)
+            
+            NotificationService.create_notification(
+                user=novel.created_by,
+                title=_("Bình luận mới"),
+                content=_(f"Tiểu thuyết { novel.name } của bạn vừa có bình luận mới."),
+                notification_type=NotificationTypeChoices.COMMENT,
+                redirect_url=redirect_url,
+            )
+            
+            if parent_comment and parent_comment.user != novel.created_by:
+                NotificationService.create_notification(
+                    user=parent_comment.user,
+                    title=_("Phản hồi bình luận"),
+                    content=_(f"Bình luận của bạn trên tiểu thuyết { novel.name } vừa có phản hồi."),
+                    notification_type=NotificationTypeChoices.COMMENT,
+                    redirect_url=redirect_url,
+                )
 
             return JsonResponse({
                 "success": True,

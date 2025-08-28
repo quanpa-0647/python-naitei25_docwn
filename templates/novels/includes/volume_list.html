@@ -21,7 +21,7 @@
         {% with chapter_list=volume.chapter_list %}
           {% for chapter in chapter_list %}
             {% if forloop.counter <= MAX_CHAPTER_LIST %}
-              <div class="chapter-item">
+              <div id="chapter-{{ chapter.slug }}" class="chapter-item">
                 <div class="chapter-content">
                   {% if chapter.rejected_reason %}
                     <span class="chapter-link-disabled" data-tooltip="{% trans 'Lý do từ chối:' %} {{ chapter.rejected_reason }}">
@@ -63,7 +63,7 @@
               </div>
             {% elif forloop.counter == MAX_CHAPTER_LIST_PLUS %}
               <div id="extraChapters{{ volume.id }}" class="chapter-extra hidden">
-                <div class="chapter-item">
+                <div id="chapter-{{ chapter.slug }}" class="chapter-item">
                   <div class="chapter-content">
                     {% if chapter.rejected_reason %}
                       <span class="chapter-link-disabled" data-tooltip="{% trans 'Lý do từ chối:' %} {{ chapter.rejected_reason }}">
@@ -104,7 +104,7 @@
                   {% endif %}
                 </div>
             {% else %}
-                <div class="chapter-item">
+                <div id="chapter-{{ chapter.slug }}" class="chapter-item">
                   <div class="chapter-content">
                     {% if chapter.rejected_reason %}
                       <span class="chapter-link-disabled" data-tooltip="{% trans 'Lý do từ chối:' %} {{ chapter.rejected_reason }}">

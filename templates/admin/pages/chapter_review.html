@@ -40,7 +40,7 @@
         {% include "admin/includes/chapter_review_content.html" %}
         
         <!-- Sidebar -->
-        {% if unapproved_chapter_url %}
+        {% if not chapter.approved and unapproved_chapter_url %}
             <div class="sidebar-warning">
                 <div class="warning-card">
                     <i class="fas fa-info-circle"></i>

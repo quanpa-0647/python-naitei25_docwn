@@ -5,6 +5,7 @@ from django.views.generic import ListView
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.http import Http404, JsonResponse
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from novels.models import Novel, Tag, novel
@@ -59,6 +60,7 @@ def novel_detail(request, novel_slug):
         'rating_stars': range(MIN_RATE + 1, MAX_RATE + 1),
         'user_has_reviewed': user_has_reviewed,
         'MAX_LENGTH_REVIEW_CONTENT': MAX_LENGTH_REVIEW_CONTENT,
+        'is_approved': novel_data['novel'].approval_status == ApprovalStatus.APPROVED.value,
     }
 
     return render(request, "novels/pages/novel_detail.html", context)
@@ -96,6 +98,7 @@ class NovelCreateView(LoginRequiredMixin, CreateView):
         form.instance.created_by = self.request.user if self.request.user.is_authenticated else None
 
         response = super().form_valid(form)
+        redirect_url = reverse("admin:novel_request_detail", kwargs={"slug": self.object.slug})
 
         # Handle ManyToMany tags relationship
         tags = form.cleaned_data.get("tags")
@@ -105,8 +108,7 @@ class NovelCreateView(LoginRequiredMixin, CreateView):
         if form.instance.approval_status == ApprovalStatus.PENDING.value:
             admins = User.objects.filter(role=UserRole.WEBSITE_ADMIN.value)
             for admin in admins:
-                # Tạo notification trong DB và gán related_object
-                notification = NotificationService.create_notification(
+                NotificationService.create_notification(
                     user=admin,
                     title=_("Có tiểu thuyết mới cần duyệt"),
                     content=_("Người dùng %(username)s đã đăng tiểu thuyết '%(title)s'.") % {
@@ -114,16 +116,8 @@ class NovelCreateView(LoginRequiredMixin, CreateView):
                         "title": self.object.name,
                     },
                     notification_type=NotificationTypeChoices.SYSTEM,
+                    redirect_url=redirect_url,
                 )
-                # Gán đối tượng liên quan để attach_link có thể xử lý
-                notification.related_object = self.object
-
-                # Gửi SSE
-                async_to_sync(send_notification_to_user)(
-                    user_id=admin.id,
-                    notification=notification
-                )
-
 
         return response
 
@@ -340,6 +334,16 @@ def search_novels(request):
 def toggle_like(request, novel_slug):
     novel = get_object_or_404(Novel, slug=novel_slug)
     liked = FavoriteService.toggle_like(request.user, novel)
+    
+    if request.user != novel.created_by and liked:
+        NotificationService.create_notification(
+            user=novel.created_by,
+            title=_("Tiểu thuyết được yêu thích"),
+            content=_(f"Tiểu thuyết { novel.name } của bạn vừa được { request.user.username } yêu thích."),
+            notification_type=NotificationTypeChoices.SYSTEM,
+            redirect_url=reverse("novels:novel_detail", kwargs={"novel_slug": novel.slug}),
+        )
+    
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
         return JsonResponse({"liked": liked, "count": novel.favorites.count()})
     return redirect('novels:novel_detail', novel_slug=novel.slug)

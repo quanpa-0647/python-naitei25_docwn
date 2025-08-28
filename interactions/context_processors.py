@@ -16,7 +16,6 @@ def notifications_context(request):
             "notifications": [
                 {
                     **format_notification(notification),
-                    "link": NotificationService.attach_link(notification)
                 }
                 for notification in notifications
             ],

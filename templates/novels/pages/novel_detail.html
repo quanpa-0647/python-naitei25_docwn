@@ -40,7 +40,7 @@
           {% include "novels/includes/summary.html" %}
         </div>
 
-        {% if not novel.rejected_reason %}
+        {% if is_approved %}
           {% include "novels/includes/volume_list.html" %}
           
           {% include "interactions/includes/reviews.html" %}

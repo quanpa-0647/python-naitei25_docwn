@@ -190,7 +190,7 @@ class SSENotificationManager {
                         ${gettext("Vừa xong")}
                     </div>
                 </div>
-                <button onclick="this.parentElement.parentElement.remove()" style="
+                <button class="popup-close-btn" style="
                     background: rgba(144, 238, 144, 0.2); 
                     border: none; 
                     color: #4a7c59;
@@ -205,7 +205,7 @@ class SSENotificationManager {
                     flex-shrink: 0;
                     transition: all 0.2s ease;
                 " onmouseover="this.style.background='rgba(144, 238, 144, 0.4)'" 
-                   onmouseout="this.style.background='rgba(144, 238, 144, 0.2)'">×</button>
+                onmouseout="this.style.background='rgba(144, 238, 144, 0.2)'">×</button>
             </div>
         `;
         
@@ -220,22 +220,70 @@ class SSENotificationManager {
             popup.style.boxShadow = '0 8px 32px rgba(45, 80, 22, 0.15)';
         });
         
-        // Click to dismiss
+        // Close button event
+        const closeBtn = popup.querySelector('.popup-close-btn');
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent popup click event
+            popup.remove();
+        });
+        
+        // Main popup click event - mark as read and redirect
         popup.addEventListener('click', (e) => {
-            if (e.target.tagName !== 'BUTTON') {
-                popup.remove();
+            // Don't trigger if clicking close button
+            if (e.target.classList.contains('popup-close-btn')) {
+                return;
             }
+            
+            // Mark notification as read if it exists in the notification list
+            if (window.notificationListManager && notification.id) {
+                const notificationItem = document.querySelector(`[data-notification-id="${notification.id}"]`);
+                if (notificationItem && notificationItem.classList.contains('unread')) {
+                    // Mark as read optimistically
+                    notificationItem.classList.remove('unread');
+                    const unreadIndicator = notificationItem.querySelector('.unread-indicator');
+                    if (unreadIndicator) {
+                        unreadIndicator.remove();
+                    }
+                    window.notificationListManager.updateNotificationBadge(-1);
+                    
+                    // Send request to server
+                    window.notificationListManager.markNotificationAsRead(notification.id, notificationItem, false);
+                }
+            }
+            
+            // Handle redirect
+            if (notification.redirect_url && notification.redirect_url !== '#') {
+                const currentUrl = window.location.href;
+                const targetUrl = new URL(notification.redirect_url, window.location.origin).href;
+                
+                // Compare current URL with target URL
+                if (currentUrl === targetUrl) {
+                    // If URLs are the same, reload page to update content
+                    window.location.reload();
+                } else {
+                    // If URLs are different, navigate normally
+                    window.location.href = notification.redirect_url;
+                }
+            }
+            
+            // Remove popup after click
+            popup.remove();
         });
         
         document.body.appendChild(popup);
         
         // Auto remove after 8 seconds
-        setTimeout(() => {
+        const autoRemoveTimeout = setTimeout(() => {
             if (popup.parentNode) {
                 popup.style.animation = 'slideOutRight 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
                 setTimeout(() => popup.remove(), 400);
             }
         }, 8000);
+        
+        // Clear timeout if popup is manually removed
+        popup.addEventListener('remove', () => {
+            clearTimeout(autoRemoveTimeout);
+        });
     }
     
     // playNotificationSound() {
@@ -393,33 +441,63 @@ class NotificationListManager {
             });
         }
         
-        // Click event for notification items (mark as read)
         if (this.notificationList) {
             this.notificationList.addEventListener('click', (e) => {
                 const notificationItem = e.target.closest('.notification-item');
-                if (notificationItem && notificationItem.classList.contains('unread')) {
+                if (notificationItem) {
                     const notificationId = notificationItem.dataset.notificationId;
-                    this.markNotificationAsRead(notificationId, notificationItem);
+                    const redirectUrl = notificationItem.dataset.redirectUrl;
+                    const isUnread = notificationItem.classList.contains('unread');
+                    
+                    // Luôn luôn mark as read trước khi xử lý redirect
+                    if (isUnread) {
+                        // Mark as read ngay lập tức (optimistic update)
+                        notificationItem.classList.remove('unread');
+                        const unreadIndicator = notificationItem.querySelector('.unread-indicator');
+                        if (unreadIndicator) {
+                            unreadIndicator.remove();
+                        }
+                        this.updateNotificationBadge(-1);
+                        
+                        // Gửi request để mark as read trên server
+                        this.markNotificationAsRead(notificationId, notificationItem, false); // false = đã update UI rồi
+                    }
+                    
+                    // Xử lý redirect
+                    if (redirectUrl && redirectUrl !== '#') {
+                        const currentUrl = window.location.href;
+                        const targetUrl = new URL(redirectUrl, window.location.origin).href;
+                        
+                        // So sánh URL hiện tại với URL đích
+                        if (currentUrl === targetUrl) {
+                            // Nếu URL giống nhau, reload trang để cập nhật nội dung
+                            window.location.reload();
+                        } else {
+                            // Nếu URL khác nhau, chuyển hướng bình thường
+                            window.location.href = redirectUrl;
+                        }
+                    }
                 }
             });
         }
 
+        // Sửa phần event listener cho notification button
         if (this.notificationBtn) {
             this.notificationBtn.addEventListener('click', (e) => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-                
+                // Chỉ cuộn notification list về đầu, không cuộn trang
                 if (this.notificationList) {
                     this.notificationList.scrollTop = 0;
                 }
+                
+                // Không gọi window.scrollTo() nữa để tránh cuộn trang
             });
         }
         
+        // Event listener cho dropdown show
         const notificationDropdown = document.querySelector('.notification-menu');
         if (notificationDropdown) {
             notificationDropdown.addEventListener('show.bs.dropdown', () => {
+                // Reset scroll position khi mở dropdown
                 if (this.notificationList) {
                     this.notificationList.scrollTop = 0;
                 }
@@ -520,7 +598,9 @@ class NotificationListManager {
         `;
         
         return `
-            <div class="dropdown-item notification-item ${unreadClass}" data-notification-id="${notification.id}">
+            <div class="dropdown-item notification-item ${unreadClass}" 
+                data-notification-id="${notification.id}"
+                data-redirect-url="${notification.redirect_url || '#'}">
                 <div class="d-flex align-items-start">
                     <div class="notification-icon me-2">
                         <i class="bx bx-info-circle text-primary"></i>
@@ -539,8 +619,8 @@ class NotificationListManager {
         `;
     }
     
-    markNotificationAsRead(notificationId, notificationElement) {
-        const isUnread = notificationElement.classList.contains('unread');
+    markNotificationAsRead(notificationId, notificationElement, shouldUpdateUI = true) {
+        const wasUnread = notificationElement.classList.contains('unread');
         
         fetch(`/interactions/ajax/notifications/${notificationId}/mark_read/`, {
             method: 'POST',
@@ -552,7 +632,8 @@ class NotificationListManager {
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
+            if (data.success && shouldUpdateUI) {
+                // Chỉ update UI nếu shouldUpdateUI = true
                 notificationElement.classList.remove('unread');
                 const unreadIndicator = notificationElement.querySelector('.unread-indicator');
                 if (unreadIndicator) {
@@ -560,13 +641,24 @@ class NotificationListManager {
                 }
                 
                 // Chỉ update badge count nếu thông báo trước đó là unread
-                if (isUnread) {
+                if (wasUnread) {
                     this.updateNotificationBadge(-1);
                 }
             }
         })
         .catch(error => {
             console.error('Error marking notification as read:', error);
+            
+            // Nếu có lỗi và đã update UI trước đó, revert lại
+            if (!shouldUpdateUI && wasUnread) {
+                notificationElement.classList.add('unread');
+                // Thêm lại unread indicator nếu cần
+                const unreadIndicator = document.createElement('div');
+                unreadIndicator.className = 'unread-indicator';
+                unreadIndicator.innerHTML = '<span class="badge bg-primary rounded-pill">&nbsp;</span>';
+                notificationElement.querySelector('.d-flex').appendChild(unreadIndicator);
+                this.updateNotificationBadge(1);
+            }
         });
     }
     

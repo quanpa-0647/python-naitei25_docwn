@@ -7,6 +7,8 @@ from constants import (
 from novels.models.chapter import Chapter
 from novels.models.novel import Novel
 from django.urls import reverse
+from common.utils import send_notification_to_user
+from asgiref.sync import async_to_sync
 
 class NotificationService:
     @staticmethod
@@ -19,7 +21,7 @@ class NotificationService:
         title: str,
         content: str,
         notification_type: str,
-        related_object=None,
+        redirect_url: str = None,
     ) -> Notification:
         """Tạo thông báo mới"""
         notification_data = {
@@ -29,27 +31,17 @@ class NotificationService:
             'type': notification_type,
         }
         
-        if related_object:
+        if redirect_url:
             notification_data.update({
-                'content_type': ContentType.objects.get_for_model(related_object),
-                'object_id': related_object.pk
+                'redirect_url': redirect_url
             })
+            
+        notification = Notification.objects.create(**notification_data)
+            
+        async_to_sync(send_notification_to_user)(
+            user_id=user.id,
+            notification=notification,
+            redirect_url=redirect_url
+        )
         
-        return Notification.objects.create(**notification_data)
-
-    @staticmethod
-    def attach_link(notification):
-        obj = getattr(notification, 'related_object', None)
-
-        if obj:
-            if isinstance(obj, Novel):
-                return reverse("novels:novel_detail", kwargs={"novel_slug": obj.slug})
-            if isinstance(obj, Chapter):
-                return reverse(
-                    "novels:chapter_detail",
-                    kwargs={
-                        "novel_slug": obj.volume.novel.slug, 
-                        "chapter_slug": obj.slug,
-                    }
-                )
-        return "#"
+        return notification

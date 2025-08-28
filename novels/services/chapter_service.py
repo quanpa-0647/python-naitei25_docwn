@@ -183,8 +183,9 @@ class ChapterService:
         }
         
     @staticmethod
-    def get_earliest_unapproved_chapter():
+    def get_earliest_unapproved_chapter(novel):
         return Chapter.objects.filter(
+            volume__novel=novel,
             approved=False,
             rejected_reason__isnull=True,
             is_hidden=False,

@@ -32,25 +32,6 @@ class NotificationModelTest(TestCase):
         self.assertFalse(notification.is_read)
         self.assertIsNotNone(notification.created_at)
         
-    def test_create_notification_with_related_object(self):
-        related_user = User.objects.create_user(
-            username='related_user',
-            email='related@example.com',
-            password='testpass123'
-        )
-        
-        notification = Notification.objects.create(
-            user=self.user,
-            type=NotificationTypeChoices.SYSTEM,
-            title='Test Notification',
-            content='Test content',
-            content_type=ContentType.objects.get_for_model(related_user),
-            object_id=related_user.pk
-        )
-        
-        self.assertEqual(notification.related_object, related_user)
-        self.assertEqual(notification.related_object_name, str(related_user))
-        
     def test_notification_str_method(self):
         notification = Notification.objects.create(
             user=self.user,
@@ -73,13 +54,3 @@ class NotificationModelTest(TestCase):
         self.assertFalse(notification.is_read)
         notification.mark_as_read()
         self.assertTrue(notification.is_read)
-        
-    def test_related_object_name_without_related_object(self):
-        notification = Notification.objects.create(
-            user=self.user,
-            type=NotificationTypeChoices.SYSTEM,
-            title='Test Notification',
-            content='Test content'
-        )
-        
-        self.assertIsNone(notification.related_object_name)

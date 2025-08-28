@@ -20,9 +20,9 @@
     <div class="notification-list" id="notificationList">
         {% if notifications %}
         {% for notification in notifications %}
-        <div class="dropdown-item notification-item {% if not notification.is_read %}unread{% endif %}" 
-             data-notification-id="{{ notification.id }}">
-            <a href="{{ notification.link }}" class="d-flex align-items-start">
+        <a href="{{ notification.redirect_url }}" class="dropdown-item notification-item {% if not notification.is_read %}unread{% endif %}" 
+           data-notification-id="{{ notification.id }}" style="text-decoration: none; color: inherit;">
+            <div class="d-flex align-items-start">
                 <div class="notification-icon me-2">
                     <i class="bx bx-info-circle text-primary"></i>
                 </div>
@@ -39,8 +39,8 @@
                     <span class="badge bg-primary rounded-pill">&nbsp;</span>
                 </div>
                 {% endif %}
-            </a>
-        </div>
+            </div>
+        </a>
         {% endfor %}
         {% else %}
         <div class="dropdown-item-text text-center text-muted">

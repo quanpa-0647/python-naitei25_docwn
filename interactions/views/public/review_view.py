@@ -3,6 +3,7 @@ from http import HTTPStatus
 from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
+from django.urls import reverse
 
 from interactions.services import ReviewService, NotificationService
 from common.decorators import require_login, require_owner_or_admin
@@ -15,7 +16,8 @@ from constants import (
     MIN_RATE,
     MAX_RATE,
     NotificationTypeChoices,
-    MAX_LENGTH_REVIEW_CONTENT
+    MAX_LENGTH_REVIEW_CONTENT,
+    UserRole
 )
 
 
@@ -76,19 +78,14 @@ def create_review(request, novel_slug):
             })
 
         review = result
+        redirect_url = reverse("novels:novel_detail", kwargs={"novel_slug": novel.slug}) + "#reviews-section"
         
-        notification = NotificationService.create_notification(
+        NotificationService.create_notification(
             user=novel.created_by,
             title=_("Đánh giá mới"),
             content=_("Tiểu thuyết của bạn '%s' vừa nhận được đánh giá mới.") % novel.name,
             notification_type=NotificationTypeChoices.REVIEW,
-            related_object=review
-        )
-        
-        async_to_sync(send_notification_to_user)(
-            user_id=novel.created_by.id,
-            notification=notification,
-            redirect_url=f"/novels/{novel.slug}/#reviews-list"
+            redirect_url=redirect_url
         )
         
         return JsonResponse({
@@ -124,13 +121,15 @@ def create_review(request, novel_slug):
 @require_login
 def edit_review(request, novel_slug, review_id):
     """Chỉnh sửa review"""
+    user = request.user
+    
     try:
         data = json.loads(request.body)
         rating = data.get("rating")
         content = data.get("content", "")
 
         review, status = ReviewService.edit_review(
-            request.user, novel_slug, review_id, rating, content
+            user, novel_slug, review_id, rating, content
         )
 
         if status == "forbidden":
@@ -156,6 +155,17 @@ def edit_review(request, novel_slug, review_id):
                 "success": False,
                 "message": _(f"Nội dung đánh giá không được vượt quá {MAX_LENGTH_REVIEW_CONTENT} ký tự."),
             }, status=HTTPStatus.BAD_REQUEST)
+            
+        if user.role == UserRole.WEBSITE_ADMIN.value:
+            novel = Novel.objects.get(slug=novel_slug)
+            redirect_url = reverse("novels:novel_detail", kwargs={"novel_slug": novel.slug}) + "#reviews-section"
+            NotificationService.create_notification(
+                user=novel.created_by,
+                title=_("Chinh sửa đánh giá"),
+                content=_("Đánh giá của bạn trên tiểu thuyết '%s' đã được chỉnh sửa bởi quản trị viên.") % novel.name,
+                notification_type=NotificationTypeChoices.REVIEW,
+                redirect_url=redirect_url
+            )
 
         return JsonResponse({
             "success": True,
@@ -188,7 +198,21 @@ def edit_review(request, novel_slug, review_id):
 @require_owner_or_admin(lambda request, *args, **kwargs: ReviewService.get_review_detail(kwargs["review_id"]))
 def delete_review(request, novel_slug, review_id):
     """Xóa review"""
+    user = request.user
+    
     ReviewService.delete_review(novel_slug, review_id)
+    
+    if user.role == UserRole.WEBSITE_ADMIN.value:
+        novel = Novel.objects.get(slug=novel_slug)
+        redirect_url = reverse("novels:novel_detail", kwargs={"novel_slug": novel.slug}) + "#reviews-section"
+        NotificationService.create_notification(
+            user=novel.created_by,
+            title=_("Xóa đánh giá"),
+            content=_("Đánh giá của bạn trên tiểu thuyết '%s' đã bị xóa bởi quản trị viên.") % novel.name,
+            notification_type=NotificationTypeChoices.REVIEW,
+            redirect_url=redirect_url
+        )
+        
     return JsonResponse({
         "success": True,
         "message": _("Đánh giá đã được xóa thành công!"),

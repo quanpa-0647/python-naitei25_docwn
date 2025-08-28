@@ -42,20 +42,12 @@ class Notification(models.Model):
         verbose_name=_("Ngày tạo")
     )
     
-    # Generic relationship - thay thế cho các related_* fields
-    content_type = models.ForeignKey(
-        ContentType,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        verbose_name=_("Loại đối tượng")
-    )
-    object_id = models.PositiveIntegerField(
+    redirect_url = models.URLField(
+        max_length=500, 
+        blank=True, 
         null=True, 
-        blank=True,
-        verbose_name=_("ID đối tượng")
+        verbose_name=_("URL chuyển hướng")
     )
-    related_object = GenericForeignKey('content_type', 'object_id')
 
     class Meta:
         verbose_name = _("Thông báo")
@@ -64,7 +56,6 @@ class Notification(models.Model):
         indexes = [
             models.Index(fields=['user', 'is_read', '-created_at']),
             models.Index(fields=['type', '-created_at']),
-            models.Index(fields=['content_type', 'object_id']),
         ]
 
     def __str__(self):
@@ -74,10 +65,3 @@ class Notification(models.Model):
         """Đánh dấu thông báo là đã đọc"""
         self.is_read = True
         self.save(update_fields=['is_read'])
-
-    @property
-    def related_object_name(self):
-        """Lấy tên của đối tượng liên quan"""
-        if self.related_object:
-            return str(self.related_object)
-        return None

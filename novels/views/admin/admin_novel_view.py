@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
+from django.urls import reverse
 from sympy import Q
 from django.core.paginator import Paginator
 from novels.models.novel import Novel
@@ -131,19 +132,15 @@ def novel_request_detail(request, slug):
 def admin_approve_novel(request, slug):
     """Approve novel using service"""
     novel = NovelService.approve_novel(slug)
+    redirect_url = reverse("novels:novel_detail", kwargs={"novel_slug": novel.slug})
+    
     if novel:
-        notification = NotificationService.create_notification(
+        NotificationService.create_notification(
             user=novel.created_by,
             title=_("Truyện của bạn đã được duyệt"),
             content=_("Truyện '%(title)s' của bạn đã được duyệt.") % {"title": novel.name},
             notification_type=NotificationTypeChoices.SYSTEM,
-            related_object=novel,
-        )
-
-        async_to_sync(send_notification_to_user)(
-            user_id=novel.created_by.id,
-            notification=notification,
-            redirect_url=NotificationService.attach_link(notification)
+            redirect_url=redirect_url,
         )
 
         messages.success(request, _("Tiểu thuyết đã được phê duyệt thành công."))
@@ -158,22 +155,18 @@ def admin_reject_novel(request, slug):
     """Reject novel using service"""
     reason = request.POST.get('reason')
     novel = NovelService.reject_novel(slug, reason)
+    redirect_url = reverse("novels:novel_detail", kwargs={"novel_slug": novel.slug})
 
     reason_text = _("Lý do: %(reason)s") % {"reason": reason} if reason else ""
     if novel:
-        notification = NotificationService.create_notification(
+        NotificationService.create_notification(
             user=novel.created_by,
             title=_("Truyện của bạn bị từ chối"),
             content=_("Truyện '%(title)s' của bạn đã bị từ chối. '%(reason_text)s'") % {"title": novel.name, "reason_text": reason_text},
             notification_type=NotificationTypeChoices.SYSTEM,
-            related_object=novel,
+            redirect_url=redirect_url,
         )
-
-        async_to_sync(send_notification_to_user)(
-            user_id=novel.created_by.id,
-            notification=notification,
-            redirect_url=NotificationService.attach_link(notification)
-        )
+        
         messages.success(request, _("Tiểu thuyết đã được từ chối."))
     else:
         messages.error(request, _("Không thể từ chối tiểu thuyết này."))
@@ -188,16 +181,11 @@ def admin_delete_novel(request, slug):
     if novel:
 
         # Tạo notification cho tác giả
-        notification = NotificationService.create_notification(
+        NotificationService.create_notification(
             user=novel.created_by,
             title=_("Truyện của bạn đã bị xóa"),
             content=_("Truyện '%(title)s' của bạn đã bị xóa bởi admin.") % {"title": novel.name},
             notification_type=NotificationTypeChoices.SYSTEM,
-        )
-
-        async_to_sync(send_notification_to_user)(
-            user_id=novel.created_by.id,
-            notification=notification
         )
 
         messages.success(request, _("Tiểu thuyết đã được xóa thành công."))

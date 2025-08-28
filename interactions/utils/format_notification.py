@@ -6,5 +6,6 @@ def format_notification(notification):
         "title": notification.title,
         "content": notification.content,
         "is_read": notification.is_read,
-        "created_at": notification.created_at
+        "created_at": notification.created_at,
+        "redirect_url": notification.redirect_url,
     }

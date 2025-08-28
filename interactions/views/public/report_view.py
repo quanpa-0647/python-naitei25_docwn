@@ -4,10 +4,13 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
+from django.urls import reverse
 
 from interactions.models import Comment
 from interactions.forms.report_form import ReportForm
-from interactions.services.report_service import ReportService
+from interactions.services import ReportService, NotificationService
+from accounts.models import User
+from constants import UserRole, NotificationTypeChoices
 from http import HTTPStatus
 
 @require_POST
@@ -19,6 +22,16 @@ def report_comment(request, comment_id):
         report, error = ReportService.create_report(request.user, comment, form.cleaned_data)
         if error:
             return JsonResponse({"success": False, "message": error}, status= HTTPStatus.BAD_REQUEST)
+        
+        admins = User.objects.filter(role=UserRole.ADMIN.value)
+        
+        for admin in admins:
+            NotificationService.create_notification(
+                user=admin,
+                title=_("Báo cáo mới"),
+                content=_("Bình luận của '%s' đã bị báo cáo.") % comment.user.username,
+                notification_type=NotificationTypeChoices.REPORT,
+            )
 
         return JsonResponse({
             "success": True,

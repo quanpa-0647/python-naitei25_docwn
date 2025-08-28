@@ -6,6 +6,7 @@ from django.urls import reverse
 from sympy import Q
 from common.decorators import website_admin_required
 from novels.models.chapter import Chapter
+from interactions.services import NotificationService
 from novels.services import ChapterService
 from django.core.paginator import Paginator
 from constants import (
@@ -15,6 +16,7 @@ from constants import (
     PAGINATION_PAGE_RANGE,
     DEFAULT_PAGE_NUMBER,
     DATE_FORMAT_DMY,
+    NotificationTypeChoices
 )
 from novels.views.public.chapter_view import notify_favorites_chapter_approved
 
@@ -80,6 +82,18 @@ def approve_chapter_view(request, chapter_slug):
     was_approved = chapter.approved
     
     ChapterService.approve_chapter(chapter)
+    
+    NotificationService.create_notification(
+        user=chapter.volume.novel.created_by,
+        title=_("Chương đã được duyệt"),
+        content=_("Chương '%(chapter_title)s' của truyện '%(novel_title)s' đã được duyệt.") % {
+            "chapter_title": chapter.title,
+            "novel_title": chapter.volume.novel.name
+        },
+        notification_type=NotificationTypeChoices.SYSTEM,
+        redirect_url=reverse("novels:novel_detail", kwargs={"novel_slug": chapter.volume.novel.slug}) + f"#chapter-{chapter.id}"
+    )
+    
     if not was_approved and chapter.approved:
         notify_favorites_chapter_approved(chapter)
 
@@ -106,6 +120,17 @@ def reject_chapter_view(request, chapter_slug):
         return redirect('admin:chapter_review', chapter_slug=chapter.slug)
 
     ChapterService.reject_chapter(chapter, rejected_reason)
+    
+    NotificationService.create_notification(
+        user=chapter.volume.novel.created_by,
+        title=_("Chương đã bị từ chối"),
+        content=_("Chương '%(chapter_title)s' của truyện '%(novel_title)s' đã bị từ chối.") % {
+            "chapter_title": chapter.title,
+            "novel_title": chapter.volume.novel.name
+        },
+        notification_type=NotificationTypeChoices.SYSTEM,
+        redirect_url=reverse("novels:novel_detail", kwargs={"novel_slug": chapter.volume.novel.slug}) + f"#chapter-{chapter.id}"
+    )
 
     messages.success(request, _('Chương "%(title)s" đã bị từ chối.') % {'title': chapter.title})
     return redirect('admin:chapter_review', chapter_slug=chapter.slug)
@@ -126,7 +151,7 @@ def chapter_review(request, chapter_slug):
         'REJECTED': ApprovalStatus.REJECTED.value,
     })
     
-    earliest_unapproved_chapter = ChapterService.get_earliest_unapproved_chapter()
+    earliest_unapproved_chapter = ChapterService.get_earliest_unapproved_chapter(chapter.volume.novel)
     
     if (earliest_unapproved_chapter and earliest_unapproved_chapter != chapter):
         context['unapproved_chapter_url'] = reverse(

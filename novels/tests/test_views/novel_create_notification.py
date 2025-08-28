@@ -53,4 +53,3 @@ class NovelCreateNotificationTests(TestCase):
         mock_send.assert_called_once()
         call_args = mock_send.call_args[1]  # lấy kwargs
         self.assertEqual(call_args["user_id"], self.admin.id)
-        self.assertEqual(call_args["notification"].related_object, novel)

@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from common.utils.sse import send_notification_to_user
 from interactions.models.notification import Notification
+from accounts.models import User
 from novels.models import Novel, Chapter
 from novels.models.reading_favorite import Favorite
 from novels.models.volume import Volume
@@ -19,7 +20,9 @@ from novels.services import ChapterService, ReadingService
 from novels.forms import ChapterForm
 from constants import (
     MAX_LIMIT_CHUNKS, START_POSITION_DEFAULT, PROGRESS_DEFAULT,
-    DATE_FORMAT_DMY, ApprovalStatus
+    DATE_FORMAT_DMY, ApprovalStatus,
+    NotificationTypeChoices,
+    UserRole
 )
 from common.decorators import require_active_novel
 
@@ -142,6 +145,20 @@ def chapter_add_view(request, novel_slug):
         form = ChapterForm(novel=novel, data=request.POST)
         if form.is_valid():
             chapter = form.save()
+            
+            admins = User.objects.filter(role=UserRole.ADMIN.value)
+            for admin in admins:
+                Notification.objects.create(
+                    user=admin,
+                    type=NotificationTypeChoices.SYSTEM,
+                    title=_("Chương mới cần duyệt"),
+                    content=_("Truyện '%(novel_name)s' vừa có chương mới '%(chapter_title)s' cần được duyệt.") % {
+                        "novel_name": novel.name,
+                        "chapter_title": chapter.title
+                    },
+                    redirect_url=reverse("admin:chapter_review", kwargs={"chapter_slug": chapter.slug}),
+                )
+            
             messages.success(request, _("Chapter đã được thêm thành công!"))
             return redirect('novels:novel_detail', novel_slug=novel.slug)
     else:
@@ -187,31 +204,17 @@ def notify_favorites_chapter_approved(chapter):
         novel = chapter.volume.novel
         favorites_qs = Favorite.objects.filter(novel=novel).select_related("user")
         content_type = ContentType.objects.get_for_model(chapter)
+        redirect_url = reverse("novels:novel_detail", kwargs={"novel_slug": novel.slug}) + f"#chapter-{chapter.slug}"
 
         for fav in favorites_qs:
             user = fav.user
-            notification = Notification.objects.create(
+            Notification.objects.create(
                 user=user,
-                type="NEW_CHAPTER",
+                type=NotificationTypeChoices.SYSTEM,
                 title=_("Truyện '%(novel_name)s' có chương mới") % {"novel_name": novel.name},
                 content=_("Chương '%(chapter_title)s' vừa được duyệt và hiển thị.") % {"chapter_title": chapter.title},
-                content_type=content_type,
-                object_id=chapter.id,
+                redirect_url=redirect_url,
             )
-
-            redirect_url = reverse(
-                "novels:chapter_detail",
-                kwargs={"novel_slug": novel.slug, "chapter_slug": chapter.slug},
-            )
-
-            try:
-                async_to_sync(send_notification_to_user)(
-                    user_id=user.id,
-                    notification=notification,
-                    redirect_url=redirect_url,
-                )
-            except Exception as e:
-                logger.exception("Lỗi khi gửi SSE cho user %s: %s", user.id, e)
 
     except Exception as e:
         logger.exception("Lỗi khi tạo notification: %s", e)
