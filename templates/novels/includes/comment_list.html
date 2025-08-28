@@ -9,10 +9,10 @@
   </header>
 
   {% if user.is_authenticated %}
-    <form method="post" action="{% url 'interactions:add_comment' novel_slug %}" class="mb-4 comment-form">
+     <form id="comment-form-main" method="post" action="{% url 'interactions:add_comment' novel_slug %}" class="mb-4 comment-form">
       {% csrf_token %}
       <div class="mb-2">
-        <textarea name="content" rows="3" class="form-control rounded-3 shadow-sm" placeholder="{% trans 'Nhập bình luận...'%}"></textarea>
+         <textarea name="content" rows="3" class="form-control rounded-3 shadow-sm bg-body text-body" placeholder="{% trans 'Nhập bình luận...'%}"></textarea>
       </div>
       <button type="submit" class="btn btn-primary btn-sm px-4 rounded-pill">{% trans "Đăng" %}</button>
     </form>
@@ -54,6 +54,8 @@
                           data-url="{% url 'interactions:delete_comment' comment.id %}">
                     {% trans "Xóa" %}
                   </button>
+                {% else %}
+                  {% include "interactions/includes/report.html" with comment=comment report_form=report_form %}
                 {% endif %}
               </div>
 
@@ -92,6 +94,8 @@
                               class="btn btn-link btn-sm text-danger delete-btn">
                                 {% trans "Xóa" %}
                               </button>
+                            {% else %}
+                              {% include "interactions/includes/report.html" with comment=reply report_form=report_form %}
                             {% endif %}
                           </div>
                         </div>
@@ -127,6 +131,8 @@
                                       class="btn btn-link btn-sm text-danger delete-btn">
                                         {% trans "Xóa" %}
                                       </button>
+                                    {% else %}
+                                      {% include "interactions/includes/report.html" with comment=reply report_form=report_form %}
                                     {% endif %}
                                 </div>
                                 </div>
@@ -144,10 +150,7 @@
       {% endfor %}
     </ul>
   </div>
-  {% else %}
-    <p class="text-muted fst-italic">{% trans "Chưa có bình luận nào." %}</p>
-  {% endif %}
-    <div class="pagination-footer mt-3">
+  <div class="pagination-footer mt-3">
         <div class="pagination_wrap">
             {% if comments.has_previous %}
                 <a href="#" class="paging_item paging_prevnext prev" data-page="{{ comments.previous_page_number }}">{% trans "Trước" %}</a>
@@ -161,5 +164,8 @@
                 <a class="paging_item paging_prevnext next disabled">{% trans "Sau" %}</a>
             {% endif %}
         </div>
-    </div>
+  </div>
+  {% else %}
+    <p class="text-muted fst-italic no-comments">{% trans "Chưa có bình luận nào." %}</p>
+  {% endif %}
 </div>

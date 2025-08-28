@@ -11,6 +11,8 @@ from django.http import JsonResponse, HttpResponseNotAllowed
 from django.template.loader import render_to_string
 from constants import DEFAULT_PAGE_NUMBER
 from django.urls import reverse
+from interactions.forms.report_form import ReportForm
+from django.core.paginator import Paginator
 
 def novel_comments(request, novel_slug):
     """API trả về HTML comment phân trang"""
@@ -18,10 +20,11 @@ def novel_comments(request, novel_slug):
     novel = get_object_or_404(Novel, slug=novel_slug)
 
     comments_page = CommentService.get_novel_comments(novel, page=page)
-
+    report_form = ReportForm()
     html = render_to_string("novels/includes/comment_list.html", {
         "comments": comments_page,
-        "novel_slug": novel_slug
+        "novel_slug": novel_slug,
+        "report_form": report_form,
     }, request=request)
 
     return JsonResponse({
@@ -49,32 +52,23 @@ def add_comment(request, novel_slug):
                 parent_comment=parent_comment
             )
 
-            if not parent_comment:
-                html = render_to_string(
-                    "interactions/includes/comment.html",
-                    {
-                        "comment": comment,
-                        "user": request.user,
-                        "novel_slug": novel.slug
-                    }
-                )
-            else:  # Nếu là reply, render reply.html
-                html = render_to_string(
-                    "interactions/includes/reply.html",
-                    {
-                        "comment": comment,  # đây là reply
-                        "user": request.user
-                    }
-                )
+            comments_page = CommentService.get_novel_comments(novel, page=DEFAULT_PAGE_NUMBER)
+            report_form = ReportForm()
+            html = render_to_string("novels/includes/comment_list.html", {
+                "comments": comments_page,
+                "report_form": report_form,
+                "novel_slug": novel_slug
+            }, request=request)
 
             return JsonResponse({
                 "success": True,
-                "id": comment.id,
+                "html": html,
+                "has_next": comments_page.has_next(),
+                "has_prev": comments_page.has_previous(),
+                "page": comments_page.number,
+                "num_pages": comments_page.paginator.num_pages,
                 "content": comment.content,
-                "user": comment.user.username,
-                "parent_id": parent_id,
-                "delete_url": reverse("interactions:delete_comment", args=[comment.id]),
-                "html": html
+                "parent_id": comment.parent_comment.id if comment.parent_comment else None,
             })
         return JsonResponse({"success": False, "errors": form.errors}, status=400)
     return HttpResponseNotAllowed(['POST'])
