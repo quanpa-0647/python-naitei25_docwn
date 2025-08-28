@@ -2,12 +2,12 @@ from django.shortcuts import get_object_or_404
 from django.http import Http404
 from django.core.paginator import Paginator
 from django.db.models import Q
+from common.utils.sse import send_notification_to_user
 from novels.models import Chapter
 from constants import (
     PAGINATOR_COMMON_LIST,
     DEFAULT_PAGE_NUMBER,
 )
-
 class ChapterService:
     @staticmethod
     def get_chapter_for_user(chapter_slug, novel_slug, user=None):
